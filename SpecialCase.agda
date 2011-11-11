@@ -31,6 +31,28 @@ open import Isomorphism
 isoM : ∀{C} → Iso (RMonad (IdF C)) (Monad C)
 isoM = record {fun = rightM; inv = leftM; law1 = λ _ → refl; law2 = λ _ → refl}
 
+open import MonadMorphs2
+open import RMonadMorphs2
+
+leftMM : ∀{C : Cat}{M M' : Monad C} → MonadMorph M M' → RMonadMorph (leftM M) (leftM M')
+leftMM MM = record { 
+  morph   = MonadMorph.morph MM; 
+  lawη    = MonadMorph.lawη MM; 
+  lawbind = MonadMorph.lawbind MM}
+
+rightMM : ∀{C : Cat}{M M' : RMonad (IdF C)} → RMonadMorph M M' → MonadMorph (rightM M) (rightM M')
+rightMM MM = record { 
+  morph   = RMonadMorph.morph MM; 
+  lawη    = RMonadMorph.lawη MM; 
+  lawbind = RMonadMorph.lawbind MM}
+
+isoMM : {C : Cat}{M M' : Monad C} → Iso (RMonadMorph (leftM M) (leftM M')) (MonadMorph M M')
+isoMM = record { 
+ fun  = rightMM; 
+ inv  = leftMM; 
+ law1 = λ mm → refl; 
+ law2 = λ mm → refl }
+
 open import Adjunctions2
 open import RAdjunctions2
 
