@@ -23,6 +23,17 @@ restrictM J M = record {
   law2 = law2 M; 
   law3 = law3 M}
 
+open import MonadMorphs2
+open import RMonadMorphs2
+
+open MonadMorph
+
+restrictMM : {C D : Cat}{M M' : Monad D}(J : Fun C D) → MonadMorph M M' → RMonadMorph (restrictM J M) (restrictM J M')
+restrictMM J MM = record { 
+  morph   = λ{X} → morph MM {OMap J X}; 
+  lawη    = lawη MM; 
+  lawbind = lawbind MM}
+
 open import Adjunctions2
 open import RAdjunctions2
 

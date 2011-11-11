@@ -7,23 +7,24 @@ open import Naturals
 open import Monads2
 open import RMonads2
 
+
 leftM : {C : Cat} → Monad C → RMonad (IdF C)
 leftM {C} M = record {
-  T    = Monad.T M;
-  η    = Monad.η M;
-  bind = Monad.bind M;
-  law1 = Monad.law1 M;
-  law2 = Monad.law2 M;
-  law3 = Monad.law3 M}
+  T    = T M;
+  η    = η M;
+  bind = bind M;
+  law1 = law1 M;
+  law2 = law2 M;
+  law3 = law3 M} where open Monad
 
 rightM : {C : Cat} → RMonad (IdF C) → Monad C
 rightM {C} M = record {
-  T    = RMonad.T M;
-  η    = RMonad.η M;
-  bind = RMonad.bind M; 
-  law1 = RMonad.law1 M;
-  law2 = RMonad.law2 M;
-  law3 = RMonad.law3 M}
+  T    = T M;
+  η    = η M;
+  bind = bind M; 
+  law1 = law1 M;
+  law2 = law2 M;
+  law3 = law3 M} where open RMonad
 
 open import Equality
 open import Isomorphism
@@ -36,15 +37,15 @@ open import RMonadMorphs2
 
 leftMM : ∀{C : Cat}{M M' : Monad C} → MonadMorph M M' → RMonadMorph (leftM M) (leftM M')
 leftMM MM = record { 
-  morph   = MonadMorph.morph MM; 
-  lawη    = MonadMorph.lawη MM; 
-  lawbind = MonadMorph.lawbind MM}
+  morph   = morph MM; 
+  lawη    = lawη MM; 
+  lawbind = lawbind MM} where open MonadMorph
 
 rightMM : ∀{C : Cat}{M M' : RMonad (IdF C)} → RMonadMorph M M' → MonadMorph (rightM M) (rightM M')
 rightMM MM = record { 
-  morph   = RMonadMorph.morph MM; 
-  lawη    = RMonadMorph.lawη MM; 
-  lawbind = RMonadMorph.lawbind MM}
+  morph   = morph MM; 
+  lawη    = lawη MM; 
+  lawbind = lawbind MM} where open RMonadMorph
 
 isoMM : {C : Cat}{M M' : Monad C} → Iso (RMonadMorph (leftM M) (leftM M')) (MonadMorph M M')
 isoMM = record { 
@@ -58,25 +59,25 @@ open import RAdjunctions2
 
 leftA : {C D : Cat} → Adj C D → RAdj (IdF C) D
 leftA {C}{D} A = record{
-  L        = Adj.L A;
-  R        = Adj.R A;
-  left     = Adj.left A; 
-  right    = Adj.right A; 
-  lawa     = Adj.lawa A; 
-  lawb     = Adj.lawb A; 
-  natleft  = Adj.natleft A;
-  natright = Adj.natright A}
+  L        = L A;
+  R        = R A;
+  left     = left A; 
+  right    = right A; 
+  lawa     = lawa A; 
+  lawb     = lawb A; 
+  natleft  = natleft A;
+  natright = natright A} where open Adj
 
 rightA : {C D : Cat} → RAdj (IdF C) D → Adj C D
 rightA {C}{D} A = record{
-  L        = RAdj.L A;
-  R        = RAdj.R A;
-  left     = RAdj.left A; 
-  right    = RAdj.right A; 
-  lawa     = RAdj.lawa A; 
-  lawb     = RAdj.lawb A; 
-  natleft  = RAdj.natleft A;
-  natright = RAdj.natright A}
+  L        = L A;
+  R        = R A;
+  left     = left A; 
+  right    = right A; 
+  lawa     = lawa A; 
+  lawb     = lawb A; 
+  natleft  = natleft A;
+  natright = natright A} where open RAdj
 
 isoA : {C D : Cat} → Iso (RAdj (IdF C) D) (Adj C D)
 isoA = record {
