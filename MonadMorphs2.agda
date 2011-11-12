@@ -11,7 +11,6 @@ open Fun
 open Monad
 
 record MonadMorph {C : Cat}(M M' : Monad C) : Set where
-
   field morph    : ∀ {X} → Hom C (T M X) (T M' X)
         lawη     : ∀ {X} → comp C morph (η M {X}) ≅ η M' {X}
         lawbind : ∀ {X Y}{k : Hom C X (T M Y)} → 

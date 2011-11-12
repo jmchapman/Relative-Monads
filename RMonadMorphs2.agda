@@ -11,7 +11,6 @@ open Fun
 open RMonad
 
 record RMonadMorph {C D : Cat}{J : Fun C D}(M M' : RMonad J) : Set where
-
   field morph    : ∀ {X} → Hom D (T M X) (T M' X)
         lawη     : ∀ {X} → comp D morph (η M {X}) ≅ η M' {X}
         lawbind : ∀ {X Y}{k : Hom D (OMap J X) (T M Y)} → 
