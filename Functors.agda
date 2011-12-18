@@ -14,6 +14,9 @@ record Fun (C D : Cat) : Set where
                 HMap (comp C f g) ≅ comp D (HMap f) (HMap g)
 open Fun
 
+_`_ : ∀{C D}(F : Fun C D) → Obj C → Obj D
+F ` X = OMap F X
+
 IdF : ∀ C → Fun C C
 IdF C = record{OMap = id;HMap = id;fid = refl;fcomp = refl}
 

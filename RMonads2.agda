@@ -9,11 +9,11 @@ open Cat
 open Fun
 
 record RMonad {C D : Cat}(J : Fun C D) : Set where
-  field T    : Obj C → Obj D
-        η    : ∀{X} → Hom D (OMap J X) (T X)
-        bind : ∀{X Y} → Hom D (OMap J X) (T Y) → Hom D (T X) (T Y)
+  field T    : ! C ! → ! D !
+        η    : ∀{X} → D < J ` X , T X >
+        bind : ∀{X Y} → D < J ` X , T Y > → D < T X , T Y >                                                                    
         law1 : ∀{X} → bind (η {X}) ≅ iden D {T X}
-        law2 : ∀{X Y}{f : Hom D (OMap J X) (T Y)} → comp D (bind f) η ≅ f
+        law2 : ∀{X Y}{f : D < J ` X , T Y >} → D ! bind f • η ≅ f
         law3 : ∀{X Y Z}
-               {f : Hom D (OMap J X) (T Y)}{g : Hom D (OMap J Y) (T Z)} → 
-               bind (comp D (bind g) f)  ≅ comp D (bind g) (bind f)
+               {f : D < J ` X , T Y >}{g : D < J ` Y , T Z >} →
+               bind (D ! bind g • f)  ≅ D ! bind g • bind f

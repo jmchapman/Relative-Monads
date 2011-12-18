@@ -8,18 +8,19 @@ open import RMonads2
 
 open Cat
 open Fun
-open RMonad
 
 record RAlg {C D : Cat}{J : Fun C D}(M : RMonad J) : Set where
-  field acar  : Obj D
-        astr  : ∀ {Z} → Hom D (OMap J Z) acar → Hom D (T M Z) acar
-        alaw1 : ∀ {Z}{f : Hom D (OMap J Z) acar} → 
-                f ≅ comp D (astr f) (η M)
-        alaw2 : ∀{Z}{W}{k : Hom D (OMap J Z) (T M W)}
-                {f : Hom D (OMap J W) acar} → 
-                astr (comp D (astr f) k) ≅ comp D (astr f) (bind M k)
+  open RMonad M 
+  field acar  : ! D !
+        astr  : ∀ {Z} → D < J ` Z , acar > → D < T Z , acar >
+        alaw1 : ∀ {Z}{f : D < J ` Z , acar >} →
+                f ≅ D ! astr f • η
+        alaw2 : ∀{Z}{W}{k : D < J ` Z , T W >}
+                {f : D < J ` W , acar >} →
+                astr (D ! astr f • k) ≅ D ! astr f • bind k
 open RAlg
 
+open RMonad
 astrnat : ∀{C D}{J : Fun C D}{M : RMonad J}(alg : RAlg M){X Y : Obj C}
           (f : Hom C X Y)
           (g : Hom D (OMap J X) (acar alg))

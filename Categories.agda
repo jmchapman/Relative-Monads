@@ -14,6 +14,15 @@ record Cat : Set where
                comp (comp f g) h ≅ comp f (comp g h)
 open Cat
 
+!_! : Cat → Set
+! C !  = Obj C
+
+_<_,_> : (C : Cat) → Obj C → Obj C → Set
+C < X , Y > = Hom C X Y
+
+_!_•_ : ∀ C {X Y Z : ! C !} → C < Y , Z > → C < X , Y > → C < X , Z >
+C ! f • g = comp C f g
+
 _Op : Cat → Cat
 C Op = record{
   Obj  = Obj C; 

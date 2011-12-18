@@ -152,7 +152,6 @@ subcomp f g (app t u) = resp2 app (subcomp f g t) (subcomp f g u)
 subcomp f g (lam t)   = resp lam (trans (resp (λ (f : Sub _ _) → sub f t) 
                                               (iext λ _ → ext (liftcomp f g))) 
                                         (subcomp (lift f) (lift g) t))
-
 VarF : Fun ConCat (Fam Ty)
 VarF = record { 
   OMap  = Var; 
