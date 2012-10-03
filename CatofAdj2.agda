@@ -10,6 +10,7 @@ open import Adjunctions2
 open Fun
 open Monad
 open Adj
+open Cat
 
 record ObjAdj {C : Cat}(M : Monad C) : Set where
   field D   : Cat
@@ -21,12 +22,18 @@ record HomAdj {C : Cat}{M : Monad C}(A B : ObjAdj M) : Set where
   field K : Fun (D A) (D B)
         Llaw : K ○ L (adj A) ≅ L (adj B)
         Rlaw : R (adj A) ≅ R (adj B) ○ K
-open Cat
+        rightlaw : ∀{X}{Y}{k : Hom C X (OMap (R (adj B)) (OMap K Y))} → HMap K (right (adj A) k) ≅ right (adj B) (subst (λ Y → Hom C X Y) (fresp Y (resp OMap Rlaw)) k)
+
 open HomAdj
 
 HomAdjEq : {C : Cat}{M : Monad C}{A B : ObjAdj M}(f g : HomAdj A B) → K f ≅ K g → f ≅ g
-HomAdjEq {C}{M}{A}{B} f g p = funnyresp3 
-  (λ x y z → record{K = x;Llaw = y;Rlaw = z})
+HomAdjEq {C}{M}{A}{B} f g p = funnyresp4 
+  {Fun (D A) (D B)}
+  {λ K → K ○ L (adj A) ≅ L (adj B)}
+  {λ K _ → R (adj A) ≅ R (adj B) ○ K}
+  {λ K _ Rlaw → ∀{X}{Y}{k : Hom C X (OMap (R (adj A)) Y)} → HMap K (right (adj A) k) ≅ right (adj B) (subst (λ Y → Hom C X Y) (fresp Y (resp OMap Rlaw)) k)}
+  {HomAdj {C}{M} A B}
+  (λ w x y z → record{K = w;Llaw = x;Rlaw = y;rightlaw = z})
   p 
   (fixtypes (FunctorEq _
                        _
@@ -38,12 +45,17 @@ HomAdjEq {C}{M}{A}{B} f g p = funnyresp3
                         _
                         (ext λ X → resp (λ F → OMap (R (adj B)) (OMap F X)) p)
                         (λ {X}{Y} h → resp (λ F → HMap (R (adj B)) (HMap F h)) p)))
+   (iext (λ X → iext (λ Y → iext (λ k → fixtypes (resp (λ F → HMap F (right (adj A) k)) p) 
+     (dresp (trans (stripsubst (Hom C X) k (fresp Y (resp OMap (Rlaw f)))) (sym (stripsubst (Hom C X) k (fresp Y (resp OMap (Rlaw g))))) ) 
+            (resp (λ F → Hom (D B) (OMap (L (adj B)) X) (OMap F Y)) p)
+            (iresp (λ {Y} → right (adj B) {X}{Y}) (resp (λ F → OMap F Y) p)))))))
 
 idHomAdj : {C : Cat}{M : Monad C}{X : ObjAdj M} → HomAdj X X
 idHomAdj {C}{M}{X} = record {
     K = IdF (D X);
     Llaw = FunctorEq _ _ refl (λ _ → refl);
-    Rlaw = FunctorEq _ _ refl (λ _ → refl)}
+    Rlaw = FunctorEq _ _ refl (λ _ → refl);
+    rightlaw = λ {A}{B}{k} → {!!}}
 
 HMaplem : ∀{C D}{X X' Y Y' : Obj C} → X ≅ X' → Y ≅ Y' → {f : Hom C X Y}{f' : Hom C X' Y'} → f ≅ f' → (F : Fun C D) → 
           HMap F {X}{Y} f ≅ HMap F {X'}{Y'} f'
@@ -63,10 +75,11 @@ compHomAdj {C}{M}{X}{Y}{Z} f g = record {
                      (ext λ A → trans (resp (λ F → OMap F A) (Rlaw g)) (resp (λ F → OMap F (OMap (K g) A)) (Rlaw f)))
                      (λ {A}{B} h → trans (resp (λ F → HMap F h) (Rlaw g)) 
 
-                                         (resp (λ F → HMap F (HMap (K g) h)) (Rlaw f)))}
+                                         (resp (λ F → HMap F (HMap (K g) h)) (Rlaw f)));
+    rightlaw = {!!}}
 
 
-
+{-
 idlHomAdj : ∀{C}{M : Monad C}{X : ObjAdj M} {Y : ObjAdj M} {f : HomAdj X Y} → compHomAdj idHomAdj f ≅ f
 idlHomAdj {C}{M}{X}{Y}{f} = HomAdjEq _ _ (FunctorEq _ _ refl (λ {X}{Y} h → refl))
 
@@ -91,3 +104,4 @@ CatofAdj {C} M = record{
   idr  = idrHomAdj;
   ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → assHomAdj {C}{M}{W}{X}{Y}{Z}{f}{g}{h}}
 
+-}

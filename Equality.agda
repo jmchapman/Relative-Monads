@@ -1,3 +1,5 @@
+{-# OPTIONS --type-in-type #-}
+
 module Equality where
 
 open import Utilities
@@ -29,6 +31,10 @@ iresp f refl = refl
 fresp : ∀{A}{B : A → Set}{f f' : (x : A) → B x}(a : A) → f ≅ f' → f a ≅ f' a
 fresp a refl = refl
 
+dresp : ∀{A A' B B'}{f : A → B}{f' : A' → B'}{a : A}{a' : A'} → a ≅ a' → B ≅ B' → f ≅ f' → f a ≅ f' a'
+dresp refl refl refl = refl
+
+
 resp2 : ∀{A}{B : A → Set}{C : (x : A) → B x → Set}(f : (x : A)(y : B x) → C x y){a a' : A} → a ≅ a' → {b : B a}{b' : B a'} → b ≅ b' → f a b ≅ f a' b'
 resp2 f refl refl = refl
 
@@ -48,12 +54,13 @@ funnyresp3 : ∀{A}{B : A → Set}{C : A → Set}{D : Set}
 funnyresp3 f refl refl refl = refl
 
 funnyresp4 : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}{D : (a : A)(b : B a) → C a b  → Set}{E : Set}
+             (f : (a : A)(b : B a)(c : C a b) → D a b c → E) → 
              {a a' : A} → a ≅ a' → 
              {b : B a}{b' : B a'} → b ≅ b' → 
              {c : C a b}{c' : C a' b'} → c ≅ c' → 
              {d : D a b c}{d' : D a' b' c'} → d ≅ d' → 
-            (f : (a : A)(b : B a)(c : C a b) → D a b c → E) → f a b c d ≅ f a' b' c' d'
-funnyresp4 refl refl refl refl f = refl
+             f a b c d ≅ f a' b' c' d'
+funnyresp4 f refl refl refl refl = refl
 
 funnyresp4' : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}{D : (a : A) → B a → Set}{E : Set}
              {a a' : A} → a ≅ a' → 
@@ -112,6 +119,9 @@ substtrans : ∀{A}(P : A → Set){a a' a''}(p : a ≅ a')(q : a' ≅ a'') →
              ∀ x → subst P (trans p q) x ≅ (subst P q • subst P p) x
 substtrans P refl refl x = refl
 
+stripsubst : {A : Set} → (C : A → Set) → {a : A} → (c : C a) → {b : A} → (p : a ≅ b) → subst C p c ≅ c
+stripsubst C c refl = refl 
+
 postulate ext : {A : Set}{B B' : A → Set}{f : ∀ a → B a}{g : ∀ a → B' a} → 
                 (∀ a → f a ≅ g a) → f ≅ g
 
@@ -125,7 +135,7 @@ postulate diext : {A A' : Set}{B : A → Set}{B' : A' → Set}{f : ∀ {a} → B
 ir : ∀ {A A' : Set}{a : A}{a' : A'}{p q : a ≅ a'} → p ≅ q
 ir {p = refl}{q = refl} = refl
 
-fixtypes : ∀{A A' : Set}{a a' : A}{a'' a''' : A'}{p : a ≅ a'}{q : a'' ≅ a'''} → a ≅ a'' → a' ≅ a''' → p ≅ q
+fixtypes : ∀{A A' A'' A''' : Set}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}{p : a ≅ a'}{q : a'' ≅ a'''} → a ≅ a'' → a' ≅ a''' → p ≅ q
 fixtypes refl refl = ir        
 
 infix  4 _IsRelatedTo_

@@ -17,8 +17,9 @@ record RAlg {C D : Cat}{J : Fun C D}(M : RMonad J) : Set where
                 f ≅ D ! astr f • η
         alaw2 : ∀{Z}{W}{k : D < J ` Z , T W >}
                 {f : D < J ` W , acar >} →
-                astr (D ! astr f • k) ≅ D ! astr f • bind k
+                astr (D ! astr f • k) ≅ D ! astr f • k *
 open RAlg
+
 
 open RMonad
 astrnat : ∀{C D}{J : Fun C D}{M : RMonad J}(alg : RAlg M){X Y : Obj C}
