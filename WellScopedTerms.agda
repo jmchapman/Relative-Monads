@@ -163,7 +163,7 @@ TmRMonad : RMonad FinF
 TmRMonad = record {
   T    = Tm; 
   η    = var;
-  bind = sub; 
+  _* = sub; 
   law1 = ext subid; 
   law2 = refl;
   law3 = ext (subcomp _ _)}

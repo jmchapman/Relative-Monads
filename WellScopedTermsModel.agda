@@ -87,3 +87,4 @@ TmRAlg l = record{
   astr  = eval l;
   alaw1 = ext λ _ → sym (lawvar l);
   alaw2 =  ext λ t → subeval l t _ _}       
+
