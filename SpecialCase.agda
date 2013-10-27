@@ -12,7 +12,7 @@ leftM : {C : Cat} → Monad C → RMonad (IdF C)
 leftM {C} M = record {
   T    = T M;
   η    = η M;
-  bind = bind M;
+  _* = bind M;
   law1 = law1 M;
   law2 = law2 M;
   law3 = law3 M} where open Monad
@@ -26,7 +26,7 @@ rightM {C} M = record {
   law2 = law2 M;
   law3 = law3 M} where open RMonad
 
-open import Equality
+open import Relation.Binary.HeterogeneousEquality
 open import Isomorphism
 
 isoM : ∀{C} → Iso (RMonad (IdF C)) (Monad C)

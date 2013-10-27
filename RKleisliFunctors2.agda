@@ -2,7 +2,8 @@
 module RKleisliFunctors2 where
 
 open import Utilities
-open import Equality
+open import Relation.Binary.HeterogeneousEquality
+open import Function
 open import Categories
 open import Functors
 open import Naturals
@@ -19,11 +20,11 @@ RKlL : ∀{C D}{J : Fun C D}(M : RMonad J) → Fun C (Kl M)
 RKlL {C}{D}{J} M = record{
   OMap  = id;
   HMap  = λ f → comp D (η M) (HMap J f);
-  fid   = trans (resp (comp D (η M)) (fid J)) (idr D);
+  fid   = trans (cong (comp D (η M)) (fid J)) (idr D);
   fcomp = λ{X}{Y}{Z}{f}{g} → 
-    trans (trans (trans (resp (comp D (η M)) (fcomp J))
+    trans (trans (trans (cong (comp D (η M)) (fcomp J))
                         (sym (ass D)))
-                 (sym (resp (λ (f : Hom D _ _) → (comp D f (HMap J g)))
+                 (sym (cong (λ (f : Hom D _ _) → (comp D f (HMap J g)))
                             (law2 M))))
           (ass D)}
 

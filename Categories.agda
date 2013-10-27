@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Categories where
 
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 
 record Cat : Set where
@@ -14,6 +15,7 @@ record Cat : Set where
                comp (comp f g) h ≅ comp f (comp g h)
 open Cat
 
+{-
 !_! : Cat → Set
 ! C !  = Obj C
 
@@ -22,6 +24,7 @@ C < X , Y > = Hom C X Y
 
 _!_•_ : ∀ C {X Y Z : ! C !} → C < Y , Z > → C < X , Y > → C < X , Z >
 C ! f • g = comp C f g
+-}
 
 _Op : Cat → Cat
 C Op = record{

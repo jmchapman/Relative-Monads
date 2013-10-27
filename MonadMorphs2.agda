@@ -1,7 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module MonadMorphs2 where
 
-open import Equality
+open import Relation.Binary.HeterogeneousEquality
 open import Functors
 open import Categories
 open import Monads2

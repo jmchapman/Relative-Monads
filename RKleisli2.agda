@@ -1,7 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module RKleisli2 where
 
-open import Equality
+open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Functors
 open import RMonads2
@@ -16,9 +16,9 @@ Kl {C}{D}{J} M = record{
   Hom  = λ X Y → Hom D (OMap J X) (T M Y);
   iden = η M;
   comp = λ f g → comp D (bind M f) g;
-  idl  = λ{X}{Y}{f} → trans (resp (λ g → comp D g f) (law1 M)) (idl D);
+  idl  = λ{X}{Y}{f} → trans (cong (λ g → comp D g f) (law1 M)) (idl D);
   idr  = law2 M;
   ass  =  λ{W}{X}{Y}{Z}{f}{g}{h} → 
-    trans (resp (λ (f : Hom D (T M X) (T M Z)) → comp D f h) 
+    trans (cong (λ (f : Hom D (T M X) (T M Z)) → comp D f h) 
                 (law3 M)) 
           (ass D)}

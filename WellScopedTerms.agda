@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module WellScopedTerms where
 
+open import Function
 open import Utilities
 open import Categories
 open import Functors
@@ -8,6 +9,7 @@ open import Nat
 open import Sets
 open import Fin
 open import RMonads2
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 
 open Cat
@@ -42,7 +44,7 @@ renId = id
 -- Composition of renamings
 
 renComp : ∀{m n o} → Ren n o → Ren m n → Ren m o
-renComp f g = f • g
+renComp f g = f ∘ g
 
 -- we prove that wk is an endofunctor
 
@@ -59,15 +61,15 @@ wkcomp f g (fs i) = refl
 
 renid : ∀{n}(t : Tm n) → ren renId t ≅ t
 renid (var i)   = refl
-renid (app t u) = resp2 app (renid t) (renid u)
-renid (lam t)   = resp lam (trans (resp (λ f → ren f t) (ext wkid)) 
+renid (app t u) = cong₂ app (renid t) (renid u)
+renid (lam t)   = cong lam (trans (cong (λ f → ren f t) (ext wkid)) 
                                   (renid t))
 
 rencomp : ∀{m n o}(f : Ren n o)(g : Ren m n)(t : Tm m) → 
           ren (renComp f g) t ≅ ren f (ren g t)
 rencomp f g (var i)   = refl
-rencomp f g (app t u) = resp2 app (rencomp f g t) (rencomp f g u)
-rencomp f g (lam t)   = resp lam (trans (resp (λ f → ren f t) 
+rencomp f g (app t u) = cong₂ app (rencomp f g t) (rencomp f g u)
+rencomp f g (lam t)   = cong lam (trans (cong (λ f → ren f t) 
                                               (ext (wkcomp f g))) 
                                         (rencomp (wk f) (wk g) t))
 
@@ -97,7 +99,7 @@ subId = var
 -- Composition of substitutions 
 
 subComp : ∀{m n o} → Sub n o → Sub m n → Sub m o
-subComp f g = sub f • g
+subComp f g = sub f ∘ g
 
 -- lift is an endofunctor on substitutions and sub is a functor, we
 -- need some auxilary lemmas for the composition cases
@@ -110,8 +112,8 @@ liftid (fs i) = refl
 
 subid : ∀{n}(t : Tm n) → sub subId t ≅ id t
 subid (var i)   = refl
-subid (app t u) = resp2 app (subid t) (subid u)
-subid (lam t)   = resp lam (trans (resp (λ f → sub f t) (ext liftid)) 
+subid (app t u) = cong₂ app (subid t) (subid u)
+subid (lam t)   = cong lam (trans (cong (λ f → sub f t) (ext liftid)) 
                                   (subid t))  
 
 -- for composition of subs (subcomp) and lifts (liftcomp) we need two
@@ -119,30 +121,30 @@ subid (lam t)   = resp lam (trans (resp (λ f → sub f t) (ext liftid))
 -- need two lemmas about how lift and wk interact.
 
 liftwk : ∀{m n o}(f : Sub n o)(g : Ren m n)(i : Fin (s m)) → 
-            (lift f • wk g) i ≅ lift (f • g) i
+            (lift f ∘ wk g) i ≅ lift (f ∘ g) i
 liftwk f g fz     = refl
 liftwk f g (fs i) = refl
 
 subren : ∀{m n o}(f : Sub n o)(g : Ren m n)(t : Tm m) → 
-         (sub f • ren g) t ≅ sub (f • g) t
+         (sub f ∘ ren g) t ≅ sub (f ∘ g) t
 subren f g (var i)   = refl
-subren f g (app t u) = resp2 app (subren f g t) (subren f g u)
-subren f g (lam t)   = resp lam (trans (subren (lift f) (wk g) t)
-                                       (resp (λ f → sub f t) 
+subren f g (app t u) = cong₂ app (subren f g t) (subren f g u)
+subren f g (lam t)   = cong lam (trans (subren (lift f) (wk g) t)
+                                       (cong (λ f → sub f t) 
                                              (ext (liftwk f g))))
 
 renwklift : ∀{m n o}(f : Ren n o)(g : Sub m n)(i : Fin (s m)) → 
-               (ren (wk f) • lift g) i ≅ lift (ren f • g) i
+               (ren (wk f) ∘ lift g) i ≅ lift (ren f ∘ g) i
 renwklift f g fz     = refl
 renwklift f g (fs i) = trans (sym (rencomp (wk f) fs (g i))) 
                                 (rencomp fs f (g i))
 
 rensub : ∀{m n o}(f : Ren n o)(g : Sub m n)(t : Tm m) →
-         (ren f • sub g) t ≅ sub (ren f • g) t
+         (ren f ∘ sub g) t ≅ sub (ren f ∘ g) t
 rensub f g (var i)   = refl
-rensub f g (app t u) = resp2 app (rensub f g t) (rensub f g u)
-rensub f g (lam t)   = resp lam (trans (rensub (wk f) (lift g) t)
-                                       (resp (λ f → sub f t) 
+rensub f g (app t u) = cong₂ app (rensub f g t) (rensub f g u)
+rensub f g (lam t)   = cong lam (trans (rensub (wk f) (lift g) t)
+                                       (cong (λ f → sub f t) 
                                              (ext (renwklift f g))))
 
 liftcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(i : Fin (s m)) → 
@@ -152,10 +154,10 @@ liftcomp f g (fs i) = trans (rensub fs f (g i))
                            (sym (subren (lift f) fs (g i)))
 
 subcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(t : Tm m) → 
-          sub (subComp f g) t ≅ (sub f • sub g) t
+          sub (subComp f g) t ≅ (sub f ∘ sub g) t
 subcomp f g (var i)   = refl
-subcomp f g (app t u) = resp2 app (subcomp f g t) (subcomp f g u)
-subcomp f g (lam t)   = resp lam (trans (resp (λ f → sub f t) 
+subcomp f g (app t u) = cong₂ app (subcomp f g t) (subcomp f g u)
+subcomp f g (lam t)   = cong lam (trans (cong (λ f → sub f t) 
                                               (ext (liftcomp f g))) 
                                         (subcomp (lift f) (lift g) t))
 

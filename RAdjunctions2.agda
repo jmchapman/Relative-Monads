@@ -2,7 +2,7 @@
 
 module RAdjunctions2 where
 
-open import Equality
+open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Functors
 

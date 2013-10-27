@@ -3,6 +3,7 @@ module Restriction where
 
 open import Utilities
 open import Equality
+open import Function
 open import Categories
 open import Functors
 open import Naturals
@@ -16,9 +17,9 @@ open Monad
 
 restrictM : {C D : Cat}(J : Fun C D) → Monad D → RMonad J
 restrictM J M = record {
-  T    = T M • OMap J;
+  T    = T M ∘ OMap J;
   η    = η M;
-  bind = bind M;
+  _* = bind M;
   law1 = law1 M;
   law2 = law2 M; 
   law3 = law3 M}
@@ -47,5 +48,5 @@ restrictA J A = record{
   right    = right A;
   lawa     = lawa A;
   lawb     = lawb A;
-  natleft  = natleft A • HMap J;
-  natright = natright A • HMap J}
+  natleft  = natleft A ∘ HMap J;
+  natright = natright A ∘ HMap J}

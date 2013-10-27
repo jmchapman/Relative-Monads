@@ -2,6 +2,7 @@
 module Fin where
 
 open import Utilities
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Nat
 open import Sets
@@ -11,6 +12,7 @@ open import Functors
 open import Isomorphism
 open import FullyFaithful
 open import Booleans
+open import Function
 
 open Cat
 open Fun
@@ -31,7 +33,7 @@ Nats = record{
   Obj  = Nat; 
   Hom  = λ m n → Fin m → Fin n;
   iden = id;
-  comp = λ f g → f • g;
+  comp = λ f g → f ∘ g;
   idl  = refl;
   idr  = refl;
   ass  = refl}
@@ -47,12 +49,12 @@ FinFoid : Fun Nats Setoids
 FinFoid = record {
   OMap  = λ n → record {
     set  = Fin n ; 
-    eq   = _≅_;
+    eq   = λ i j → i ≅ j;
     ref  = refl; 
     sym' = sym;
     trn  = trans};
   HMap  = λ f → record {
-    fun = f; feq = resp f};
+    fun = f; feq = cong f};
   fid   = SetoidFunEq refl λ s s' → ext respid;
   fcomp = λ{_ _ _ f g} → 
     SetoidFunEq refl λ s s' → ext (respcomp f g)}

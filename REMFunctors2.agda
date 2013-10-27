@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module REMFunctors2 where
 
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import Functors
@@ -24,16 +25,16 @@ REML {C}{D}{J} M = record {
   HMap  = λ f → record {
     amor = bind M (comp D (η M) (HMap J f)); 
     ahom = sym (law3 M)};
-  fid   = RAlgMorphEq (trans (resp (bind M) 
-                                   (trans (resp (comp D (η M)) (fid J)) 
+  fid   = RAlgMorphEq (trans (cong (bind M) 
+                                   (trans (cong (comp D (η M)) (fid J)) 
                                           (idr D))) 
                                    (law1 M));
   fcomp = λ{X}{Y}{Z}{f}{g} → 
-    RAlgMorphEq (trans (resp (bind M)
-                             (trans (trans (trans (resp (comp D (η M))
+    RAlgMorphEq (trans (cong (bind M)
+                             (trans (trans (trans (cong (comp D (η M))
                                                         (fcomp J))
                                                   (sym (ass D)))
-                                           (resp (λ f → comp D f (HMap J g)) 
+                                           (cong (λ f → comp D f (HMap J g)) 
                                                  (sym (law2 M))))
                                     (ass D)))
                        (law3 M))} 

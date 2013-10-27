@@ -4,7 +4,8 @@ module Setoids where
 open import Utilities
 open import Categories
 open import Equality
-
+open import Relation.Binary.HeterogeneousEquality
+open import Function
 record Setoid : Set where
   field set : Set
         eq  : set → set → Set
@@ -22,7 +23,7 @@ open SetoidFun
 
 SetoidFunEq : {S S' : Setoid}{f g : SetoidFun S S'} → fun f ≅ fun g → 
               (∀ s s' → feq f {s}{s'} ≅ feq g {s}{s'}) → f ≅ g
-SetoidFunEq {S}{S'} p q = funnyresp 
+SetoidFunEq {S}{S'} p q = funnycong
   {set S → set S'}
   {λ fun → {s s' : set S} → eq S s s' → eq S' (fun s) (fun s')}
   {SetoidFun S S'} 
@@ -35,7 +36,7 @@ idFun = record {fun = id; feq = id}
 
 compFun : {S S' S'' : Setoid} → 
           SetoidFun S' S'' → SetoidFun S S' → SetoidFun S S''
-compFun f g = record {fun = fun f • fun g; feq = feq f • feq g}
+compFun f g = record {fun = fun f ∘ fun g; feq = feq f ∘ feq g}
 
 Setoids : Cat
 Setoids = record{

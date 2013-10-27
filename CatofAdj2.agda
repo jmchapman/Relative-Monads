@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module CatofAdj2 where
 
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import Functors
@@ -22,33 +23,33 @@ record HomAdj {C : Cat}{M : Monad C}(A B : ObjAdj M) : Set where
   field K : Fun (D A) (D B)
         Llaw : K ○ L (adj A) ≅ L (adj B)
         Rlaw : R (adj A) ≅ R (adj B) ○ K
-        rightlaw : ∀{X}{Y}{k : Hom C X (OMap (R (adj B)) (OMap K Y))} → HMap K (right (adj A) k) ≅ right (adj B) (subst (λ Y → Hom C X Y) (fresp Y (resp OMap Rlaw)) k)
+        rightlaw : ∀{X}{Y}{k : Hom C X (OMap (R (adj A)) Y)} → HMap K (right (adj A) k) ≅ right (adj B) (subst (λ Y → Hom C X Y) (fcong Y (cong OMap Rlaw)) {!kk!})
 
 open HomAdj
 
 HomAdjEq : {C : Cat}{M : Monad C}{A B : ObjAdj M}(f g : HomAdj A B) → K f ≅ K g → f ≅ g
-HomAdjEq {C}{M}{A}{B} f g p = funnyresp4 
+HomAdjEq {C}{M}{A}{B} f g p = funnycong4 
   {Fun (D A) (D B)}
   {λ K → K ○ L (adj A) ≅ L (adj B)}
   {λ K _ → R (adj A) ≅ R (adj B) ○ K}
-  {λ K _ Rlaw → ∀{X}{Y}{k : Hom C X (OMap (R (adj A)) Y)} → HMap K (right (adj A) k) ≅ right (adj B) (subst (λ Y → Hom C X Y) (fresp Y (resp OMap Rlaw)) k)}
+  {λ K _ Rlaw → ∀{X}{Y}{k : Hom C X (OMap (R (adj A)) Y)} → HMap K (right (adj A) k) ≅ right (adj B) (subst (λ Y → Hom C X Y) (fcong Y (cong OMap Rlaw)) k)}
   {HomAdj {C}{M} A B}
   (λ w x y z → record{K = w;Llaw = x;Rlaw = y;rightlaw = z})
   p 
   (fixtypes (FunctorEq _
                        _
-                       (ext λ X → resp (λ F → OMap F (OMap (L (adj A)) X)) p)
-                       (λ {X}{Y} h → resp (λ F → HMap F (HMap (L (adj A)) h)) p))
+                       (ext λ X → cong (λ F → OMap F (OMap (L (adj A)) X)) p)
+                       (λ {X}{Y} h → cong (λ F → HMap F (HMap (L (adj A)) h)) p))
             refl)
    (fixtypes refl
              (FunctorEq _
                         _
-                        (ext λ X → resp (λ F → OMap (R (adj B)) (OMap F X)) p)
-                        (λ {X}{Y} h → resp (λ F → HMap (R (adj B)) (HMap F h)) p)))
-   (iext (λ X → iext (λ Y → iext (λ k → fixtypes (resp (λ F → HMap F (right (adj A) k)) p) 
-     (dresp (trans (stripsubst (Hom C X) k (fresp Y (resp OMap (Rlaw f)))) (sym (stripsubst (Hom C X) k (fresp Y (resp OMap (Rlaw g))))) ) 
-            (resp (λ F → Hom (D B) (OMap (L (adj B)) X) (OMap F Y)) p)
-            (iresp (λ {Y} → right (adj B) {X}{Y}) (resp (λ F → OMap F Y) p)))))))
+                        (ext λ X → cong (λ F → OMap (R (adj B)) (OMap F X)) p)
+                        (λ {X}{Y} h → cong (λ F → HMap (R (adj B)) (HMap F h)) p)))
+   (iext (λ X → iext (λ Y → iext (λ k → fixtypes (cong (λ F → HMap F (right (adj A) k)) p) 
+     (dcong (trans (stripsubst (Hom C X) k (fcong Y (cong OMap (Rlaw f)))) (sym (stripsubst (Hom C X) k (fcong Y (cong OMap (Rlaw g))))) ) 
+            (cong (λ F → Hom (D B) (OMap (L (adj B)) X) (OMap F Y)) p)
+            (icong (λ {Y} → right (adj B) {X}{Y}) (cong (λ F → OMap F Y) p)))))))
 
 idHomAdj : {C : Cat}{M : Monad C}{X : ObjAdj M} → HomAdj X X
 idHomAdj {C}{M}{X} = record {
@@ -66,16 +67,16 @@ compHomAdj {C}{M}{X}{Y}{Z} f g = record {
     K    = K f ○ K g;
     Llaw = FunctorEq _
                      _
-                     (ext λ A → trans (resp (OMap (K f)) (resp (λ F → OMap F A) (Llaw g))) (resp (λ F → OMap F A) (Llaw f)))
-                     (λ {A}{B} h → trans (HMaplem (resp (λ F → OMap F A) (Llaw g)) 
-                                                  (resp (λ F → OMap F B) (Llaw g)) 
-                                         (resp (λ F → HMap F h) (Llaw g)) (K f)) (resp (λ F → HMap F h) (Llaw f)));
+                     (ext λ A → trans (cong (OMap (K f)) (cong (λ F → OMap F A) (Llaw g))) (cong (λ F → OMap F A) (Llaw f)))
+                     (λ {A}{B} h → trans (HMaplem (cong (λ F → OMap F A) (Llaw g)) 
+                                                  (cong (λ F → OMap F B) (Llaw g)) 
+                                         (cong (λ F → HMap F h) (Llaw g)) (K f)) (cong (λ F → HMap F h) (Llaw f)));
     Rlaw = FunctorEq _
                      _
-                     (ext λ A → trans (resp (λ F → OMap F A) (Rlaw g)) (resp (λ F → OMap F (OMap (K g) A)) (Rlaw f)))
-                     (λ {A}{B} h → trans (resp (λ F → HMap F h) (Rlaw g)) 
+                     (ext λ A → trans (cong (λ F → OMap F A) (Rlaw g)) (cong (λ F → OMap F (OMap (K g) A)) (Rlaw f)))
+                     (λ {A}{B} h → trans (cong (λ F → HMap F h) (Rlaw g)) 
 
-                                         (resp (λ F → HMap F (HMap (K g) h)) (Rlaw f)));
+                                         (cong (λ F → HMap F (HMap (K g) h)) (Rlaw f)));
     rightlaw = {!!}}
 
 

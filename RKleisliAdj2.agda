@@ -2,7 +2,8 @@
 module RKleisliAdj2 where
 
 open import Utilities
-open import Equality
+open import Function
+open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Functors
 open import Naturals
@@ -23,11 +24,11 @@ KlAdj {C}{D}{J} M = record{
   right    = id;
   lawa     = λ _ → refl;
   lawb     = λ _ → refl;
-  natleft  = λ f g h → resp (comp D (bind M g)) 
-                       (trans (resp (λ h → comp D h (HMap J f)) 
+  natleft  = λ f g h → cong (comp D (bind M g)) 
+                       (trans (cong (λ h → comp D h (HMap J f)) 
                                     (sym (law2 M))) 
                               (ass D));
-  natright = λ f g h → resp (comp D (bind M g))
-                            (trans (resp (λ h → comp D h (HMap J f)) 
+  natright = λ f g h → cong (comp D (bind M g))
+                            (trans (cong (λ h → comp D h (HMap J f)) 
                                          (sym (law2 M))) 
                                    (ass D))}

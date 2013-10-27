@@ -1,7 +1,8 @@
 {-# OPTIONS --type-in-type #-}
 module Monads2 where
 
-open import Equality
+
+open import Relation.Binary.HeterogeneousEquality
 open import Categories
 
 open Cat

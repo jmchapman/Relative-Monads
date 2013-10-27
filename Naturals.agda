@@ -1,9 +1,11 @@
 {-# OPTIONS --type-in-type #-}
 module Naturals where
 
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import Functors
+
 
 open Cat
 open Fun
@@ -17,14 +19,14 @@ open NatT
 
 NatTEq : {C D : Cat}{F G : Fun C D}{α β : NatT F G} → 
          (λ {X : Obj C} → cmp α {X}) ≅ (λ {X : Obj C} → cmp β {X}) → α ≅ β
-NatTEq {C}{D}{F}{G} {α} {β} p = funnyresp 
+NatTEq {C}{D}{F}{G} {α} {β} p = funnycong
   {∀ {X} → Hom D (OMap F X) (OMap G X)}
   {λ cmp → ∀{X Y}{f : Hom C X Y} → 
     comp D (HMap G f) cmp ≅ comp D cmp (HMap F f)}
   p
   (iext λ X → iext λ Y → iext λ f → 
-    fixtypes (resp (comp D (HMap G f)) (ifresp X p)) 
-             (resp (λ (g : Hom D _ _) → comp D g (HMap F f)) (ifresp Y p)))
+    fixtypes (cong (comp D (HMap G f)) (ifresp X p)) 
+             (cong (λ (g : Hom D _ _) → comp D g (HMap F f)) (ifresp Y p)))
   λ x y → record{cmp = x;nat = y}
 
 idNat : ∀{C D}{F : Fun C D} → NatT F F
@@ -36,11 +38,11 @@ compNat : ∀{C D}{F G H : Fun C D} → NatT G H → NatT F G → NatT F H
 compNat {C}{D}{F}{G}{H} α β = record {
   cmp = comp D (cmp α) (cmp β);
   nat = λ{X}{Y}{f} → trans (sym (ass D)) 
-                           (trans (resp (λ (f : Hom D (OMap G X) (OMap H Y)) →
+                           (trans (cong (λ (f : Hom D (OMap G X) (OMap H Y)) →
                                                 comp D f (cmp β)) 
                                         (nat α))
                                   (trans (trans (ass D) 
-                                                (resp (comp D (cmp α)) 
+                                                (cong (comp D (cmp α)) 
                                                       (nat β))) 
                                          (sym (ass D))))}
 

@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module REMAdj2 where
 
+open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import Functors
@@ -26,20 +27,20 @@ REMAdj {C}{D}{J} M = record {
     ahom = sym (alaw2 B)};
   lawa    = λ f → 
     RAlgMorphEq (trans (sym (ahom f)) 
-                       (trans (resp (comp D (amor f)) (law1 M)) (idr D)));
+                       (trans (cong (comp D (amor f)) (law1 M)) (idr D)));
   lawb    = λ {X}{B} f → sym (alaw1 B);
   natleft = λ f g h → 
-    trans (resp (comp D (amor g)) 
+    trans (cong (comp D (amor g)) 
                 (trans (ass D) 
-                       (trans (resp (comp D (amor h)) (sym (law2 M)))
+                       (trans (cong (comp D (amor h)) (sym (law2 M)))
                               (sym (ass D))))) 
           (sym (ass D));
   natright = λ{W}{X}{Y}{Z} f g h → 
     RAlgMorphEq 
       (trans (sym (ahom g)) 
-             (resp (comp D (amor g))
-                   (trans (resp (astr Y) 
-                                (trans (resp (λ h → comp D h (HMap J f)) 
+             (cong (comp D (amor g))
+                   (trans (cong (astr Y) 
+                                (trans (cong (λ h → comp D h (HMap J f)) 
                                              (alaw1 Y))
                                        (ass D)))
                           (alaw2 Y))))}
