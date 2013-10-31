@@ -14,11 +14,11 @@ record Monoid : Set where
         ass : ∀{m n o} → (m • n) • o ≅ m • (n • o)
 
 rid+ : ∀{n} → n + zero ≅ n
-rid+ {zero}   = refl
+rid+ {zero}  = refl
 rid+ {suc n} = cong suc (rid+ {n})
 
 ass+ : ∀{m n o} → (m + n) + o ≅ m + (n + o)
-ass+ {zero}   = refl
+ass+ {zero}  = refl
 ass+ {suc m} = cong suc (ass+ {m})
 
 Nat+Mon : Monoid 

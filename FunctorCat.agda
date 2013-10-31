@@ -13,4 +13,4 @@ FunctorCat C D = record{
   comp = compNat;
   idl  = idlNat;
   idr  = idrNat;
-  ass  = λ{E}{F}{G}{H}{α}{β}{η} → assNat {C}{D}{E}{F}{G}{H}{α}{β}{η}}
+  ass  = λ{_}{_}{_}{_}{α}{β}{η} → assNat {_}{_}{_}{_}{_}{_}{α}{β}{η}}

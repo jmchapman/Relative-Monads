@@ -5,6 +5,7 @@ open import Categories
 open import Equality
 open import Relation.Binary.HeterogeneousEquality
 open import Function
+
 record Setoid : Set where
   field set : Set
         eq  : set → set → Set
