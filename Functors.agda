@@ -52,14 +52,33 @@ FunctorEq {C}{D} F G p q = funnycong4'
   {Obj C → Obj D}
   {λ OMap → ∀{X Y} → Hom C X Y → Hom D (OMap X) (OMap Y)}
   {λ OMap HMap → ∀{X} → HMap (iden C {X}) ≅ iden D {OMap X}}
-  {λ OMap HMap → ∀{X Y Z}{f : Hom C Y Z}{g : Hom C X Y} → HMap (comp C f g) ≅ comp D (HMap f) (HMap g)}
-  p
-  (iext λ X → iext λ Y → ext λ f → q f)
-  (iext λ X → fixtypes 
-    (q (iden C))
-    (icong (λ {X} → iden D {X}) (fcong X p)))
-  (iext λ X → iext λ Y → iext λ Z → iext λ f → iext λ g → fixtypes 
-    (q (comp C f g)) 
-    (trans (trans (sym (fcomp F)) (q (comp C f g))) (fcomp G)))
+  {λ OMap HMap → ∀{X Y Z}{f : Hom C Y Z}{g : Hom C X Y} → 
+     HMap (comp C f g) ≅ comp D (HMap f) (HMap g)}
+  (proof 
+   OMap F 
+   ≅⟨ p ⟩ 
+   OMap G 
+   ∎)
+  (iext λ X → iext λ Y → ext λ f → 
+    proof 
+    HMap F f 
+    ≅⟨ q f ⟩ 
+    HMap G f ∎)
+  (iext λ X → fixtypes (
+    proof 
+    iden D {OMap F X} 
+    ≅⟨ sym (fid F) ⟩ 
+    HMap F (iden C) 
+    ≅⟨ q (iden C) ⟩ 
+    HMap G (iden C) 
+    ∎))
+  (iext λ X → iext λ Y → iext λ Z → iext λ f → iext λ g → fixtypes (
+    proof 
+    comp D (HMap F f) (HMap F g) 
+    ≅⟨ sym (fcomp F) ⟩ 
+    HMap F (comp C f g)
+    ≅⟨ q (comp C f g) ⟩ 
+    HMap G (comp C f g)
+    ∎))
   λ w x y z → record{OMap = w;HMap = x;fid = y; fcomp = z} 
 
