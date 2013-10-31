@@ -1,7 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 module Sets where
 
-open import Utilities
 open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Function

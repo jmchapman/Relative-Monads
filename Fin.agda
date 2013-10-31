@@ -1,7 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 module Fin where
 
-open import Utilities
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Nat

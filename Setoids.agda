@@ -1,7 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 module Setoids where
 
-open import Utilities
 open import Categories
 open import Equality
 open import Relation.Binary.HeterogeneousEquality

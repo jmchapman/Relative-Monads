@@ -2,6 +2,7 @@
 module Naturals where
 
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
@@ -23,10 +24,19 @@ NatTEq {C}{D}{F}{G} {α} {β} p = funnycong
   {∀ {X} → Hom D (OMap F X) (OMap G X)}
   {λ cmp → ∀{X Y}{f : Hom C X Y} → 
     comp D (HMap G f) cmp ≅ comp D cmp (HMap F f)}
-  p
+  (proof 
+   (λ {X} → cmp α {X}) 
+   ≅⟨ p ⟩ 
+   (λ {X} → cmp β {X}) 
+   ∎)
   (iext λ X → iext λ Y → iext λ f → 
-    fixtypes (cong (comp D (HMap G f)) (ifresp X p)) 
-             (cong (λ (g : Hom D _ _) → comp D g (HMap F f)) (ifresp Y p)))
+    fixtypes (
+      proof
+      comp D (cmp α) (HMap F f) 
+      ≅⟨ sym (nat α) ⟩ 
+      comp D (HMap G f) (cmp α {X})
+      ≅⟨ cong (comp D (HMap G f)) (ifcong X p) ⟩ 
+      comp D (HMap G f) (cmp β {X}) ∎))
   λ x y → record{cmp = x;nat = y}
 
 idNat : ∀{C D}{F : Fun C D} → NatT F F
