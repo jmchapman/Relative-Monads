@@ -28,6 +28,8 @@ open import Adjunctions2
 -- open import CatofAdj2
 
 -- relative monads
+open import RMonads2
+open import RMonadMorphs2
 open import RAdjunctions2
 open import REM2
 open import REMAdj2
@@ -35,8 +37,6 @@ open import REMFunctors2
 open import RKleisli2
 open import RKleisliAdj2
 open import RKleisliFunctors2
-open import RMonadMorphs2
-open import RMonads2
 open import Restriction
 open import SpecialCase
 

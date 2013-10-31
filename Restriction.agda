@@ -18,7 +18,7 @@ restrictM : {C D : Cat}(J : Fun C D) → Monad D → RMonad J
 restrictM J M = record {
   T    = T M ∘ OMap J;
   η    = η M;
-  _* = bind M;
+  bind = bind M;
   law1 = law1 M;
   law2 = law2 M; 
   law3 = law3 M}

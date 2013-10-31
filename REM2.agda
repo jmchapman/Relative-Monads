@@ -19,7 +19,7 @@ record RAlg {C D : Cat}{J : Fun C D}(M : RMonad J) : Set where
                 f ≅ comp D (astr f) η
         alaw2 : ∀{Z}{W}{k : Hom D (OMap J Z) (T W)}
                 {f : Hom D (OMap J W) acar} →
-                astr (comp D (astr f) k) ≅ comp D (astr f) (k *)
+                astr (comp D (astr f) k) ≅ comp D (astr f) (bind k)
 open RAlg
 
 

@@ -164,7 +164,7 @@ TmRMonad : RMonad VarF
 TmRMonad = record { 
   T    = Tm; 
   η    = var; 
-  _* = sub; 
+  bind = sub; 
   law1 = iext λ _ → ext subid ;
   law2 = refl; 
   law3 = λ{_ _ _ f g} → iext λ σ → ext (subcomp g f)}

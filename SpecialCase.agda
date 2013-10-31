@@ -12,7 +12,7 @@ leftM : {C : Cat} → Monad C → RMonad (IdF C)
 leftM {C} M = record {
   T    = T M;
   η    = η M;
-  _* = bind M;
+  bind = bind M;
   law1 = law1 M;
   law2 = law2 M;
   law3 = law3 M} where open Monad

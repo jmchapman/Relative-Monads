@@ -6,15 +6,15 @@ open import Functors
 open import Categories
 open import RMonads2
 
-open Cat
 open Fun
 open RMonad
 
 record RMonadMorph {C D : Cat}{J : Fun C D}(M M' : RMonad J) : Set where
-  field morph    : ∀ {X} → Hom D (T M X) (T M' X)
-        lawη     : ∀ {X} → comp D morph (η M {X}) ≅ η M' {X}
-        lawbind : ∀ {X Y}{k : Hom D (OMap J X) (T M Y)} → 
-                  comp D (morph {Y}) (bind M k) 
+  open Cat D
+  field morph    : ∀ {X} → Hom (T M X) (T M' X)
+        lawη     : ∀ {X} → comp morph (η M {X}) ≅ η M' {X}
+        lawbind : ∀ {X Y}{k : Hom (OMap J X) (T M Y)} → 
+                  comp (morph {Y}) (bind M k) 
                   ≅ 
-                  comp D (bind M' (comp D (morph {Y}) k)) (morph {X})
+                  comp (bind M' (comp (morph {Y}) k)) (morph {X})
 
