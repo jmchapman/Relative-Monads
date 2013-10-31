@@ -16,20 +16,18 @@ open import Data.Bool
 open Cat
 open Fun
 open Iso
-
-data Fin : Nat → Set where
-  fz : ∀{n} → Fin (s n)
-  fs : ∀{n} → Fin n → Fin (s n)
+open import Data.Fin
+open import Data.Nat
 
 feq : ∀{n} → Fin n → Fin n → Bool
-feq fz     fz     = true
-feq fz     (fs j) = false
-feq (fs i) fz     = false
-feq (fs i) (fs j) = feq i j
+feq zero     zero     = true
+feq zero     (suc j) = false
+feq (suc i) zero     = false
+feq (suc i) (suc j) = feq i j
 
 Nats : Cat
 Nats = record{
-  Obj  = Nat; 
+  Obj  = ℕ; 
   Hom  = λ m n → Fin m → Fin n;
   iden = id;
   comp = λ f g → f ∘ g;
