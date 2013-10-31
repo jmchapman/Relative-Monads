@@ -1,7 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 module RKleisliAdj2 where
 
-open import Utilities
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Categories

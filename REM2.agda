@@ -2,6 +2,7 @@
 module REM2 where
 
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
@@ -44,14 +45,19 @@ open RAlgMorph
 
 RAlgMorphEq : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y : RAlg M}
               {f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
-RAlgMorphEq {C}{D}{J}{M}{X}{Y} p = funnycong
+RAlgMorphEq {C}{D}{J}{M}{X}{Y}{f}{g} p = funnycong
   {Hom D (acar X) (acar Y)}
   {λ amor → ∀{Z}{f : Hom D (OMap J Z) (acar X)} → 
               comp D amor (astr X f) ≅ astr Y (comp D amor f)}
   p
-  (iext λ Z → iext λ h → fixtypes
-    (cong (λ f → comp D f (astr X h)) p) 
-    (cong (λ f → astr Y (comp D f h)) p))
+  (iext λ Z → iext λ h → fixtypes (
+    proof
+    astr Y (comp D (amor f) h) 
+    ≅⟨ sym (ahom f) ⟩ 
+    comp D (amor f) (astr X h) 
+    ≅⟨ cong (λ f₁ → comp D f₁ (astr X h)) p ⟩ 
+    comp D (amor g) (astr X h) 
+    ∎))
   λ x y → record{amor = x;ahom = y} 
 
 IdMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{A : RAlg M} → RAlgMorph A A

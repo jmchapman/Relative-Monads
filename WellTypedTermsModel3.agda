@@ -2,7 +2,6 @@
 module WellTypedTermsModel3 where
 
 open import Function
-open import Utilities
 open import Data.Unit
 open import Naturals
 open import WellTypedTerms3

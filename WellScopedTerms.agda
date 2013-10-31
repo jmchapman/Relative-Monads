@@ -2,7 +2,6 @@
 module WellScopedTerms where
 
 open import Function
-open import Utilities
 open import Categories
 open import Functors
 open import Nat
@@ -11,23 +10,24 @@ open import Fin
 open import RMonads2
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
-
+open import Data.Nat
+open import Data.Fin hiding (lift)
 open Cat
 open Fun
 
-data Tm : Nat → Set where
+data Tm : ℕ → Set where
   var : ∀{n} → Fin n → Tm n
-  lam : ∀{n} → Tm (s n) → Tm n
+  lam : ∀{n} → Tm (suc n) → Tm n
   app : ∀{n} → Tm n → Tm n → Tm n
 
-Ren : Nat → Nat → Set
+Ren : ℕ → ℕ → Set
 Ren m n = Fin m → Fin n
 
 -- Weakening a renaming (to push it under a lambda)
 
-wk : ∀{m n} → Ren m n → Ren (s m) (s n)
-wk f fz     = fz
-wk f (fs i) = fs (f i)
+wk : ∀{m n} → Ren m n → Ren (suc m) (suc n)
+wk f zero     = zero
+wk f (suc i) = suc (f i)
 
 -- Performing a renaming on an expression
 
@@ -48,14 +48,14 @@ renComp f g = f ∘ g
 
 -- we prove that wk is an endofunctor
 
-wkid : ∀{n}(i : Fin (s n)) → wk renId i ≅ id i
-wkid fz     = refl
-wkid (fs i) = refl
+wkid : ∀{n}(i : Fin (suc n)) → wk renId i ≅ id i
+wkid zero     = refl
+wkid (suc i) = refl
 
-wkcomp : ∀{m n o}(f : Ren n o)(g : Ren m n)(i : Fin (s m)) → 
+wkcomp : ∀{m n o}(f : Ren n o)(g : Ren m n)(i : Fin (suc m)) → 
             wk (renComp f g) i ≅ renComp (wk f) (wk g) i
-wkcomp f g fz     = refl
-wkcomp f g (fs i) = refl
+wkcomp f g zero     = refl
+wkcomp f g (suc i) = refl
 
 -- we prove that renamings is a functor
 
@@ -75,14 +75,14 @@ rencomp f g (lam t)   = cong lam (trans (cong (λ f → ren f t)
 
 -- Substitutions
 
-Sub : Nat → Nat → Set
+Sub : ℕ → ℕ → Set
 Sub m n = Fin m → Tm n
 
 -- Weaken a substitution to push it under a lambda
 
-lift : ∀{m n} → Sub m n → Sub (s m) (s n)
-lift f fz     = var fz
-lift f (fs i) = ren fs (f i)
+lift : ∀{m n} → Sub m n → Sub (suc m) (suc n)
+lift f zero     = var zero
+lift f (suc i) = ren suc (f i)
 
 -- Perform substitution on an expression
 
@@ -106,9 +106,9 @@ subComp f g = sub f ∘ g
 
 -- the conditions for identity are easy
 
-liftid : ∀{n}(i : Fin (s n)) → lift subId i ≅ subId i
-liftid fz     = refl
-liftid (fs i) = refl
+liftid : ∀{n}(i : Fin (suc n)) → lift subId i ≅ subId i
+liftid zero     = refl
+liftid (suc i) = refl
 
 subid : ∀{n}(t : Tm n) → sub subId t ≅ id t
 subid (var i)   = refl
@@ -120,10 +120,10 @@ subid (lam t)   = cong lam (trans (cong (λ f → sub f t) (ext liftid))
 -- lemmas about how renaming and subs interact for these two lemmas we
 -- need two lemmas about how lift and wk interact.
 
-liftwk : ∀{m n o}(f : Sub n o)(g : Ren m n)(i : Fin (s m)) → 
+liftwk : ∀{m n o}(f : Sub n o)(g : Ren m n)(i : Fin (suc m)) → 
             (lift f ∘ wk g) i ≅ lift (f ∘ g) i
-liftwk f g fz     = refl
-liftwk f g (fs i) = refl
+liftwk f g zero     = refl
+liftwk f g (suc i) = refl
 
 subren : ∀{m n o}(f : Sub n o)(g : Ren m n)(t : Tm m) → 
          (sub f ∘ ren g) t ≅ sub (f ∘ g) t
@@ -133,11 +133,11 @@ subren f g (lam t)   = cong lam (trans (subren (lift f) (wk g) t)
                                        (cong (λ f → sub f t) 
                                              (ext (liftwk f g))))
 
-renwklift : ∀{m n o}(f : Ren n o)(g : Sub m n)(i : Fin (s m)) → 
+renwklift : ∀{m n o}(f : Ren n o)(g : Sub m n)(i : Fin (suc m)) → 
                (ren (wk f) ∘ lift g) i ≅ lift (ren f ∘ g) i
-renwklift f g fz     = refl
-renwklift f g (fs i) = trans (sym (rencomp (wk f) fs (g i))) 
-                                (rencomp fs f (g i))
+renwklift f g zero     = refl
+renwklift f g (suc i) = trans (sym (rencomp (wk f) suc (g i))) 
+                                (rencomp suc f (g i))
 
 rensub : ∀{m n o}(f : Ren n o)(g : Sub m n)(t : Tm m) →
          (ren f ∘ sub g) t ≅ sub (ren f ∘ g) t
@@ -147,11 +147,11 @@ rensub f g (lam t)   = cong lam (trans (rensub (wk f) (lift g) t)
                                        (cong (λ f → sub f t) 
                                              (ext (renwklift f g))))
 
-liftcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(i : Fin (s m)) → 
+liftcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(i : Fin (suc m)) → 
            lift (subComp f g) i ≅ subComp (lift f) (lift g) i
-liftcomp f g fz     = refl
-liftcomp f g (fs i) = trans (rensub fs f (g i))
-                           (sym (subren (lift f) fs (g i)))
+liftcomp f g zero     = refl
+liftcomp f g (suc i) = trans (rensub suc f (g i))
+                           (sym (subren (lift f) suc (g i)))
 
 subcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(t : Tm m) → 
           sub (subComp f g) t ≅ (sub f ∘ sub g) t

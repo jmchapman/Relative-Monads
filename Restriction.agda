@@ -1,7 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 module Restriction where
 
-open import Utilities
 open import Equality
 open import Function
 open import Categories

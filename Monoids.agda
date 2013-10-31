@@ -3,7 +3,7 @@ module Monoids where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
-open import Nat
+open import Data.Nat
 
 record Monoid : Set where
   field S   : Set
@@ -13,18 +13,18 @@ record Monoid : Set where
         rid : ∀{m} → m • ε ≅ m
         ass : ∀{m n o} → (m • n) • o ≅ m • (n • o)
 
-rid+ : ∀{n} → n + z ≅ n
-rid+ {z}   = refl
-rid+ {s n} = cong s (rid+ {n})
+rid+ : ∀{n} → n + zero ≅ n
+rid+ {zero}   = refl
+rid+ {suc n} = cong suc (rid+ {n})
 
 ass+ : ∀{m n o} → (m + n) + o ≅ m + (n + o)
-ass+ {z}   = refl
-ass+ {s m} = cong s (ass+ {m})
+ass+ {zero}   = refl
+ass+ {suc m} = cong suc (ass+ {m})
 
 Nat+Mon : Monoid 
 Nat+Mon = record { 
-  S   = Nat; 
-  ε   = z; 
+  S   = ℕ; 
+  ε   = zero; 
   _•_ = _+_;
   lid = refl; 
   rid = rid+; 

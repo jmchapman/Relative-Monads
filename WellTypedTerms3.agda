@@ -1,7 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 module WellTypedTerms3 where
 
-open import Utilities
 open import Categories
 open import Functors
 open import Naturals
