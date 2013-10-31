@@ -1,7 +1,6 @@
 module Everything where 
 
 open import Equality
-open import Booleans
 open import Nat
 open import Fin
 

@@ -10,8 +10,8 @@ open import Categories
 open import Functors
 open import Isomorphism
 open import FullyFaithful
-open import Booleans
 open import Function
+open import Data.Bool
 
 open Cat
 open Fun
@@ -22,9 +22,9 @@ data Fin : Nat → Set where
   fs : ∀{n} → Fin n → Fin (s n)
 
 feq : ∀{n} → Fin n → Fin n → Bool
-feq fz     fz     = tt
-feq fz     (fs j) = ff
-feq (fs i) fz     = ff
+feq fz     fz     = true
+feq fz     (fs j) = false
+feq (fs i) fz     = false
 feq (fs i) (fs j) = feq i j
 
 Nats : Cat
