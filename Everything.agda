@@ -3,7 +3,6 @@ module Everything where
 
 -- basic utilities
 open import Equality
-open import Nat
 open import Fin
 open import Isomorphism
 open import Setoids -- should be replaced by standard libary def
