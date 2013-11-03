@@ -1,23 +1,25 @@
 {-# OPTIONS --type-in-type #-}
-module REMFunctors2 where
+
+open import Functors
+open import RMonads2
+
+module REMFunctors2 {C}{D}(J : Fun C D)(M : RMonad J) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Function
 open import Equality
 open import Categories
-open import Functors
-open import RMonads2
 open import REM2
 
 open Cat
 open Fun
 open RAlg
 open RAlgMorph
+open RMonad M
 
-
-REML : ∀{C D}{J : Fun C D}(M : RMonad J) → Fun C (EM M)
-REML {C}{D}{J} M = let open RMonad M in record {
+REML : Fun C (EM M)
+REML = record {
   OMap  = λ X → record {
     acar  = T X; 
     astr  = bind;
@@ -50,8 +52,8 @@ REML {C}{D}{J} M = let open RMonad M in record {
     comp D (bind (comp D η (HMap J f))) (bind (comp D η (HMap J g)))
     ∎)}
 
-REMR : ∀{C D}{J : Fun C D}(M : RMonad J) → Fun (EM M) D
-REMR M = record {
+REMR : Fun (EM M) D
+REMR = record {
   OMap  = acar; 
   HMap  = amor;
   fid   = refl; 

@@ -1,24 +1,26 @@
 {-# OPTIONS --type-in-type #-}
-module RKleisliAdj2 where
+open import Functors
+open import RMonads2
+
+module RKleisliAdj2 {C D}{J : Fun C D}(M : RMonad J) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
-open import Functors
 open import Naturals
-open import RMonads2
 open import RKleisli2
 open import RAdjunctions2
-open import RKleisliFunctors2
+open import RKleisliFunctors2 J M
 open Cat
 open Fun
 open NatT
+open RMonad M
 
-KlAdj : ∀{C D}{J : Fun C D}(M : RMonad J) → RAdj J (Kl M)
-KlAdj {C}{D}{J} M = let open RMonad M in record{
-  L = RKlL M;
-  R = RKlR M;
+KlAdj : RAdj J (Kl M)
+KlAdj = record{
+  L = RKlL;
+  R = RKlR;
   left     = id;
   right    = id;
   lawa     = λ _ → refl;

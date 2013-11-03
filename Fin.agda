@@ -18,12 +18,6 @@ open Iso
 open import Data.Fin
 open import Data.Nat
 
-feq : ∀{n} → Fin n → Fin n → Bool
-feq zero     zero     = true
-feq zero     (suc j) = false
-feq (suc i) zero     = false
-feq (suc i) (suc j) = feq i j
-
 Nats : Cat
 Nats = record{
   Obj  = ℕ; 

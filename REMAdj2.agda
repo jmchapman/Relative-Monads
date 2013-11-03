@@ -1,28 +1,32 @@
 {-# OPTIONS --type-in-type #-}
-module REMAdj2 where
+
+open import Functors
+open import RMonads2
+
+module REMAdj2 {C D}{J : Fun C D}(M : RMonad J)  where
 
 open import Relation.Binary.HeterogeneousEquality
 open  ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
-open import Functors
-open import RMonads2
 open import RAdjunctions2
 open import REM2
-open import REMFunctors2
+open import REMFunctors2 J M
 open import Function
 
 open Fun
 open RAdj
 open RAlg
 open RAlgMorph
+open RMonad M
+open Cat D
 
-REMAdj : ∀{C D}{J : Fun C D}(M : RMonad J) → RAdj J (EM M)
-REMAdj {C}{D}{J} M = let open Cat D; open RMonad M in record {
-  L = REML M;
-  R = REMR M;
-  left    = λ f → comp (amor f) η;
-  right   = λ{X}{B} f → record{
+REMAdj : RAdj J (EM M)
+REMAdj = record {
+  L = REML;
+  R = REMR;
+  left   = λ f → comp (amor f) η;
+  right  = λ{X}{B} f → record{
     amor = astr B f;
     ahom = sym (alaw2 B)};
   lawa    = λ {X}{Y} f → 
@@ -35,7 +39,6 @@ REMAdj {C}{D}{J} M = let open Cat D; open RMonad M in record {
       comp (amor f) iden
       ≅⟨ idr ⟩ 
       amor f ∎);
-
   lawb    = λ {X}{B} f → sym (alaw1 B);
   natleft = λ f g h → 
     proof
