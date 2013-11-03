@@ -10,21 +10,21 @@ open import RMonads2
 
 leftM : {C : Cat} → Monad C → RMonad (IdF C)
 leftM {C} M = record {
-  T    = T M;
-  η    = η M;
-  bind = bind M;
-  law1 = law1 M;
-  law2 = law2 M;
-  law3 = law3 M} where open Monad
+  T    = T;
+  η    = η;
+  bind = bind;
+  law1 = law1;
+  law2 = law2;
+  law3 = law3} where open Monad M
 
 rightM : {C : Cat} → RMonad (IdF C) → Monad C
 rightM {C} M = record {
-  T    = T M;
-  η    = η M;
-  bind = bind M; 
-  law1 = law1 M;
-  law2 = law2 M;
-  law3 = law3 M} where open RMonad
+  T    = T;
+  η    = η;
+  bind = bind; 
+  law1 = law1;
+  law2 = law2;
+  law3 = law3} where open RMonad M
 
 open import Relation.Binary.HeterogeneousEquality
 open import Isomorphism
@@ -35,19 +35,22 @@ isoM = record {fun = rightM; inv = leftM; law1 = λ _ → refl; law2 = λ _ → 
 open import MonadMorphs2
 open import RMonadMorphs2
 
-leftMM : ∀{C : Cat}{M M' : Monad C} → MonadMorph M M' → RMonadMorph (leftM M) (leftM M')
+leftMM : ∀{C : Cat}{M M' : Monad C} → MonadMorph M M' → 
+         RMonadMorph (leftM M) (leftM M')
 leftMM MM = record { 
-  morph   = morph MM; 
-  lawη    = lawη MM; 
-  lawbind = lawbind MM} where open MonadMorph
+  morph   = morph; 
+  lawη    = lawη; 
+  lawbind = lawbind} where open MonadMorph MM
 
-rightMM : ∀{C : Cat}{M M' : RMonad (IdF C)} → RMonadMorph M M' → MonadMorph (rightM M) (rightM M')
+rightMM : ∀{C : Cat}{M M' : RMonad (IdF C)} → RMonadMorph M M' → 
+          MonadMorph (rightM M) (rightM M')
 rightMM MM = record { 
-  morph   = morph MM; 
-  lawη    = lawη MM; 
-  lawbind = lawbind MM} where open RMonadMorph
+  morph   = morph; 
+  lawη    = lawη; 
+  lawbind = lawbind} where open RMonadMorph MM
 
-isoMM : {C : Cat}{M M' : Monad C} → Iso (RMonadMorph (leftM M) (leftM M')) (MonadMorph M M')
+isoMM : {C : Cat}{M M' : Monad C} → 
+        Iso (RMonadMorph (leftM M) (leftM M')) (MonadMorph M M')
 isoMM = record { 
  fun  = rightMM; 
  inv  = leftMM; 
