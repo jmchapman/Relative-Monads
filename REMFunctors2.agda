@@ -2,6 +2,8 @@
 module REMFunctors2 where
 
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
+open import Function
 open import Equality
 open import Categories
 open import Functors
@@ -10,34 +12,43 @@ open import REM2
 
 open Cat
 open Fun
-open RMonad
 open RAlg
 open RAlgMorph
 
 
 REML : ∀{C D}{J : Fun C D}(M : RMonad J) → Fun C (EM M)
-REML {C}{D}{J} M = record {
+REML {C}{D}{J} M = let open RMonad M in record {
   OMap  = λ X → record {
-    acar  = T M X; 
-    astr  = bind M;
-    alaw1 = sym (law2 M);
-    alaw2 = law3 M};    
+    acar  = T X; 
+    astr  = bind;
+    alaw1 = sym law2;
+    alaw2 = law3};    
   HMap  = λ f → record {
-    amor = bind M (comp D (η M) (HMap J f)); 
-    ahom = sym (law3 M)};
-  fid   = RAlgMorphEq (trans (cong (bind M) 
-                                   (trans (cong (comp D (η M)) (fid J)) 
-                                          (idr D))) 
-                                   (law1 M));
-  fcomp = λ{X}{Y}{Z}{f}{g} → 
-    RAlgMorphEq (trans (cong (bind M)
-                             (trans (trans (trans (cong (comp D (η M))
-                                                        (fcomp J))
-                                                  (sym (ass D)))
-                                           (cong (λ f → comp D f (HMap J g)) 
-                                                 (sym (law2 M))))
-                                    (ass D)))
-                       (law3 M))} 
+    amor = bind (comp D η (HMap J f)); 
+    ahom = sym law3};
+  fid   = RAlgMorphEq (
+    proof 
+    bind (comp D η (HMap J (iden C))) 
+    ≅⟨ cong (bind ∘ comp D η) (fid J) ⟩
+    bind (comp D η (iden D)) 
+    ≅⟨ cong bind (idr D) ⟩
+    bind η
+    ≅⟨ law1 ⟩ 
+    iden D ∎);
+  fcomp = λ{X}{Y}{Z}{f}{g} → RAlgMorphEq (
+    proof
+    bind (comp D η (HMap J (comp C f g))) 
+    ≅⟨ cong (bind ∘ comp D η) (fcomp J) ⟩
+    bind (comp D η (comp D (HMap J f) (HMap J g)))
+    ≅⟨ cong bind (sym (ass D)) ⟩
+    bind (comp D (comp D η (HMap J f)) (HMap J g))
+    ≅⟨ cong (λ f₁ → bind (comp D f₁ (HMap J g))) (sym law2) ⟩
+    bind (comp D (comp D (bind (comp D η (HMap J f))) η) (HMap J g))
+    ≅⟨ cong bind (ass D) ⟩
+    bind (comp D (bind (comp D η (HMap J f))) (comp D η (HMap J g)))
+    ≅⟨ law3 ⟩
+    comp D (bind (comp D η (HMap J f))) (bind (comp D η (HMap J g)))
+    ∎)}
 
 REMR : ∀{C D}{J : Fun C D}(M : RMonad J) → Fun (EM M) D
 REMR M = record {
