@@ -4,7 +4,6 @@ module WellScopedTerms where
 open import Function
 open import Categories
 open import Functors
-open import Nat
 open import Sets
 open import Fin
 open import RMonads2
