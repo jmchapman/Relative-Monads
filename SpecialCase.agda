@@ -54,33 +54,33 @@ isoMM : {C : Cat}{M M' : Monad C} →
 isoMM = record { 
  fun  = rightMM; 
  inv  = leftMM; 
- law1 = λ mm → refl; 
- law2 = λ mm → refl }
+ law1 = λ _ → refl; 
+ law2 = λ _ → refl }
 
 open import Adjunctions2
 open import RAdjunctions2
 
 leftA : {C D : Cat} → Adj C D → RAdj (IdF C) D
 leftA {C}{D} A = record{
-  L        = L A;
-  R        = R A;
-  left     = left A; 
-  right    = right A; 
-  lawa     = lawa A; 
-  lawb     = lawb A; 
-  natleft  = natleft A;
-  natright = natright A} where open Adj
+  L        = L;
+  R        = R;
+  left     = left; 
+  right    = right; 
+  lawa     = lawa; 
+  lawb     = lawb; 
+  natleft  = natleft;
+  natright = natright} where open Adj A
 
 rightA : {C D : Cat} → RAdj (IdF C) D → Adj C D
 rightA {C}{D} A = record{
-  L        = L A;
-  R        = R A;
-  left     = left A; 
-  right    = right A; 
-  lawa     = lawa A; 
-  lawb     = lawb A; 
-  natleft  = natleft A;
-  natright = natright A} where open RAdj
+  L        = L;
+  R        = R;
+  left     = left; 
+  right    = right; 
+  lawa     = lawa; 
+  lawb     = lawb; 
+  natleft  = natleft;
+  natright = natright} where open RAdj A
 
 isoA : {C D : Cat} → Iso (RAdj (IdF C) D) (Adj C D)
 isoA = record {
