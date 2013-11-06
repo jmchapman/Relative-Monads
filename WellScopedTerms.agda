@@ -8,6 +8,7 @@ open import Sets
 open import Fin
 open import RMonads2
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Data.Nat
 open import Data.Fin hiding (lift)
@@ -48,7 +49,7 @@ renComp f g = f ∘ g
 -- we prove that wk is an endofunctor
 
 wkid : ∀{n}(i : Fin (suc n)) → wk renId i ≅ id i
-wkid zero     = refl
+wkid zero    = refl
 wkid (suc i) = refl
 
 wkcomp : ∀{m n o}(f : Ren n o)(g : Ren m n)(i : Fin (suc m)) → 
@@ -106,14 +107,25 @@ subComp f g = sub f ∘ g
 -- the conditions for identity are easy
 
 liftid : ∀{n}(i : Fin (suc n)) → lift subId i ≅ subId i
-liftid zero     = refl
+liftid zero    = refl
 liftid (suc i) = refl
 
 subid : ∀{n}(t : Tm n) → sub subId t ≅ id t
 subid (var i)   = refl
-subid (app t u) = cong₂ app (subid t) (subid u)
-subid (lam t)   = cong lam (trans (cong (λ f → sub f t) (ext liftid)) 
-                                  (subid t))  
+subid (app t u) = 
+  proof 
+  app (sub subId t) (sub subId u) 
+  ≅⟨ cong₂ app (subid t) (subid u) ⟩ 
+  app t u 
+  ∎
+subid (lam t)   = 
+  proof 
+  lam (sub (lift subId) t) 
+  ≅⟨ cong lam (cong (λ f → sub f t) (ext liftid)) ⟩ 
+  lam (sub subId t) 
+  ≅⟨ cong lam (subid t) ⟩ 
+  lam t 
+  ∎
 
 -- for composition of subs (subcomp) and lifts (liftcomp) we need two
 -- lemmas about how renaming and subs interact for these two lemmas we
@@ -121,20 +133,30 @@ subid (lam t)   = cong lam (trans (cong (λ f → sub f t) (ext liftid))
 
 liftwk : ∀{m n o}(f : Sub n o)(g : Ren m n)(i : Fin (suc m)) → 
             (lift f ∘ wk g) i ≅ lift (f ∘ g) i
-liftwk f g zero     = refl
+liftwk f g zero    = refl
 liftwk f g (suc i) = refl
 
 subren : ∀{m n o}(f : Sub n o)(g : Ren m n)(t : Tm m) → 
          (sub f ∘ ren g) t ≅ sub (f ∘ g) t
 subren f g (var i)   = refl
-subren f g (app t u) = cong₂ app (subren f g t) (subren f g u)
-subren f g (lam t)   = cong lam (trans (subren (lift f) (wk g) t)
-                                       (cong (λ f → sub f t) 
-                                             (ext (liftwk f g))))
+subren f g (app t u) = 
+  proof
+  app (sub f (ren g t)) (sub f (ren g u))
+  ≅⟨ cong₂ app (subren f g t) (subren f g u) ⟩
+  app (sub (f ∘ g) t) (sub (f ∘ g) u) 
+  ∎
+subren f g (lam t)   = 
+  proof
+  lam (sub (lift f) (ren (wk g) t))
+  ≅⟨ cong lam (subren (lift f) (wk g) t) ⟩
+  lam (sub (lift f ∘ wk g) t)
+  ≅⟨ cong lam (cong (λ f₁ → sub f₁ t) (ext (liftwk f g))) ⟩
+  lam (sub (lift (f ∘ g)) t) 
+  ∎ 
 
 renwklift : ∀{m n o}(f : Ren n o)(g : Sub m n)(i : Fin (suc m)) → 
                (ren (wk f) ∘ lift g) i ≅ lift (ren f ∘ g) i
-renwklift f g zero     = refl
+renwklift f g zero    = refl
 renwklift f g (suc i) = trans (sym (rencomp (wk f) suc (g i))) 
                                 (rencomp suc f (g i))
 

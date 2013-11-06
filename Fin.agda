@@ -51,8 +51,8 @@ FinFoid = record {
 
 FinFF : FullyFaithful FinF
 FinFF X Y = record {
-  fun  = iden Sets; 
-  inv  = iden Sets; 
+  fun  = id;
+  inv  = id;
   law1 = λ _ → refl;
   law2 = λ _ → refl}
 
