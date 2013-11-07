@@ -28,6 +28,9 @@ open import Adj2Mon2
 open import Kleisli2
 open import KleisliFunctors2
 open import KleisliAdj2
+open import EM2
+open import EMFunctors2
+open import EMAdj2
 open import CatofAdj2
 open import InitAdj2
 
