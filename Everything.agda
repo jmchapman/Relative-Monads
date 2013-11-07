@@ -1,6 +1,5 @@
 module Everything where 
 
-
 -- basic utilities
 open import Equality
 open import Fin

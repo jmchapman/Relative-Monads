@@ -5,9 +5,10 @@ module Equality where
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 
+
+
 congid : ∀{A}{a a' : A}(p : a ≅ a') → cong id p ≅ p
 congid refl = refl
-
 
 congcomp : ∀{A B C}{a a' : A}(f : B → C)(g : A → B)(p : a ≅ a') →
             cong (f ∘ g) p ≅ cong f (cong g p)
@@ -22,8 +23,7 @@ fcong : ∀{A}{B : A → Set}{f f' : (x : A) → B x}
         (a : A) → f ≅ f' → f a ≅ f' a
 fcong a refl = refl
 
-
-dcong : ∀{A A' B B'}{f : A → B}{f' : A' → B'}{a : A}{a' : A'} → 
+dcong : ∀{A A'}{B : A → Set}{B' : A' → Set}{f : (a : A) → B a}{f' : (a : A') → B' a}{a : A}{a' : A'} → 
         a ≅ a' → B ≅ B' → f ≅ f' → f a ≅ f' a'
 dcong refl refl refl = refl
 
@@ -127,6 +127,10 @@ stripsubst C c refl = refl
 postulate ext : {A : Set}{B B' : A → Set}{f : ∀ a → B a}{g : ∀ a → B' a} → 
                 (∀ a → f a ≅ g a) → f ≅ g
 
+postulate dext : {A A' : Set}{B : A → Set}{B' : A' → Set}
+                 {f : ∀ a → B a}{g : ∀ a → B' a} → 
+                (∀ {a a'} → a ≅ a' → f a ≅ g a') → f ≅ g
+
 -- this could just be derived from ext
 
 
@@ -134,12 +138,10 @@ postulate iext : {A : Set}{B B' : A → Set}{f : ∀ {a} → B a}{g : ∀{a} →
                  (∀ a → f {a} ≅ g {a}) → 
                  _≅_ {_}{ {a : A} → B a} f { {a : A} → B' a} g
 
-{-
 postulate diext : {A A' : Set}{B : A → Set}{B' : A' → Set}
                   {f : ∀ {a} → B a}{f' : ∀{a'} → B' a'} → 
                   (∀{a a'} → a ≅ a' → f {a} ≅ f' {a'}) → 
-                  _≅_ { {a : A} → B a}{ {a' : A'} → B' a'} f f'
--}
+                  _≅_ {_}{ {a : A} → B a} f { {a' : A'} → B' a'} f'
 
 ir : ∀ {A A' : Set}{a : A}{a' : A'}{p q : a ≅ a'} → p ≅ q
 ir {p = refl}{q = refl} = refl
