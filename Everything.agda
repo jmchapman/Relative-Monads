@@ -14,6 +14,7 @@ open import FullyFaithful
 open import Naturals
 open import Sets
 open import Families
+open import Initial
 
 -- basic examples
 open import Monoids
@@ -23,8 +24,11 @@ open import FunctorCat
 open import Monads2
 open import MonadMorphs2
 open import Adjunctions2
-
--- open import CatofAdj2
+open import Adj2Mon2
+open import Kleisli2
+open import KleisliFunctors2
+open import KleisliAdj2
+open import CatofAdj2
 
 -- relative monads
 open import RMonads2
@@ -38,7 +42,7 @@ open import RKleisliFunctors2
 open import RKleisliAdj2
 open import Restriction
 open import SpecialCase
-
+open import CatofRAdj2
 
 -- rmonad examples
 open import WellScopedTerms
