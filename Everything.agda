@@ -33,6 +33,10 @@ open import EMFunctors2
 open import EMAdj2
 open import CatofAdj2
 open import InitAdj2
+open import TermAdj2Obj
+open import TermAdj2Hom
+open import TermAdj2Uniq
+open import TermAdj2
 
 -- relative monads
 open import RMonads2
