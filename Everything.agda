@@ -15,6 +15,7 @@ open import Naturals
 open import Sets
 open import Families
 open import Initial
+open import Terminal
 
 -- basic examples
 open import Monoids
