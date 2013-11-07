@@ -157,30 +157,64 @@ subren f g (lam t)   =
 renwklift : ∀{m n o}(f : Ren n o)(g : Sub m n)(i : Fin (suc m)) → 
                (ren (wk f) ∘ lift g) i ≅ lift (ren f ∘ g) i
 renwklift f g zero    = refl
-renwklift f g (suc i) = trans (sym (rencomp (wk f) suc (g i))) 
-                                (rencomp suc f (g i))
+renwklift f g (suc i) = 
+  proof
+  ren (wk f) (ren suc (g i))
+  ≅⟨ sym (rencomp (wk f) suc (g i)) ⟩
+  ren (wk f ∘ suc) (g i)
+  ≡⟨⟩
+  ren (suc ∘ f) (g i)
+  ≅⟨ rencomp suc f (g i) ⟩
+  ren suc (ren f (g i))
+  ∎
 
 rensub : ∀{m n o}(f : Ren n o)(g : Sub m n)(t : Tm m) →
          (ren f ∘ sub g) t ≅ sub (ren f ∘ g) t
 rensub f g (var i)   = refl
-rensub f g (app t u) = cong₂ app (rensub f g t) (rensub f g u)
-rensub f g (lam t)   = cong lam (trans (rensub (wk f) (lift g) t)
-                                       (cong (λ f → sub f t) 
-                                             (ext (renwklift f g))))
+rensub f g (app t u) = 
+  proof
+  app (ren f (sub g t)) (ren f (sub g u))
+  ≅⟨ cong₂ app (rensub f g t) (rensub f g u) ⟩
+  app (sub (ren f ∘ g) t) (sub (ren f ∘ g) u)
+  ∎
+rensub f g (lam t)   = 
+  proof
+  lam (ren (wk f) (sub (lift g) t))
+  ≅⟨ cong lam (rensub (wk f) (lift g) t) ⟩
+  lam (sub (ren (wk f) ∘ (lift g)) t)
+  ≅⟨ cong (λ f → lam (sub f t)) (ext (renwklift f g)) ⟩
+  lam (sub (lift (ren f ∘ g)) t) 
+  ∎ 
 
 liftcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(i : Fin (suc m)) → 
            lift (subComp f g) i ≅ subComp (lift f) (lift g) i
-liftcomp f g zero     = refl
-liftcomp f g (suc i) = trans (rensub suc f (g i))
-                           (sym (subren (lift f) suc (g i)))
+liftcomp f g zero    = refl
+liftcomp f g (suc i) = 
+  proof
+  ren suc (sub f (g i))
+  ≅⟨ rensub suc f (g i) ⟩
+  sub (ren suc ∘ f) (g i)
+  ≅⟨ sym (subren (lift f) suc (g i)) ⟩
+  sub (lift f) (ren suc (g i))
+  ∎ 
 
 subcomp : ∀{m n o}(f : Sub n o)(g : Sub m n)(t : Tm m) → 
           sub (subComp f g) t ≅ (sub f ∘ sub g) t
 subcomp f g (var i)   = refl
-subcomp f g (app t u) = cong₂ app (subcomp f g t) (subcomp f g u)
-subcomp f g (lam t)   = cong lam (trans (cong (λ f → sub f t) 
-                                              (ext (liftcomp f g))) 
-                                        (subcomp (lift f) (lift g) t))
+subcomp f g (app t u) = 
+  proof
+  app (sub (subComp f g) t) (sub (subComp f g) u) 
+  ≅⟨ cong₂ app (subcomp f g t) (subcomp f g u) ⟩
+  app (sub f (sub g t)) (sub f (sub g u))
+  ∎ 
+subcomp f g (lam t)   = 
+  proof
+  lam (sub (lift (subComp f g)) t) 
+  ≅⟨ cong (λ f → lam (sub f t)) (ext (liftcomp f g)) ⟩
+  lam (sub (subComp (lift f)(lift g)) t)
+  ≅⟨ cong lam (subcomp (lift f) (lift g) t) ⟩
+  lam (sub (lift f) (sub (lift g) t))
+  ∎
 
 TmRMonad : RMonad FinF
 TmRMonad = record {
