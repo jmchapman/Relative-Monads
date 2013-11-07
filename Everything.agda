@@ -29,6 +29,7 @@ open import Kleisli2
 open import KleisliFunctors2
 open import KleisliAdj2
 open import CatofAdj2
+open import InitAdj2
 
 -- relative monads
 open import RMonads2
