@@ -5,7 +5,7 @@ open import Categories
 open import Functors
 open import Adjunctions2
 open import Monads2
-open import EM2
+import EM2
 open import CatofAdj2
 open import TermAdj2Obj
 open import TermAdj2Hom
@@ -18,7 +18,7 @@ open ObjAdj
 open Cat
 
 omaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj A (EMObj M)) → OMap (HomAdj.K (EMHom M {A})) ≅ OMap (HomAdj.K V)
-omaplem {C} M A V = ext
+omaplem {C} M A V = let open EM2 M in ext
                      (λ X →
                         AlgEq (fcong X (cong OMap (HomAdj.Rlaw V)))
                         (ext
@@ -51,7 +51,7 @@ omaplem {C} M A V = ext
                                       (cong HMap (HomAdj.Rlaw V)) (refl {x = OMap (L (adj A)) Y}))
                                      (refl {x = X}))
                                     (refl {x = right (adj A) f})))
-                                (cong₃ (λ A₁ B → AlgMorph.amor {C} {M} {A₁} {B})
+                                (cong₃ (λ A₁ B → AlgMorph.amor  {A₁} {B})
                                  (fcong Y (cong OMap (HomAdj.Llaw V))) refl
                                  (HomAdj.rightlaw V {Y} {X} {f})))
                                (cong (Alg.astr (OMap (HomAdj.K V) X) Y)
@@ -61,7 +61,7 @@ omaplem {C} M A V = ext
 
 hmaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj A (EMObj M)){X Y : Obj (D A)} (f : Hom (D A) X Y) →
           HMap (HomAdj.K (EMHom M {A})) f ≅ HMap (HomAdj.K V) f 
-hmaplem {C} M A V {X}{Y} f = AlgMorphEq' (fcong X (omaplem M A V)) 
+hmaplem {C} M A V {X}{Y} f = let open EM2 M in AlgMorphEq' (fcong X (omaplem M A V)) 
                                   (fcong Y (omaplem M A V)) 
                                   (cong' refl (cong
                                                  (λ (F : Obj (D A) → Obj C) →

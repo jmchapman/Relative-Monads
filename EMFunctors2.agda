@@ -1,40 +1,41 @@
 {-# OPTIONS --type-in-type #-}
-module EMFunctors2 where
+open import Monads2
+
+module EMFunctors2 {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Functors
-open import Monads2
-open import EM2
+open import EM2 M
 
-open Cat
+open Cat C
 open Fun
-open Monad
+open Monad M
 open Alg
 open AlgMorph
 
-EML : ∀{C}(M : Monad C) → Fun C (EM M)
-EML {C} M = record {
+EML : Fun C EM
+EML = record {
   OMap = λ X → record {
-    acar  = T M X; 
-    astr  = λ Z → bind M; 
-    alaw1 = sym (law2 M); 
-    alaw2 = law3 M};
+    acar  = T X; 
+    astr  = λ Z → bind; 
+    alaw1 = sym law2; 
+    alaw2 = law3};
   HMap = λ f → record {
-    amor = bind M (comp C (η M) f);
-    ahom = sym (law3 M)};
-  fid = AlgMorphEq (trans (cong (bind M) (idr C)) (law1 M));
+    amor = bind (comp η f);
+    ahom = sym law3};
+  fid = AlgMorphEq (trans (cong bind idr) law1);
   fcomp = λ {X}{Y}{Z}{f}{g} → 
     AlgMorphEq 
-      (trans (cong (bind M) 
-                   (trans (sym (ass C))  
-                          (trans (cong (λ (f : Hom C _ _) → comp C f g)
-                                       (sym (law2 M)))
-                                 (ass C))))
-             (law3 M))}
+      (trans (cong bind
+                   (trans (sym ass)  
+                          (trans (cong (λ (f : Hom _ _) → comp f g)
+                                       (sym law2))
+                                 ass)))
+             law3)}
 
-EMR : ∀{C}(M : Monad C) → Fun (EM M) C
-EMR {C} M = record {
+EMR : Fun EM C
+EMR  = record {
   OMap  = acar; 
   HMap  = amor;
   fid   = refl; 

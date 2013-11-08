@@ -1,27 +1,28 @@
 {-# OPTIONS --type-in-type #-}
-module EM2 where
+open import Monads2
+
+module EM2 {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
-open import Monads2
 
+open Cat C
+open Monad M
 
-record Alg {C : Cat}(M : Monad C) : Set where
-  open Cat
-  open Monad
-  field acar  : Obj C
-        astr  : ∀ Z → Hom C Z acar → Hom C (T M Z) acar
-        alaw1 : ∀ {Z}{f : Hom C Z acar} → f ≅ comp C (astr Z f) (η M)
-        alaw2 : ∀{Z}{W}{k : Hom C Z (T M W)}{f : Hom C W acar} → 
-                astr Z (comp C (astr W f) k) ≅ comp C (astr W f) (bind M k)
+record Alg : Set where
+  field acar  : Obj
+        astr  : ∀ Z → Hom Z acar → Hom (T Z) acar
+        alaw1 : ∀ {Z}{f : Hom Z acar} → f ≅ comp (astr Z f) η
+        alaw2 : ∀{Z}{W}{k : Hom Z (T W)}{f : Hom W acar} → 
+                astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)
 open Alg
 
-AlgEq : ∀{C}{M : Monad C}{X Y : Alg M} → acar X ≅ acar Y → astr X ≅ astr Y → 
+AlgEq : {X Y : Alg} → acar X ≅ acar Y → astr X ≅ astr Y → 
         X ≅ Y
-AlgEq {C}{M}{X}{Y} p q = let open Cat C; open Monad M in funnycong4 
+AlgEq {X}{Y} p q = funnycong4 
   {Obj}
   {λ acar → ∀ Z → Hom Z acar → Hom (T Z) acar}
   {λ acar astr → ∀{Z}{f : Hom Z acar} → f ≅ comp (astr Z f) η}
@@ -57,16 +58,15 @@ AlgEq {C}{M}{X}{Y} p q = let open Cat C; open Monad M in funnycong4
       ∎))
 
 
-record AlgMorph {C : Cat}{M : Monad C}(A B : Alg M) : Set where
-  open Cat C
+record AlgMorph (A B : Alg) : Set where
   field amor : Hom (acar A) (acar B)
         ahom : ∀{Z}{f : Hom Z (acar A)} → 
                comp amor (astr A Z f) ≅ astr B Z (comp amor f)
 open AlgMorph
 
-AlgMorphEq : ∀{C}{M : Monad C}{X Y : Alg M}{f g : AlgMorph X Y} → 
+AlgMorphEq : {X Y : Alg}{f g : AlgMorph X Y} → 
              amor f ≅ amor g → f ≅ g
-AlgMorphEq {C}{M}{X}{Y}{f}{g} p = let open Cat C in funnycong
+AlgMorphEq {X}{Y}{f}{g} p = funnycong
   {Hom (acar X) (acar Y)}
   {λ amor → ∀{Z}{f : Hom Z (acar X)} → 
     comp amor (astr X Z f) ≅ astr Y Z (comp amor f)}
@@ -81,19 +81,19 @@ AlgMorphEq {C}{M}{X}{Y}{f}{g} p = let open Cat C in funnycong
     ∎))
   λ x y → record{amor = x;ahom = y} 
 
-AlgMorphEq' : ∀{C}{M : Monad C}{X X' Y Y' : Alg M}
+AlgMorphEq' : {X X' Y Y' : Alg}
        {f : AlgMorph X Y}{g : AlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 
              amor f ≅ amor g → f ≅ g
 AlgMorphEq' refl refl = AlgMorphEq
 
-IdMorph : ∀{C}{M : Monad C}{A : Alg M} → AlgMorph A A
-IdMorph {C}{M}{A} = let open Cat C in record {
+IdMorph : {A : Alg} → AlgMorph A A
+IdMorph {A} = record {
   amor = iden;
   ahom = trans idl (cong (astr A _) (sym idl))}
 
-CompMorph : ∀{C}{M : Monad C}{X Y Z : Alg M} → 
+CompMorph : {X Y Z : Alg} → 
             AlgMorph Y Z → AlgMorph X Y → AlgMorph X Z
-CompMorph {C}{M}{X}{Y}{Z} f g = let open Cat C in record {
+CompMorph {X}{Y}{Z} f g = record {
   amor = comp (amor f) (amor g);
   ahom = λ{W}{h} → 
     proof
@@ -108,25 +108,23 @@ CompMorph {C}{M}{X}{Y}{Z} f g = let open Cat C in record {
     astr Z W (comp (comp (amor f) (amor g)) h) 
     ∎}
 
-idlMorph : ∀{C}{M : Monad C}{X Y : Alg M}{f : AlgMorph X Y} → 
-           CompMorph IdMorph f ≅ f
-idlMorph {C} = AlgMorphEq (Cat.idl C)
+idlMorph : {X Y : Alg}{f : AlgMorph X Y} → CompMorph IdMorph f ≅ f
+idlMorph = AlgMorphEq idl
 
-idrMorph : ∀{C}{M : Monad C}{X Y : Alg M}{f : AlgMorph X Y} → 
-           CompMorph f IdMorph ≅ f
-idrMorph {C} = AlgMorphEq (Cat.idr C) 
+idrMorph : {X Y : Alg}{f : AlgMorph X Y} → CompMorph f IdMorph ≅ f
+idrMorph = AlgMorphEq idr
   
-assMorph : ∀{C}{M : Monad C}{W X Y Z : Alg M}
+assMorph : {W X Y Z : Alg}
            {f : AlgMorph Y Z}{g : AlgMorph X Y}{h : AlgMorph W X} →
            CompMorph (CompMorph f g) h ≅ CompMorph f (CompMorph g h)
-assMorph {C} = AlgMorphEq (Cat.ass C)
+assMorph = AlgMorphEq ass
 
-EM : ∀{C} → Monad C → Cat
-EM {C} M = record{
-  Obj  = Alg M;
+EM : Cat
+EM  = record{
+  Obj  = Alg;
   Hom  = AlgMorph;
   iden = IdMorph;
   comp = CompMorph;
   idl  = idlMorph;
   idr  = idrMorph;
-  ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → assMorph {C}{M}{W}{X}{Y}{Z}{f}{g}{h}}
+  ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → assMorph {W}{X}{Y}{Z}{f}{g}{h}}

@@ -1,43 +1,43 @@
 {-# OPTIONS --type-in-type #-}
-module EMAdj2 where
+open import Monads2
+module EMAdj2 {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Functors
-open import Monads2
 open import Adjunctions2
-open import EM2
-open import EMFunctors2
+open import EM2 M
+open import EMFunctors2 M
 
-open Cat
+open Cat C
 open Fun
-open Monad
+open Monad M
 open Adj
 open Alg
 open AlgMorph
 
 
-EMAdj : ∀{C}(M : Monad C) → Adj C (EM M)
-EMAdj {C} M = record {
-  L = EML M;
-  R = EMR M;
-  left = λ f → comp C (amor f) (η M);
+EMAdj : Adj C EM
+EMAdj  = record {
+  L = EML;
+  R = EMR;
+  left = λ f → comp (amor f) η;
   right = λ {X}{Y} f → record{amor = astr Y X f;ahom = sym (alaw2 Y)};
   lawa = λ {X}{Y}(f : AlgMorph _ Y) → 
     AlgMorphEq (trans (sym (ahom f)) 
-                      (trans (cong (comp C (amor f)) (law1 M)) (idr C)));
+                      (trans (cong (comp (amor f)) law1) idr));
   lawb = λ {X}{Y} f → sym (alaw1 Y);
   natleft = λ{X}{X'}{Y}{Y'} f g h → 
-    trans (cong (comp C (amor g)) 
-                (trans (ass C) (trans (cong (comp C (amor h)) (sym (law2 M))) 
-                                            (sym (ass C))))) 
-          (sym (ass C));
+    trans (cong (comp (amor g)) 
+                (trans ass (trans (cong (comp (amor h)) (sym law2)) 
+                                            (sym ass)))) 
+          (sym ass);
   natright = λ{X}{X'}{Y}{Y'} f g h → 
     AlgMorphEq (trans (sym (ahom g)) 
-                      (cong (comp C (amor g)) 
+                      (cong (comp (amor g)) 
                             (trans (cong (astr Y X') 
-                                         (trans (cong (λ (g : Hom C _ _) → 
-                                                         comp C g f) 
+                                         (trans (cong (λ (g : Hom _ _) → 
+                                                         comp g f) 
                                                       (alaw1 Y)) 
-                                                (ass C))) 
+                                                ass)) 
                                    (alaw2 Y))))}

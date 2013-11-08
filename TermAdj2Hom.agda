@@ -7,7 +7,7 @@ open import Monads2
 open import Categories
 open import Functors
 open import Adjunctions2
-open import EM2
+import EM2
 open import CatofAdj2
 open import TermAdj2Obj
 
@@ -20,7 +20,7 @@ open Monad
 open ObjAdj
 
 K' : ∀{C}(M : Monad C){A : Obj (CatofAdj M)} → Fun (D A) (D (EMObj M))
-K' {C} M {A}  = record { 
+K' {C} M {A}  = let open EM2 M in record { 
     OMap  = λ X → record { 
       acar  = OMap (R (adj A)) X; 
       astr  = λ Z f → subst (λ Z → Hom C Z (OMap (R (adj A)) X)) 
@@ -60,7 +60,7 @@ K' {C} M {A}  = record {
 
 Llaw' : ∀{C}(M : Monad C){A : Obj (CatofAdj M)} → 
         K' M {A} ○ L (adj A) ≅ L (adj (EMObj M))
-Llaw' {C} M {A} = FunctorEq _ _
+Llaw' {C} M {A} = let open EM2 M in FunctorEq _ _
                     (ext
                      (λ X →
                         AlgEq (fcong X (cong OMap (law A)))
@@ -71,7 +71,7 @@ Llaw' {C} M {A} = FunctorEq _ _
                                Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
                                (bind M) (bindlaw A) p)))))
                     (λ {X} {Y} f →
-                       AlgMorphEq' {C} {M}
+                       AlgMorphEq' 
                        (AlgEq (fcong X (cong OMap (law A)))
                         (ext
                          (λ Z →
@@ -109,7 +109,7 @@ rightlaw' : ∀{C}(M : Monad C){A : Obj (CatofAdj M)} →
                  {X}
                  {OMap (K' M {A}) Y}
                  (subst (Hom C X) (fcong Y (cong OMap (Rlaw' M {A}))) f)
-rightlaw' {C} M {A}{X}{Y}{f} = AlgMorphEq'
+rightlaw' {C} M {A}{X}{Y}{f} = let open EM2 M in AlgMorphEq'
                                  (AlgEq (fcong X (cong OMap (law A)))
                                   (ext
                                    (λ Z →
