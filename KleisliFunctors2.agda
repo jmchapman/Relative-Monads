@@ -1,32 +1,39 @@
 {-# OPTIONS --type-in-type #-}
-module KleisliFunctors2 where
+
+open import Categories
+open import Monads2
+
+module KleisliFunctors2 {C}(M : Monad C) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
-open import Categories
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Functors
-open import Naturals
-open import Monads2
 open import Kleisli2
-open import Adjunctions2
 
-open Cat
+open Cat C
 open Fun
-open NatT
-open Monad
+open Monad M
 
-KlL : ∀{C}(M : Monad C) → Fun C (Kl M)
-KlL {C} M = record{
+KlL : Fun C (Kl M)
+KlL = record{
   OMap  = id;
-  HMap  = comp C (η M);
-  fid   = idr C;
+  HMap  = comp η;
+  fid   = idr;
   fcomp = λ{X}{Y}{Z}{f}{g} → 
-    trans (trans (sym (ass C)) 
-                 (cong (λ f → comp C f g) (sym (law2 M)))) (ass C) }
+    proof
+    comp η (comp f g) 
+    ≅⟨ sym ass ⟩
+    comp (comp η f) g 
+    ≅⟨ cong (λ f → comp f g) (sym law2) ⟩
+    comp (comp (bind (comp η f)) η) g
+    ≅⟨ ass ⟩ 
+    comp (bind (comp η f)) (comp η g)
+    ∎}
 
-KlR : ∀{C}(M : Monad C) → Fun (Kl M) C
-KlR {C} M = record{
-  OMap  = T M;
-  HMap  = bind M;
-  fid   = law1 M;
-  fcomp = law3 M}
+KlR : Fun (Kl M) C
+KlR = record{
+  OMap  = T;
+  HMap  = bind;
+  fid   = law1;
+  fcomp = law3}

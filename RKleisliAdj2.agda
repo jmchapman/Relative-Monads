@@ -8,13 +8,11 @@ open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
-open import Naturals
 open import RKleisli2
 open import RAdjunctions2
 open import RKleisliFunctors2 J M
 open Cat
 open Fun
-open NatT
 open RMonad M
 
 KlAdj : RAdj J (Kl M)
@@ -25,19 +23,14 @@ KlAdj = record{
   right    = id;
   lawa     = λ _ → refl;
   lawb     = λ _ → refl;
-  natleft  = λ f g h → 
+  natleft  = lem; 
+  natright = lem}
+  where
+   lem = λ {X}{X'}{Y}{Y'} (f : Hom C X' X) (g : Hom D (OMap J Y) (T Y')) h → 
     proof
     comp D (bind g) (comp D h (HMap J f)) 
     ≅⟨ cong (λ h₁ → comp D (bind g) (comp D h₁ (HMap J f))) (sym law2) ⟩
     comp D (bind g) (comp D (comp D (bind h) η) (HMap J f))
     ≅⟨ cong (comp D (bind g)) (ass D) ⟩
     comp D (bind g) (comp D (bind h) (comp D η (HMap J f)))
-    ∎; 
-  natright = λ f g h → 
-    proof
-    comp D (bind g) (comp D h (HMap J f))
-    ≅⟨ cong (λ h → comp D (bind g) (comp D h (HMap J f))) (sym law2) ⟩
-    comp D (bind g) (comp D (comp D (bind h) η) (HMap J f))
-    ≅⟨ cong (comp D (bind g)) (ass D) ⟩
-    comp D (bind g) (comp D (bind h) (comp D η (HMap J f))) 
-    ∎}
+    ∎

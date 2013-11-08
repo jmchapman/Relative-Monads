@@ -1,31 +1,37 @@
 {-# OPTIONS --type-in-type #-}
-module KleisliAdj2 where
+open import Categories
+open import Monads2
+
+module KleisliAdj2 {C}(M : Monad C) where
+
+open Cat C
+open Monad M
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
-open import Categories
+open  ≅-Reasoning renaming (begin_ to proof_)
 open import Functors
-open import Naturals
-open import Monads2
 open import Kleisli2
 open import Adjunctions2
-open import KleisliFunctors2
-open Cat
+open import KleisliFunctors2 M
 open Fun
-open NatT
-open Monad
 
-KlAdj : ∀{C}(M : Monad C) → Adj C (Kl M)
-KlAdj {C} M = record{
-  L        = KlL M;
-  R        = KlR M;
+KlAdj : Adj C (Kl M)
+KlAdj = record {
+  L        = KlL;
+  R        = KlR;
   left     = id;
   right    = id;
   lawa     = λ _ → refl;
   lawb     = λ _ → refl;
-  natleft  = λ f g h → cong (comp C (bind M g)) 
-                            (trans (cong (λ g → comp C g f) (sym (law2 M))) 
-                                   (ass C));
-  natright = λ f g h → cong (comp C (bind M g)) 
-                            (trans (cong (λ g → comp C g f) (sym (law2 M))) 
-                                   (ass C))}
+  natleft  = lem;
+  natright = lem}
+  where 
+   lem = λ {X}{X'}{Y}{Y'} (f : Hom X' X)(g : Hom Y (T Y')) h → 
+    proof
+    comp (bind g) (comp h f) 
+    ≅⟨ cong (λ h → comp (bind g) (comp h f)) (sym law2) ⟩
+    comp (bind g) (comp (comp (bind h) η) f) 
+    ≅⟨ cong (comp (bind g)) ass ⟩
+    comp (bind g) (comp (bind h) (comp η f)) 
+    ∎
