@@ -8,7 +8,6 @@ open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
-
 open Cat C
 open Monad M
 
@@ -20,8 +19,7 @@ record Alg : Set where
                 astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)
 open Alg
 
-AlgEq : {X Y : Alg} → acar X ≅ acar Y → astr X ≅ astr Y → 
-        X ≅ Y
+AlgEq : {X Y : Alg} → acar X ≅ acar Y → astr X ≅ astr Y → X ≅ Y
 AlgEq {X}{Y} p q = funnycong4 
   {Obj}
   {λ acar → ∀ Z → Hom Z acar → Hom (T Z) acar}
@@ -57,7 +55,6 @@ AlgEq {X}{Y} p q = funnycong4
       astr Y Z (comp (astr Y Z' g') f) 
       ∎))
 
-
 record AlgMorph (A B : Alg) : Set where
   field amor : Hom (acar A) (acar B)
         ahom : ∀{Z}{f : Hom Z (acar A)} → 
@@ -89,10 +86,16 @@ AlgMorphEq' refl refl = AlgMorphEq
 IdMorph : {A : Alg} → AlgMorph A A
 IdMorph {A} = record {
   amor = iden;
-  ahom = trans idl (cong (astr A _) (sym idl))}
+  ahom = λ {Z} {f} → 
+    proof 
+    comp iden (astr A Z f) 
+    ≅⟨ idl ⟩ 
+    astr A Z f
+    ≅⟨ cong (astr A Z) (sym idl) ⟩ 
+    astr A Z (comp iden f) 
+    ∎}
 
-CompMorph : {X Y Z : Alg} → 
-            AlgMorph Y Z → AlgMorph X Y → AlgMorph X Z
+CompMorph : {X Y Z : Alg} → AlgMorph Y Z → AlgMorph X Y → AlgMorph X Z
 CompMorph {X}{Y}{Z} f g = record {
   amor = comp (amor f) (amor g);
   ahom = λ{W}{h} → 
