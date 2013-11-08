@@ -53,6 +53,9 @@ open import Restriction
 open import SpecialCase
 open import CatofRAdj2
 open import InitRAdj2
+open import TermRAdj2Obj
+open import TermRAdj2Hom
+open import TermRAdj2
 
 -- rmonad examples
 open import WellScopedTerms

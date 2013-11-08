@@ -22,6 +22,25 @@ record RAlg {C D : Cat}{J : Fun C D}(M : RMonad J) : Set where
                 astr (comp (astr f) k) ≅ comp (astr f) (bind k)
 
 
+AlgEq : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y : RAlg M} → RAlg.acar X ≅ RAlg.acar Y → 
+  (∀ Z → RAlg.astr X {Z} ≅ RAlg.astr Y {Z}) → 
+        X ≅ Y
+AlgEq {C}{D}{J}{M}{X}{Y} p q = let open Cat; open RAlg; open RMonad in funnycong4 
+  {Obj D}
+  {λ acar₁ → {Z : _} → Hom D (OMap J Z) acar₁ → Hom D (T M Z) acar₁}
+  {λ acar₁ astr₁ → {Z : _} {f : Hom D (OMap J Z) acar₁} → 
+     f ≅ comp D (astr₁ f) (η M)}
+  {λ acar₁ astr₁ _ → {Z W : _} 
+     {k : Hom D (OMap J Z) (T M W)} {f : Hom D (OMap J W) acar₁} →
+     astr₁ (comp D (astr₁ f) k) ≅ comp D (astr₁ f) (bind M k)}
+  {RAlg {C}{D}{J} M}
+  (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
+  p 
+  (iext q)
+  (iext (λ Z → diext (λ {f} {f'} r → fixtypes (trans (sym (alaw1 X)) r))))
+  (iext (λ Z → iext (λ W → iext (λ k → diext (λ {f} {f'} r → fixtypes (trans (cong₂ (λ Ran f₁ → comp D {T M Z} {T M W} {Ran} f₁ (bind M k)) p (dcong r (dext (λ _ → cong (Hom D (T M W)) p)) (q W))) (sym (alaw2 Y))))))))
+
+
 astrnat : ∀{C D}{J : Fun C D}{M : RMonad J}(alg : RAlg M){X Y}
           (f : Cat.Hom C X Y) → 
           (g : Cat.Hom D (OMap J X) (RAlg.acar alg))
@@ -69,6 +88,11 @@ RAlgMorphEq {C}{D}{J}{M}{X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
     comp (amor g) (astr X h) 
     ∎))
   λ x y → record{amor = x;ahom = y} 
+
+lemZ : ∀{C D}{J : Fun C D}{M : RMonad J}{X X' Y Y' : RAlg M}
+       {f : RAlgMorph X Y}{g : RAlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 
+             amor f ≅ amor g → f ≅ g
+lemZ refl refl = RAlgMorphEq
 
 IdMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{A : RAlg M} → RAlgMorph A A
 IdMorph {C}{D}{J}{M}{A} = let open Cat D; open RAlg A in record {
