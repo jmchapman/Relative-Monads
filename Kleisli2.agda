@@ -2,19 +2,31 @@
 module Kleisli2 where
 
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
 open import Monads2
 
-open Cat
-open Monad
-
 Kl : ∀{C} → Monad C → Cat
-Kl {C} M = record{
-  Obj  = Obj C;
-  Hom  = λ X Y → Hom C X (T M Y);
-  iden = η M;
-  comp = λ f g → comp C (bind M f) g;
-  idl  = λ{X}{Y}{f} → trans (cong (λ g → comp C g f) (law1 M)) (idl C);
-  idr  = law2 M;
+Kl {C} M = let open Cat C; open Monad M in record{
+  Obj  = Obj;
+  Hom  = λ X Y → Hom X (T Y);
+  iden = η;
+  comp = λ f g → comp (bind f) g;
+  idl  = λ{X}{Y}{f} → 
+    proof
+    comp (bind η) f 
+    ≅⟨ cong (λ g → comp g f) law1 ⟩ 
+    comp iden f 
+    ≅⟨ idl ⟩ 
+    f 
+    ∎;
+  idr  = law2;
   ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → 
-    trans (cong (λ (f : Hom C (T M X) (T M Z)) → comp C f h) (law3 M)) (ass C)}
+    proof
+    comp (bind (comp (bind f) g)) h 
+    ≅⟨ cong (λ f → comp f h) law3 ⟩
+    comp (comp (bind f) (bind g)) h
+    ≅⟨ ass ⟩
+    comp (bind f) (comp (bind g) h) 
+    ∎}
+
