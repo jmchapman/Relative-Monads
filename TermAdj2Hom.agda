@@ -71,7 +71,7 @@ Llaw' {C} M {A} = FunctorEq _ _
                                Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
                                (bind M) (bindlaw A) p)))))
                     (λ {X} {Y} f →
-                       lemZ {C} {M}
+                       AlgMorphEq' {C} {M}
                        (AlgEq (fcong X (cong OMap (law A)))
                         (ext
                          (λ Z →
@@ -109,7 +109,7 @@ rightlaw' : ∀{C}(M : Monad C){A : Obj (CatofAdj M)} →
                  {X}
                  {OMap (K' M {A}) Y}
                  (subst (Hom C X) (fcong Y (cong OMap (Rlaw' M {A}))) f)
-rightlaw' {C} M {A}{X}{Y}{f} = lemZ
+rightlaw' {C} M {A}{X}{Y}{f} = AlgMorphEq'
                                  (AlgEq (fcong X (cong OMap (law A)))
                                   (ext
                                    (λ Z →

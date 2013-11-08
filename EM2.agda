@@ -2,15 +2,16 @@
 module EM2 where
 
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
 open import Monads2
 
-open Cat
-open Monad
 
 record Alg {C : Cat}(M : Monad C) : Set where
+  open Cat
+  open Monad
   field acar  : Obj C
         astr  : ∀ Z → Hom C Z acar → Hom C (T M Z) acar
         alaw1 : ∀ {Z}{f : Hom C Z acar} → f ≅ comp C (astr Z f) (η M)
@@ -20,77 +21,105 @@ open Alg
 
 AlgEq : ∀{C}{M : Monad C}{X Y : Alg M} → acar X ≅ acar Y → astr X ≅ astr Y → 
         X ≅ Y
-AlgEq {C}{M}{X}{Y} p q = funnycong4 {Obj C}
-  {λ acar₁ → (Z : _) → Hom C Z acar₁ → Hom C (T M Z) acar₁}
-  {λ acar₁ astr₁ → {Z : _} {f : Hom C Z acar₁} → f ≅ comp C (astr₁ Z f) (η M)}
-  {λ acar₁ astr₁ _ → {Z W : _} {k : Hom C Z (T M W)} {f : Hom C W acar₁} →
-     astr₁ Z (comp C (astr₁ W f) k) ≅ comp C (astr₁ W f) (bind M k)}
-  {Alg {C} M}
+AlgEq {C}{M}{X}{Y} p q = let open Cat C; open Monad M in funnycong4 
+  {Obj}
+  {λ acar → ∀ Z → Hom Z acar → Hom (T Z) acar}
+  {λ acar astr → ∀{Z}{f : Hom Z acar} → f ≅ comp (astr Z f) η}
+  {λ acar astr _ → ∀{Z W}{k : Hom Z (T W)} {f : Hom W acar} →
+     astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)}
   (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
   p 
   q
-  (iext (λ Z → diext (λ {f f'} r → fixtypes (trans (sym (alaw1 X)) r))))
-  (iext (λ Z → iext (λ Z' → iext (λ f → diext (λ {g} {g'} r → 
-    fixtypes (trans (cong₂ (λ Ran h → comp C {T M Z} {T M Z'} {Ran} h (bind M f)) p (dcong r 
-            (dext (λ _ → cong (Hom C (T M Z')) p)) 
-            (dcong (refl {x = Z'}) 
-                   (dext (λ p' → cong₂ (λ f g → Hom C f g → Hom C (T M f) g) 
-                                       p' 
-                                       p)) 
-                   q))) 
-                     (sym (alaw2 Y))))))))
+  (iext λ Z → diext λ {f f'} r → fixtypes (
+    proof 
+    comp (astr X Z f) η 
+    ≅⟨ sym (alaw1 X) ⟩ 
+    f 
+    ≅⟨ r ⟩ 
+    f' 
+    ∎))
+  (iext λ Z → iext λ Z' → iext λ f → diext λ {g} {g'} r → 
+    fixtypes (
+      proof
+      comp (astr X Z' g) (bind f) 
+      ≅⟨ cong₂ (λ X₁ h → comp {T Z} {T Z'} {X₁} h (bind f)) 
+               p 
+               (dcong r 
+                      (dext (λ _ → cong (Hom (T Z')) p)) 
+                      (dcong (refl {x = Z'}) 
+                             (dext λ p' → cong₂ (λ f g → Hom f g → Hom (T f) g)
+                                                p' 
+                                                p)
+                             q)) ⟩
+      comp (astr Y Z' g') (bind f)
+      ≅⟨ sym (alaw2 Y) ⟩
+      astr Y Z (comp (astr Y Z' g') f) 
+      ∎))
 
 
 record AlgMorph {C : Cat}{M : Monad C}(A B : Alg M) : Set where
-  field amor : Hom C (acar A) (acar B)
-        ahom : ∀{Z}{f : Hom C Z (acar A)} → 
-               comp C amor (astr A Z f) ≅ astr B Z (comp C amor f)
+  open Cat C
+  field amor : Hom (acar A) (acar B)
+        ahom : ∀{Z}{f : Hom Z (acar A)} → 
+               comp amor (astr A Z f) ≅ astr B Z (comp amor f)
 open AlgMorph
 
 AlgMorphEq : ∀{C}{M : Monad C}{X Y : Alg M}{f g : AlgMorph X Y} → 
              amor f ≅ amor g → f ≅ g
-AlgMorphEq {C}{M}{X}{Y}{f}{g} p = funnycong
-  {Hom C (acar X) (acar Y)}
-  {λ amor → ∀{Z}{f : Hom C Z (acar X)} → 
-    comp C amor (astr X Z f) ≅ astr Y Z (comp C amor f)}
+AlgMorphEq {C}{M}{X}{Y}{f}{g} p = let open Cat C in funnycong
+  {Hom (acar X) (acar Y)}
+  {λ amor → ∀{Z}{f : Hom Z (acar X)} → 
+    comp amor (astr X Z f) ≅ astr Y Z (comp amor f)}
   p
-  (iext λ Z → iext λ h → fixtypes 
-    (trans (sym (ahom f)) 
-           (cong (λ f₁ → comp C f₁ (astr X Z h)) p)))
+  (iext λ Z → iext λ h → fixtypes (
+    proof
+    astr Y Z (comp (amor f) h) 
+    ≅⟨ sym (ahom f) ⟩ 
+    comp (amor f) (astr X Z h) 
+    ≅⟨ cong (λ f → comp f (astr X Z h)) p ⟩ 
+    comp (amor g) (astr X Z h) 
+    ∎))
   λ x y → record{amor = x;ahom = y} 
 
-lemZ : ∀{C}{M : Monad C}{X X' Y Y' : Alg M}
+AlgMorphEq' : ∀{C}{M : Monad C}{X X' Y Y' : Alg M}
        {f : AlgMorph X Y}{g : AlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 
              amor f ≅ amor g → f ≅ g
-lemZ refl refl = AlgMorphEq
+AlgMorphEq' refl refl = AlgMorphEq
 
 IdMorph : ∀{C}{M : Monad C}{A : Alg M} → AlgMorph A A
-IdMorph {C}{M}{A} = record {
-  amor = iden C;
-  ahom = trans (idl C) (cong (astr A _) (sym (idl C)))}
+IdMorph {C}{M}{A} = let open Cat C in record {
+  amor = iden;
+  ahom = trans idl (cong (astr A _) (sym idl))}
 
 CompMorph : ∀{C}{M : Monad C}{X Y Z : Alg M} → 
             AlgMorph Y Z → AlgMorph X Y → AlgMorph X Z
-CompMorph {C}{M}{X}{Y}{Z} f g = record {
-  amor = comp C (amor f) (amor g);
+CompMorph {C}{M}{X}{Y}{Z} f g = let open Cat C in record {
+  amor = comp (amor f) (amor g);
   ahom = λ{W}{h} → 
-    trans (trans (trans (ass C) 
-                        (cong (comp C (amor f)) (ahom g))) 
-                 (ahom f)) 
-          (cong (astr Z W) (sym (ass C)))}
+    proof
+    comp (comp (amor f) (amor g)) (astr X W h) 
+    ≅⟨ ass ⟩
+    comp (amor f) (comp (amor g) (astr X W h))
+    ≅⟨ cong (comp (amor f)) (ahom g) ⟩
+    comp (amor f) (astr Y W (comp (amor g) h))
+    ≅⟨ ahom f ⟩
+    astr Z W (comp (amor f) (comp (amor g) h)) 
+    ≅⟨ cong (astr Z W) (sym ass) ⟩
+    astr Z W (comp (comp (amor f) (amor g)) h) 
+    ∎}
 
 idlMorph : ∀{C}{M : Monad C}{X Y : Alg M}{f : AlgMorph X Y} → 
            CompMorph IdMorph f ≅ f
-idlMorph {C} = AlgMorphEq (idl C)
+idlMorph {C} = AlgMorphEq (Cat.idl C)
 
 idrMorph : ∀{C}{M : Monad C}{X Y : Alg M}{f : AlgMorph X Y} → 
            CompMorph f IdMorph ≅ f
-idrMorph {C} = AlgMorphEq (idr C) 
+idrMorph {C} = AlgMorphEq (Cat.idr C) 
   
 assMorph : ∀{C}{M : Monad C}{W X Y Z : Alg M}
            {f : AlgMorph Y Z}{g : AlgMorph X Y}{h : AlgMorph W X} →
            CompMorph (CompMorph f g) h ≅ CompMorph f (CompMorph g h)
-assMorph {C} = AlgMorphEq (ass C)
+assMorph {C} = AlgMorphEq (Cat.ass C)
 
 EM : ∀{C} → Monad C → Cat
 EM {C} M = record{

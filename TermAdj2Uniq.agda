@@ -61,7 +61,7 @@ omaplem {C} M A V = ext
 
 hmaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj A (EMObj M)){X Y : Obj (D A)} (f : Hom (D A) X Y) →
           HMap (HomAdj.K (EMHom M {A})) f ≅ HMap (HomAdj.K V) f 
-hmaplem {C} M A V {X}{Y} f = lemZ (fcong X (omaplem M A V)) 
+hmaplem {C} M A V {X}{Y} f = AlgMorphEq' (fcong X (omaplem M A V)) 
                                   (fcong Y (omaplem M A V)) 
                                   (cong' refl (cong
                                                  (λ (F : Obj (D A) → Obj C) →
