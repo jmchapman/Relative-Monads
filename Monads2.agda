@@ -1,8 +1,9 @@
 {-# OPTIONS --type-in-type #-}
 module Monads2 where
 
-
+open import Function
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
 
 record Monad (C : Cat) : Set where
@@ -18,9 +19,25 @@ record Monad (C : Cat) : Set where
 open import Functors
 
 TFun : ∀{C} → Monad C → Fun C C
-TFun {C} M = record { 
+TFun {C} M = let open Monad M; open Cat C in record { 
   OMap  = T; 
-  HMap  = λ f → bind(comp η f); 
-  fid   = trans (cong bind idr) law1; 
-  fcomp = λ {_} {_} {_} {f} {g} → trans (cong bind (trans (trans (sym ass) (cong (λ f → comp f g) (sym law2))) ass)) law3}
-  where open Monad M; open Cat C
+  HMap  = bind ∘ comp η; 
+  fid   = 
+    proof 
+    bind (comp η iden)
+    ≅⟨ cong bind idr ⟩
+    bind η
+    ≅⟨ law1 ⟩ 
+    iden ∎; 
+  fcomp = λ {_}{_}{_}{f}{g} → 
+    proof
+    bind (comp η (comp f g))
+    ≅⟨ cong bind (sym ass) ⟩
+    bind (comp (comp η f) g)
+    ≅⟨ cong (λ f → bind (comp f g)) (sym law2) ⟩
+    bind (comp (comp (bind (comp η f)) η) g)
+    ≅⟨ cong bind ass ⟩
+    bind (comp (bind (comp η f)) (comp η g))
+    ≅⟨ law3 ⟩
+    comp (bind (comp η f)) (bind (comp η g))
+    ∎}
