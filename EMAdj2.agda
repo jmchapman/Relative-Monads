@@ -61,12 +61,15 @@ EMAdj  = record {
     ≅⟨ sym ass ⟩
     comp (comp (amor g) (comp (amor h) (bind (comp η f)))) η
     ∎;
-  natright = λ{X}{X'}{Y}{Y'} f g h → 
-    AlgMorphEq (trans (sym (ahom g)) 
-                      (cong (comp (amor g)) 
-                            (trans (cong (astr Y X') 
-                                         (trans (cong (λ (g : Hom _ _) → 
-                                                         comp g f) 
-                                                      (alaw1 Y)) 
-                                                ass)) 
-                                   (alaw2 Y))))}
+  natright = λ{X}{X'}{Y}{Y'} f g h → AlgMorphEq (
+    proof
+    astr Y' X' (comp (amor g) (comp h f)) 
+    ≅⟨ sym (ahom g) ⟩
+    comp (amor g) (astr Y X' (comp h f))
+    ≅⟨ cong (λ h → comp (amor g) (astr Y X' (comp h f))) (alaw1 Y) ⟩
+    comp (amor g) (astr Y X' (comp (comp (astr Y X h) η) f))
+    ≅⟨ cong (comp (amor g) ∘ astr Y X') ass ⟩
+    comp (amor g) (astr Y X' (comp (astr Y X h) (comp η f)))
+    ≅⟨ cong (comp (amor g)) (alaw2 Y) ⟩
+    comp (amor g) (comp (astr Y X h) (bind (comp η f))) 
+    ∎)}
