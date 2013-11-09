@@ -27,7 +27,7 @@ open RAdj
 omaplem : {C D : Cat}{J : Fun C D}(M : RMonad J) →
           {X : Obj (CatofAdj M)} {f : Hom (CatofAdj M) X (EMObj M)} → 
           OMap (HomAdj.K (EMHom M {X})) ≅ OMap (HomAdj.K f)
-omaplem {C}{D}{J} M {A}{f} = ext (λ X → AlgEq 
+omaplem {C}{D}{J} M {A}{f} = ext (λ X → AlgEq M
   (fcong X (cong OMap (HomAdj.Rlaw f))) 
   (λ Y →
        dext
@@ -98,7 +98,7 @@ hmaplem : {C D : Cat}{J : Fun C D}(M : RMonad J) →
           {X : Obj (CatofAdj M)} {f : Hom (CatofAdj M) X (EMObj M)} → 
           {X₁ Y : Obj (ObjAdj.E X)} (f₁ : Hom (ObjAdj.E X) X₁ Y) →
             HMap (HomAdj.K (EMHom M {X})) f₁ ≅ HMap (HomAdj.K f) f₁
-hmaplem {C}{D}{J} M {A}{V}{X}{Y} f = lemZ 
+hmaplem {C}{D}{J} M {A}{V}{X}{Y} f = lemZ M
   (fcong X (omaplem M {A} {V})) 
   (fcong Y (omaplem M {A} {V})) 
   (cong' 

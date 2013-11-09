@@ -21,7 +21,7 @@ omaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj A (EMObj M)) → OMap (Ho
 omaplem {C} M A V = let open EM2 M in ext
                      (λ X →
                         AlgEq (fcong X (cong OMap (HomAdj.Rlaw V)))
-                        (ext
+                        (
                          (λ Y →
                             dext
                             (λ {f} {f'} p →

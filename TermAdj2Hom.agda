@@ -64,7 +64,7 @@ Llaw' {C} M {A} = let open EM2 M in FunctorEq _ _
                     (ext
                      (λ X →
                         AlgEq (fcong X (cong OMap (law A)))
-                        (ext
+                        (
                          (λ Z →
                             dext
                             (λ {f} {f'} p →
@@ -73,14 +73,14 @@ Llaw' {C} M {A} = let open EM2 M in FunctorEq _ _
                     (λ {X} {Y} f →
                        AlgMorphEq' 
                        (AlgEq (fcong X (cong OMap (law A)))
-                        (ext
+                        (
                          (λ Z →
                             dext
                             (λ {f₁} {f'} p →
                                Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
                                (bind M) (bindlaw A) p))))
                        (AlgEq (fcong Y (cong OMap (law A)))
-                        (ext
+                        (
                          (λ Z →
                             dext
                             (λ {f₁} {f'} p →
@@ -111,7 +111,7 @@ rightlaw' : ∀{C}(M : Monad C){A : Obj (CatofAdj M)} →
                  (subst (Hom C X) (fcong Y (cong OMap (Rlaw' M {A}))) f)
 rightlaw' {C} M {A}{X}{Y}{f} = let open EM2 M in AlgMorphEq'
                                  (AlgEq (fcong X (cong OMap (law A)))
-                                  (ext
+                                  (
                                    (λ Z →
                                       dext
                                       (λ {g} {g'} p →

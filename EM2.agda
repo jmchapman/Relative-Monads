@@ -19,7 +19,7 @@ record Alg : Set where
                 astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)
 open Alg
 
-AlgEq : {X Y : Alg} → acar X ≅ acar Y → astr X ≅ astr Y → X ≅ Y
+AlgEq : {X Y : Alg} → acar X ≅ acar Y → (∀ Z → astr X Z ≅ astr Y Z) → X ≅ Y
 AlgEq {X}{Y} p q = funnycong4 
   {Obj}
   {λ acar → ∀ Z → Hom Z acar → Hom (T Z) acar}
@@ -28,7 +28,7 @@ AlgEq {X}{Y} p q = funnycong4
      astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)}
   (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
   p 
-  q
+  (ext q)
   (iext λ Z → diext λ {f f'} r → fixtypes (
     proof 
     comp (astr X Z f) η 
@@ -45,11 +45,7 @@ AlgEq {X}{Y} p q = funnycong4
                p 
                (dcong r 
                       (dext (λ _ → cong (Hom (T Z')) p)) 
-                      (dcong (refl {x = Z'}) 
-                             (dext λ p' → cong₂ (λ f g → Hom f g → Hom (T f) g)
-                                                p' 
-                                                p)
-                             q)) ⟩
+                      (q Z')) ⟩
       comp (astr Y Z' g') (bind f)
       ≅⟨ sym (alaw2 Y) ⟩
       astr Y Z (comp (astr Y Z' g') f) 

@@ -187,8 +187,8 @@ K {C}{D}{J} M A = record {
               (law A) 
               (right (adj A))
               (natright (adj A)) };
-    fid = RAlgMorphEq (fid (R (adj A)));
-    fcomp = RAlgMorphEq (fcomp (R (adj A)))}
+    fid = RAlgMorphEq M (fid (R (adj A)));
+    fcomp = RAlgMorphEq M (fcomp (R (adj A)))}
   where open RMonad M
 
 Llaw' : ∀{C D}{J : Fun C D}(M : RMonad J)(A : Obj (CatofAdj M)) → 
@@ -197,20 +197,20 @@ Llaw' {C}{D}{J} M A =
  FunctorEq _ _
    (ext
     (λ X →
-       AlgEq (fcong X (cong OMap (law A)))
+       AlgEq M (fcong X (cong OMap (law A)))
        (λ Z →
           dext
           (λ {f} {f'} p →
              Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
              bind (bindlaw A) p))))
    (λ {X} {Y} f →
-      lemZ {C} {D} {J} {M}
-      (AlgEq (fcong X (cong OMap (law A)))
+      lemZ {C} {D} {J} M
+      (AlgEq M (fcong X (cong OMap (law A)))
        (λ Z →
           dext
           (Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
            bind (bindlaw A))))
-      (AlgEq (fcong Y (cong OMap (law A)))
+      (AlgEq M (fcong Y (cong OMap (law A)))
        (λ Z →
           dext
           (Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
@@ -248,8 +248,8 @@ rightlaw' : ∀{C D}{J : Fun C D}(M : RMonad J)(A : Obj (CatofAdj M)) →
            ≅
            right (adj (EMObj M)) {X} {OMap (K M A) Y}
                  (subst (Hom D (OMap J X)) (fcong Y (cong OMap (Rlaw' M A))) f)
-rightlaw' {C}{D}{J} M A {X}{Y}{f} = lemZ
-  (AlgEq (fcong X (cong OMap (law A)))
+rightlaw' {C}{D}{J} M A {X}{Y}{f} = lemZ M
+  (AlgEq M (fcong X (cong OMap (law A)))
    (λ Z →
       dext
       (λ {g} {g'} p →
@@ -275,3 +275,4 @@ EMHom {C}{D}{J} M {A} = record {
   Llaw = Llaw' M A; 
   Rlaw = Rlaw' M A; 
   rightlaw = rightlaw' M A }
+

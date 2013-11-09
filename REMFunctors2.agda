@@ -10,7 +10,7 @@ open ≅-Reasoning renaming (begin_ to proof_)
 open import Function
 open import Equality
 open import Categories
-open import REM2
+open import REM2 M
 
 open Cat
 open Fun
@@ -18,7 +18,7 @@ open RAlg
 open RAlgMorph
 open RMonad M
 
-REML : Fun C (EM M)
+REML : Fun C EM
 REML = record {
   OMap  = λ X → record {
     acar  = T X; 
@@ -52,7 +52,7 @@ REML = record {
     comp D (bind (comp D η (HMap J f))) (bind (comp D η (HMap J g)))
     ∎)}
 
-REMR : Fun (EM M) D
+REMR : Fun EM D
 REMR = record {
   OMap  = acar; 
   HMap  = amor;

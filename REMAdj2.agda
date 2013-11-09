@@ -10,7 +10,7 @@ open  ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import RAdjunctions2
-open import REM2
+open import REM2 M
 open import REMFunctors2 J M
 open import Function
 
@@ -21,7 +21,7 @@ open RAlgMorph
 open RMonad M
 open Cat D
 
-REMAdj : RAdj J (EM M)
+REMAdj : RAdj J EM
 REMAdj = record {
   L = REML;
   R = REMR;

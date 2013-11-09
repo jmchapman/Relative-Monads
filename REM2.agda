@@ -1,18 +1,20 @@
 {-# OPTIONS --type-in-type #-}
-module REM2 where
-
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
 open import Categories
 open import Functors
 open import RMonads2
 
+module REM2 {C D : Cat}{J : Fun C D}(M : RMonad J) where
+
+open RMonad M
+
+open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
+open import Equality
+
 open Fun
 
-record RAlg {C D : Cat}{J : Fun C D}(M : RMonad J) : Set where
+record RAlg : Set where
   open Cat D
-  open RMonad M 
   field acar  : Obj
         astr  : ∀ {Z} → Hom (OMap J Z) acar → Hom (T Z) acar
         alaw1 : ∀ {Z}{f : Hom (OMap J Z) acar} →
@@ -21,27 +23,42 @@ record RAlg {C D : Cat}{J : Fun C D}(M : RMonad J) : Set where
                 {f : Hom (OMap J W) acar} →
                 astr (comp (astr f) k) ≅ comp (astr f) (bind k)
 
-
-AlgEq : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y : RAlg M} → RAlg.acar X ≅ RAlg.acar Y → 
+AlgEq : {X Y : RAlg} → RAlg.acar X ≅ RAlg.acar Y → 
   (∀ Z → RAlg.astr X {Z} ≅ RAlg.astr Y {Z}) → 
         X ≅ Y
-AlgEq {C}{D}{J}{M}{X}{Y} p q = let open Cat; open RAlg; open RMonad in funnycong4 
+AlgEq {X}{Y} p q = let open Cat; open RAlg in funnycong4 
   {Obj D}
-  {λ acar₁ → {Z : _} → Hom D (OMap J Z) acar₁ → Hom D (T M Z) acar₁}
-  {λ acar₁ astr₁ → {Z : _} {f : Hom D (OMap J Z) acar₁} → 
-     f ≅ comp D (astr₁ f) (η M)}
-  {λ acar₁ astr₁ _ → {Z W : _} 
-     {k : Hom D (OMap J Z) (T M W)} {f : Hom D (OMap J W) acar₁} →
-     astr₁ (comp D (astr₁ f) k) ≅ comp D (astr₁ f) (bind M k)}
-  {RAlg {C}{D}{J} M}
+  {λ acar → ∀{Z} → Hom D (OMap J Z) acar → Hom D (T Z) acar}
+  {λ acar astr → ∀{Z} {f : Hom D (OMap J Z) acar} → f ≅ comp D (astr f) η}
+  {λ acar astr _ → ∀{Z W}
+    {k : Hom D (OMap J Z) (T W)}{f : Hom D (OMap J W) acar} →
+    astr (comp D (astr f) k) ≅ comp D (astr f) (bind k)}
+  {RAlg}
   (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
   p 
   (iext q)
-  (iext (λ Z → diext (λ {f} {f'} r → fixtypes (trans (sym (alaw1 X)) r))))
-  (iext (λ Z → iext (λ W → iext (λ k → diext (λ {f} {f'} r → fixtypes (trans (cong₂ (λ Ran f₁ → comp D {T M Z} {T M W} {Ran} f₁ (bind M k)) p (dcong r (dext (λ _ → cong (Hom D (T M W)) p)) (q W))) (sym (alaw2 Y))))))))
+  (iext λ Z → diext λ {a}{a'} r → fixtypes (
+    proof 
+    comp D (astr X a) η 
+    ≅⟨ sym (alaw1 X) ⟩
+    a
+    ≅⟨ r ⟩ 
+    a' 
+    ∎))
+  (iext λ Z → iext λ W → iext λ k → diext λ {a}{a'} r → fixtypes (
+    proof
+    comp D (astr X a) (bind k) 
+    ≅⟨ cong₂ (λ Ran f → comp D {T Z} {T W} {Ran} f (bind k)) 
+             p 
+             (dcong r 
+                    (dext (λ _ → cong (Hom D (T W)) p)) 
+                    (q W)) ⟩
+    comp D (astr Y a') (bind k)
+    ≅⟨ sym (alaw2 Y) ⟩
+    astr Y (comp D (astr Y a') k) 
+    ∎)) 
 
-
-astrnat : ∀{C D}{J : Fun C D}{M : RMonad J}(alg : RAlg M){X Y}
+astrnat : ∀(alg : RAlg){X Y}
           (f : Cat.Hom C X Y) → 
           (g : Cat.Hom D (OMap J X) (RAlg.acar alg))
           (g' : Cat.Hom D (OMap J Y) (RAlg.acar alg)) →
@@ -50,8 +67,8 @@ astrnat : ∀{C D}{J : Fun C D}{M : RMonad J}(alg : RAlg M){X Y}
                      (RMonad.bind M (Cat.comp D (RMonad.η M) (HMap J f))) 
           ≅ 
           RAlg.astr alg g
-astrnat {C}{D}{J}{M} alg f g g' p = let 
-  open RMonad M; open RAlg alg; open Cat D in
+astrnat alg f g g' p = let 
+  open RAlg alg; open Cat D in
   proof
   comp (astr g') (bind (comp η (HMap J f))) 
   ≅⟨ sym alaw2 ⟩
@@ -63,7 +80,7 @@ astrnat {C}{D}{J}{M} alg f g g' p = let
   ≅⟨ cong astr p ⟩
   astr g ∎
 
-record RAlgMorph {C D : Cat}{J : Fun C D}{M : RMonad J}(A B : RAlg M) : Set 
+record RAlgMorph (A B : RAlg) : Set 
   where
   open Cat D
   open RAlg
@@ -72,9 +89,8 @@ record RAlgMorph {C D : Cat}{J : Fun C D}{M : RMonad J}(A B : RAlg M) : Set
                comp amor (astr A f) ≅ astr B (comp amor f)
 open RAlgMorph
 
-RAlgMorphEq : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y : RAlg M}
-              {f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
-RAlgMorphEq {C}{D}{J}{M}{X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
+RAlgMorphEq : ∀{X Y : RAlg}{f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
+RAlgMorphEq {X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
   {Cat.Hom D (RAlg.acar X) (RAlg.acar Y)}
   {λ amor → ∀{Z}{f : Hom (OMap J Z) (acar X)} → 
               comp amor (astr X f) ≅ astr Y (comp amor f)}
@@ -89,13 +105,13 @@ RAlgMorphEq {C}{D}{J}{M}{X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
     ∎))
   λ x y → record{amor = x;ahom = y} 
 
-lemZ : ∀{C D}{J : Fun C D}{M : RMonad J}{X X' Y Y' : RAlg M}
+lemZ : ∀{X X' Y Y' : RAlg}
        {f : RAlgMorph X Y}{g : RAlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 
              amor f ≅ amor g → f ≅ g
 lemZ refl refl = RAlgMorphEq
 
-IdMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{A : RAlg M} → RAlgMorph A A
-IdMorph {C}{D}{J}{M}{A} = let open Cat D; open RAlg A in record {
+IdMorph : ∀{A : RAlg} → RAlgMorph A A
+IdMorph {A} = let open Cat D; open RAlg A in record {
   amor = iden;
   ahom = λ {Z} {f} → 
     proof 
@@ -106,9 +122,9 @@ IdMorph {C}{D}{J}{M}{A} = let open Cat D; open RAlg A in record {
     astr (comp iden f) 
     ∎}
 
-CompMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y Z : RAlg M} → 
+CompMorph : ∀{X Y Z : RAlg} → 
             RAlgMorph Y Z → RAlgMorph X Y → RAlgMorph X Z
-CompMorph {C}{D}{J}{M}{X}{Y}{Z} f g = let open Cat D; open RAlg in record {
+CompMorph {X}{Y}{Z} f g = let open Cat D; open RAlg in record {
   amor = comp (amor f) (amor g);
   ahom = λ {Z₁} {f'} → 
     proof
@@ -123,26 +139,26 @@ CompMorph {C}{D}{J}{M}{X}{Y}{Z} f g = let open Cat D; open RAlg in record {
     astr Z (comp (comp (amor f) (amor g)) f') 
     ∎}
 
-idlMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y : RAlg M}{f : RAlgMorph X Y} →
+idlMorph : {X Y : RAlg}{f : RAlgMorph X Y} →
            CompMorph IdMorph f ≅ f
-idlMorph {C}{D} = RAlgMorphEq (Cat.idl D)
+idlMorph = RAlgMorphEq (Cat.idl D)
 
-idrMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{X Y : RAlg M}{f : RAlgMorph X Y} →
+idrMorph : ∀{X Y : RAlg}{f : RAlgMorph X Y} →
            CompMorph f IdMorph ≅ f
-idrMorph {C}{D} = RAlgMorphEq (Cat.idr D) 
+idrMorph = RAlgMorphEq (Cat.idr D) 
 
-assMorph : ∀{C D}{J : Fun C D}{M : RMonad J}{W X Y Z : RAlg M}
+assMorph : ∀{W X Y Z : RAlg}
            {f : RAlgMorph Y Z}{g : RAlgMorph X Y}{h : RAlgMorph W X} →
            CompMorph (CompMorph f g) h ≅ CompMorph f (CompMorph g h)
-assMorph {C}{D} = RAlgMorphEq (Cat.ass D)
+assMorph = RAlgMorphEq (Cat.ass D)
 
-EM : ∀{C D}{J : Fun C D} → RMonad J → Cat
-EM {C}{D}{J} M = record{
-  Obj  = RAlg M;
+EM : Cat
+EM = record{
+  Obj  = RAlg;
   Hom  = RAlgMorph;
   iden = IdMorph;
   comp = CompMorph;
   idl  = idlMorph;
   idr  = idrMorph;
-  ass  = λ{_}{_}{_}{_}{f}{g}{h} → assMorph {_}{_}{_}{_}{_}{_}{_}{_}{f}{g}{h}}
+  ass  = λ{_}{_}{_}{_}{f}{g}{h} → assMorph {_}{_}{_}{_}{f}{g}{h}}
 
