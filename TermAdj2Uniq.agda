@@ -17,7 +17,7 @@ open Adj
 open ObjAdj
 open Cat
 
-omaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj A (EMObj M)) → OMap (HomAdj.K (EMHom M {A})) ≅ OMap (HomAdj.K V)
+omaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj M A (EMObj M)) → OMap (HomAdj.K (EMHom M {A})) ≅ OMap (HomAdj.K V)
 omaplem {C} M A V = let open EM2 M in ext
                      (λ X →
                         AlgEq (fcong X (cong OMap (HomAdj.Rlaw V)))
@@ -59,7 +59,7 @@ omaplem {C} M A V = let open EM2 M in ext
                                  (stripsubst (Hom C Y) f (fcong X (cong OMap (HomAdj.Rlaw V))))
                                  p))))))
 
-hmaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj A (EMObj M)){X Y : Obj (D A)} (f : Hom (D A) X Y) →
+hmaplem : ∀{C}(M : Monad C)(A : ObjAdj M)(V : HomAdj M A (EMObj M)){X Y : Obj (D A)} (f : Hom (D A) X Y) →
           HMap (HomAdj.K (EMHom M {A})) f ≅ HMap (HomAdj.K V) f 
 hmaplem {C} M A V {X}{Y} f = let open EM2 M in AlgMorphEq' (fcong X (omaplem M A V)) 
                                   (fcong Y (omaplem M A V)) 

@@ -144,7 +144,7 @@ KlHom {C} M {A} = record {
 
 uniq : {C : Cat}(M : Monad C) → 
        {X : Obj (CatofAdj M)}{f : Hom (CatofAdj M) (KlObj M) X} → KlHom M ≅ f
-uniq {C} M {X}{V} = HomAdjEq _ 
+uniq {C} M {X}{V} = HomAdjEq M _ 
                  _
                  (FunctorEq _ 
                             _ 

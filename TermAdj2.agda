@@ -26,7 +26,7 @@ EMIsTerm : {C : Cat}(M : Monad C) → Term (CatofAdj M)
 EMIsTerm {C} M = record { 
   T = EMObj M;
   t = EMHom M;
-  law = λ {A} {V} → HomAdjEq 
+  law = λ {A} {V} → HomAdjEq M
     _ 
     _ 
     (FunctorEq _ 
