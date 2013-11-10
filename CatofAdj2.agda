@@ -4,6 +4,7 @@ open import Monads2
 module CatofAdj2 {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
@@ -44,7 +45,7 @@ open HomAdj
 
 HomAdjEq : {A B : ObjAdj}(f g : HomAdj A B) → 
            K f ≅ K g → f ≅ g
-HomAdjEq{A}{B} f g p = funnycong4
+HomAdjEq {A}{B} f g p = funnycong4
   {Fun (D A) (D B)}
   {λ K → K ○ L (adj A) ≅ L (adj B)}
   {λ K Llaw → R (adj A) ≅ R (adj B) ○ K}
@@ -56,21 +57,34 @@ HomAdjEq{A}{B} f g p = funnycong4
                          {X}
                          {OMap K Y} 
                          (subst (Hom C X) (fcong Y (cong OMap Rlaw)) f)}
-  {HomAdj A B}
   (λ x y z z' → record{K = x;Llaw = y;Rlaw = z; rightlaw = z'})
   p 
-  (fixtypes (sym (Llaw g)))
-  (fixtypes (sym (Rlaw f)))
-  (iext (λ X → iext (λ Y → iext (λ h → 
-     fixtypes (trans (sym (rightlaw f {X} {Y} {h})) 
-              (cong (λ F → HMap F (right (adj A) h)) p))))))
+  (fixtypes (
+    proof 
+    L (adj B) 
+    ≅⟨ sym (Llaw g) ⟩ 
+    K g ○ L (adj A) 
+    ∎)) 
+  (fixtypes (
+    proof 
+    R (adj B) ○ K f 
+    ≅⟨ sym (Rlaw f) ⟩ 
+    R (adj A) 
+    ∎))
+  (iext λ X → iext λ Y → iext λ h → fixtypes 
+    (proof
+    right (adj B) (subst (Hom C X) (fcong Y (cong (λ r → OMap r) (Rlaw f))) h)
+    ≅⟨ sym (rightlaw f) ⟩ 
+    HMap (K f) (right (adj A) h)
+    ≅⟨ cong (λ F → HMap F (right (adj A) h)) p ⟩
+    HMap (K g) (right (adj A) h) ∎))
 
 rightlawlem : ∀{C D}(R : Fun D C)(L : Fun C D)
   (p : OMap R ≅ OMap (R ○ (IdF D))) → 
   (right : {X : Obj C}{Y : Obj D} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) →
-           {X₁ : Obj C}{Y : Obj D}{f : Hom C X₁ (OMap R Y)} →
-  right f ≅ right (subst (Hom C X₁) (fcong Y p) f)
-rightlawlem R L refl right {X}{Y}{f} = refl
+           {Z : Obj C}{Y : Obj D}{f : Hom C Z (OMap R Y)} →
+  right f ≅ right (subst (Hom C Z) (fcong Y p) f)
+rightlawlem R L refl right = refl
 
 idHomAdj : {X : ObjAdj} → HomAdj X X
 idHomAdj {X} = record {
@@ -88,7 +102,7 @@ HMaplem : ∀{C D}{X X' Y Y' : Obj C} → X ≅ X' → Y ≅ Y' →
 HMaplem refl refl refl F = refl
 
 
-rightlawlem2 : ∀{C D E F}
+rightlawlem2 : ∀{D E F}
   (RX : Fun D C)
   (LX : Fun C D)
   (RY : Fun E C)
@@ -97,33 +111,40 @@ rightlawlem2 : ∀{C D E F}
   (LZ : Fun C F)
   (KA : Fun D E)
   (KB : Fun E F) → 
-  (rightX : {X₁ : Obj C}{Y₁ : Obj D} → 
-            Hom C X₁ (OMap RX Y₁) → Hom D (OMap LX X₁) Y₁)
-  (rightY : {X₁ : Obj C}{Y₁ : Obj E} → 
-            Hom C X₁ (OMap RY Y₁) → Hom E (OMap LY X₁) Y₁)
-  (rightZ : {X₁ : Obj C}{Y₁ : Obj F} → 
-            Hom C X₁ (OMap RZ Y₁) → Hom F (OMap LZ X₁) Y₁) → 
+  (rightX : {X : Obj C}{Y : Obj D} → 
+            Hom C X (OMap RX Y) → Hom D (OMap LX X) Y)
+  (rightY : {X : Obj C}{Y : Obj E} → 
+            Hom C X (OMap RY Y) → Hom E (OMap LY X) Y)
+  (rightZ : {X : Obj C}{Y : Obj F} → 
+            Hom C X (OMap RZ Y) → Hom F (OMap LZ X) Y) → 
   (p : RY ≅ RZ ○ KB)
   (q : RX ≅ RY ○ KA) →
   (p' : KA ○ LX ≅ LY) → 
-  (r : {X₁ : Obj C}{Y₁ : Obj E}{f₁ : Hom C X₁ (OMap RY Y₁)} →
-       HMap KB (rightY f₁) 
+  (r : {X : Obj C}{Y : Obj E}{f : Hom C X (OMap RY Y)} →
+       HMap KB (rightY f) 
        ≅ 
-       rightZ (subst (Hom C X₁) (fcong Y₁ (cong OMap p)) f₁)) →
-  (s : {X₁ : Obj C}{Y₁ : Obj D}{f₁ : Hom C X₁ (OMap RX Y₁)} →
-       HMap KA (rightX f₁) 
+       rightZ (subst (Hom C X) (fcong Y (cong OMap p)) f)) →
+  (s : {X : Obj C}{Y : Obj D}{f : Hom C X (OMap RX Y)} →
+       HMap KA (rightX f) 
        ≅ 
-       rightY (subst (Hom C X₁) (fcong Y₁ (cong OMap q)) f₁)) →
+       rightY (subst (Hom C X) (fcong Y (cong OMap q)) f)) →
   ∀{A B}(h : Hom C A (OMap RX B)) → 
   HMap (KB ○ KA) (rightX h) ≅
   rightZ
-  (subst (Hom C A) (fcong B (cong OMap (trans q (cong (λ F₁ → F₁ ○ KA) p)))) h)
-rightlawlem2 {C}{D}{E}{F} 
+  (subst (Hom C A) (fcong B (cong OMap (trans q (cong (λ F → F ○ KA) p)))) h)
+rightlawlem2 {D}{E}{F} 
              .((RZ ○ KB) ○ KA) LX .(RZ ○ KB) .(KA ○ LX) 
              RZ LZ KA KB 
              rightX rightY rightZ 
              refl refl refl 
-             r s h = trans (cong (HMap KB) s) r
+             r s h = 
+  proof 
+  HMap (KB ○ KA) (rightX h)
+  ≅⟨ cong (HMap KB) s ⟩
+  HMap KB (rightY h)
+  ≅⟨ r ⟩ 
+  rightZ h 
+  ∎
 
 compLlaw : {X Y Z : ObjAdj} → 
            (f :  HomAdj Y Z)(g : HomAdj X Y) →
@@ -132,9 +153,13 @@ compLlaw {X}{Y}{Z} f g =
   FunctorEq 
     _ 
     _
-    (ext (λ A →
-      trans (cong (OMap (K f)) (cong (λ F → OMap F A) (Llaw g)))
-            (cong (λ F → OMap F A) (Llaw f))))
+    (ext λ A → 
+      proof
+      OMap (K f) (OMap (K g) (OMap (L (adj X)) A))
+      ≅⟨ cong (λ F → OMap (K f) (OMap F A)) (Llaw g) ⟩ 
+      OMap (K f) (OMap (L (adj Y)) A)
+      ≅⟨ cong (λ F → OMap F A) (Llaw f) ⟩ 
+      OMap (L (adj Z)) A ∎)
     (λ {A} {B} h → trans
       (HMaplem (cong (λ F → OMap F A) (Llaw g))
                (cong (λ F → OMap F B) (Llaw g)) 
