@@ -146,8 +146,7 @@ rightlawlem2 {D}{E}{F}
   rightZ h 
   ∎
 
-compLlaw : {X Y Z : ObjAdj} → 
-           (f :  HomAdj Y Z)(g : HomAdj X Y) →
+compLlaw : {X Y Z : ObjAdj}(f :  HomAdj Y Z)(g : HomAdj X Y) →
            (K f ○ K g) ○ L (adj X) ≅ L (adj Z)
 compLlaw {X}{Y}{Z} f g = 
   FunctorEq 
@@ -160,23 +159,38 @@ compLlaw {X}{Y}{Z} f g =
       OMap (K f) (OMap (L (adj Y)) A)
       ≅⟨ cong (λ F → OMap F A) (Llaw f) ⟩ 
       OMap (L (adj Z)) A ∎)
-    (λ {A} {B} h → trans
-      (HMaplem (cong (λ F → OMap F A) (Llaw g))
-               (cong (λ F → OMap F B) (Llaw g)) 
-               (cong (λ F → HMap F h) (Llaw g))
-               (K f))
-      (cong (λ F → HMap F h) (Llaw f)))
+    (λ {A} {B} h → 
+      proof
+      HMap (K f) (HMap (K g) (HMap (L (adj X)) h)) 
+      ≅⟨ HMaplem (cong (λ F → OMap F A) (Llaw g))
+                 (cong (λ F → OMap F B) (Llaw g))
+                 (cong (λ F → HMap F h) (Llaw g))
+                 (K f) ⟩
+      HMap (K f) (HMap (L (adj Y)) h)
+      ≅⟨ cong (λ F → HMap F h) (Llaw f) ⟩
+      HMap (L (adj Z)) h 
+      ∎)
 
-compRlaw : {X Y Z : ObjAdj} → 
-           (f :  HomAdj Y Z)(g : HomAdj X Y) →
+
+-- ground to a halt here as later proofs expect a particular proof of this.
+-- this could be fixed I expect.
+compRlaw : {X Y Z : ObjAdj}(f :  HomAdj Y Z)(g : HomAdj X Y) →
            R (adj X) ≅ R (adj Z) ○ (K f ○ K g)
 compRlaw {X}{Y}{Z} f g = 
   FunctorEq 
     _ 
     _
-    (ext (λ A →
+    (ext λ A → 
       trans (cong (λ F → OMap F A) (Rlaw g))
-            (cong (λ F → OMap F (OMap (K g) A)) (Rlaw f))))
+            (cong (λ F → OMap F (OMap (K g) A)) (Rlaw f)))
+
+{-      proof
+      OMap (R (adj X)) A 
+      ≅⟨ cong (λ F → OMap F A) (Rlaw g) ⟩
+      OMap (R (adj Y)) (OMap (K g) A)
+      ≅⟨ {!cong (λ F → OMap F (OMap (K g) A)) (Rlaw f)!} ⟩
+      OMap (R (adj Z)) (OMap (K f) (OMap (K g) A)) 
+      ∎) -}
     (λ {A} {B} h →
       trans (cong (λ F → HMap F h) (Rlaw g))
             (cong (λ F → HMap F (HMap (K g) h)) (Rlaw f)))
