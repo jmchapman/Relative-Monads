@@ -6,6 +6,7 @@ open import Functors
 open import Naturals
 open import Function
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import RMonads2
 open import FunctorCat
@@ -64,10 +65,19 @@ wkid (vs x) = refl
 
 renid : ∀{Γ σ}(t : Tm Γ σ) → ren renId t ≅ id t
 renid (var x)   = refl
-renid (app t u) = cong₂ app (renid t) (renid u)
-renid (lam t) = cong lam (trans (cong (λ (f : Ren _ _) → ren f t) 
-                                      (iext (λ _ → ext wkid))) 
-                                (renid t))
+renid (app t u) = 
+  proof 
+  app (ren renId t) (ren renId u) 
+  ≅⟨ cong₂ app (renid t) (renid u) ⟩ 
+  app t u 
+  ∎
+renid (lam t)   = 
+  proof lam (ren (wk renId) t) 
+  ≅⟨ cong (λ (f : Ren _ _) → lam (ren f t)) (iext λ _ → ext wkid) ⟩ 
+  lam (ren renId t) 
+  ≅⟨ cong lam (renid t) ⟩ 
+  lam t 
+  ∎ 
 
 wkcomp : ∀ {B Γ Δ}(f : Ren Γ Δ)(g : Ren B Γ){σ τ}(x : Var (B < σ) τ) → 
             wk (renComp f g) x ≅ renComp (wk f) (wk g) x  
@@ -77,10 +87,20 @@ wkcomp f g (vs i) = refl
 rencomp : ∀ {B Γ Δ}(f : Ren Γ Δ)(g : Ren B Γ){σ}(t : Tm B σ) → 
             ren (renComp f g) t ≅ (ren f ∘ ren g) t
 rencomp f g (var x)   = refl
-rencomp f g (app t u) = cong₂ app (rencomp f g t) (rencomp f g u)
-rencomp f g (lam t)   = cong lam (trans (cong (λ (f : Ren _ _) → ren f t)
-                                              (iext λ _ → ext (wkcomp f g)))
-                                        (rencomp (wk f) (wk g) t))
+rencomp f g (app t u) = 
+  proof
+  app (ren (renComp f g) t) (ren (renComp f g) u)
+  ≅⟨ cong₂ app (rencomp f g t) (rencomp f g u) ⟩
+  app (ren f (ren g t)) (ren f (ren g u)) 
+  ∎
+rencomp f g (lam t)   = 
+  proof
+  lam (ren (wk (renComp f g)) t) 
+  ≅⟨ cong (λ (f : Ren _ _) → lam (ren f t)) (iext λ _ → ext (wkcomp f g)) ⟩
+  lam (ren (renComp (wk f) (wk g)) t)
+  ≅⟨ cong lam (rencomp (wk f) (wk g) t) ⟩
+  lam (ren (wk f) (ren (wk g) t)) 
+  ∎
 
 Sub : Con → Con → Set
 Sub Γ Δ = ∀{σ} → Var Γ σ → Tm Δ σ
