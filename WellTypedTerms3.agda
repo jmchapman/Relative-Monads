@@ -140,10 +140,19 @@ liftwk f g (vs x) = refl
 subren : ∀{B Γ Δ}(f : Sub Γ Δ)(g : Ren B Γ){σ}(t : Tm B σ) → 
          (sub f ∘ ren g) t ≅ sub (f ∘ g) t
 subren f g (var x)   = refl
-subren f g (app t u) = cong₂ app (subren f g t) (subren f g u)
-subren f g (lam t)   = cong lam (trans (subren (lift f) (wk g) t)
-                                       (cong (λ (f : Sub _ _) → sub f t) 
-                                             (iext λ _ → ext (liftwk f g))))
+subren f g (app t u) = 
+  proof
+  app (sub f (ren g t)) (sub f (ren g u))
+  ≅⟨ cong₂ app (subren f g t) (subren f g u) ⟩
+  app (sub (f ∘ g) t) (sub (f ∘ g) u) 
+  ∎ 
+subren f g (lam t)   = 
+  proof
+  lam (sub (lift f) (ren (wk g) t))
+  ≅⟨ cong lam (subren (lift f) (wk g) t) ⟩
+  lam (sub (lift f ∘ wk g) t)
+  ≅⟨ cong (λ (f : Sub _ _) → lam (sub f t)) (iext (λ _ → ext (liftwk f g))) ⟩
+  lam (sub (lift (f ∘ g)) t) ∎ 
 
 renwklift : ∀{B Γ Δ}(f : Ren Γ Δ)(g : Sub B Γ){σ τ}(x : Var (B < σ) τ) →
                (ren (wk f) ∘ lift g) x ≅ lift (ren f ∘ g) x
@@ -158,7 +167,7 @@ rensub f g (app t u) = cong₂ app (rensub f g t) (rensub f g u)
 rensub f g (lam t)   = cong lam (trans (rensub (wk f) (lift g) t) 
                                        (cong (λ (f : Sub _ _) → sub f t) 
                                              (iext λ _ → 
-                                               ext (renwklift f g))))
+                                                   ext (renwklift f g))))
 
 liftcomp : ∀{B Γ Δ}(f : Sub Γ Δ)(g : Sub B Γ){σ τ}(x : Var (B < σ) τ) →
            lift (subComp f g) x ≅ subComp (lift f) (lift g) x
