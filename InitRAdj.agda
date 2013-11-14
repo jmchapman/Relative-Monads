@@ -10,8 +10,8 @@ open import Categories
 open import CatofRAdj
 open import Categories.Initial
 open import RKleisli
-open import RKleisliFunctors
-open import RKleisliAdj
+open import RKleisli.Functors
+open import RKleisli.Adjunction
 open import RAdj2RMon
 
 open Cat

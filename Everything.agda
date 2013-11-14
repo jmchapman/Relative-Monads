@@ -47,11 +47,11 @@ open import RMonadMorphs
 open import RAdjunctions
 open import RAdj2RMon
 open import REM
-open import REMFunctors
-open import REMAdj
+open import REM.Functors
+open import REM.Adjunction
 open import RKleisli
-open import RKleisliFunctors
-open import RKleisliAdj
+open import RKleisli.Functors
+open import RKleisli.Adjunction
 open import Restriction
 open import SpecialCase
 open import CatofRAdj

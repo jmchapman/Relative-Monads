@@ -11,7 +11,7 @@ open import Categories
 open import CatofRAdj
 open import Categories.Terminal
 open import REM
-open import REMAdj
+open import REM.Adjunction
 open import RAdj2RMon
 open import TermRAdjObj
 

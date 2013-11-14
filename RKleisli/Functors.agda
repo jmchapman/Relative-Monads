@@ -2,7 +2,7 @@
 open import Functors
 open import RMonads
 
-module RKleisliFunctors {C D}(J : Fun C D)(M : RMonad J) where
+module RKleisli.Functors {C D}(J : Fun C D)(M : RMonad J) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)

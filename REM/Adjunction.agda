@@ -3,7 +3,7 @@
 open import Functors
 open import RMonads
 
-module REMAdj {C D}{J : Fun C D}(M : RMonad J)  where
+module REM.Adjunction {C D}{J : Fun C D}(M : RMonad J)  where
 
 open import Relation.Binary.HeterogeneousEquality
 open  ≅-Reasoning renaming (begin_ to proof_)
@@ -11,7 +11,7 @@ open import Equality
 open import Categories
 open import RAdjunctions
 open import REM M
-open import REMFunctors J M
+open import REM.Functors J M
 open import Function
 
 open Fun
