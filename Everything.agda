@@ -60,5 +60,5 @@ open import TermRAdj2
 -- rmonad examples
 open import WellScopedTerms
 open import WellScopedTermsModel
-open import WellTypedTerms3
-open import WellTypedTermsModel3
+open import WellTypedTerms
+open import WellTypedTermsModel

@@ -1,10 +1,10 @@
 {-# OPTIONS --type-in-type #-}
-module WellTypedTermsModel3 where
+module WellTypedTermsModel where
 
 open import Function
 open import Data.Unit
 open import Naturals
-open import WellTypedTerms3
+open import WellTypedTerms
 open import REM2
 open import FunctorCat
 open import Sets

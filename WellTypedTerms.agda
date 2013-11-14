@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module WellTypedTerms3 where
+module WellTypedTerms where
 
 open import Categories
 open import Functors
