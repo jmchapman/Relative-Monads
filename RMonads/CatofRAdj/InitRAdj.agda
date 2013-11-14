@@ -1,4 +1,4 @@
-module InitRAdj where
+module RMonads.CatofRAdj.InitRAdj where
 
 open import RMonads
 open import Functors
@@ -7,7 +7,7 @@ open import RAdjunctions
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
-open import CatofRAdj
+open import RMonads.CatofRAdj
 open import Categories.Initial
 open import RMonads.RKleisli
 open import RMonads.RKleisli.Functors

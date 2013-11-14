@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module CatofRAdj where
+module RMonads.CatofRAdj where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Equality

@@ -1,6 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 
-module TermRAdj where
+module RMonads.CatofRAdj.TermRAdj where
 
 open import RMonads
 open import Functors
@@ -8,13 +8,13 @@ open import RAdjunctions
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
-open import CatofRAdj
+open import RMonads.CatofRAdj
 open import Categories.Terminal
 open import RMonads.REM
 open import RMonads.REM.Adjunction
 open import RAdj2RMon
-open import TermRAdjObj
-open import TermRAdjHom
+open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.CatofRAdj.TermRAdjHom
 
 open Cat
 open Fun

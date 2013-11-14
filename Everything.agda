@@ -34,12 +34,12 @@ open import Monads.Kleisli.Adjunction
 open import Monads.EM
 open import Monads.EM.Functors
 open import Monads.EM.Adjunction
-open import CatofAdj
-open import InitAdj
-open import TermAdjObj
-open import TermAdjHom
-open import TermAdjUniq
-open import TermAdj
+open import Monads.CatofAdj
+open import Monads.CatofAdj.InitAdj
+open import Monads.CatofAdj.TermAdjObj
+open import Monads.CatofAdj.TermAdjHom
+open import Monads.CatofAdj.TermAdjUniq
+open import Monads.CatofAdj.TermAdj
 
 -- relative monads
 open import RMonads
@@ -54,11 +54,11 @@ open import RMonads.RKleisli.Functors
 open import RMonads.RKleisli.Adjunction
 open import RMonads.Restriction
 open import RMonads.SpecialCase
-open import CatofRAdj
-open import InitRAdj
-open import TermRAdjObj
-open import TermRAdjHom
-open import TermRAdj
+open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj.InitRAdj
+open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.CatofRAdj.TermRAdjHom
+open import RMonads.CatofRAdj.TermRAdj
 
 -- rmonad examples
 open import WellScopedTerms

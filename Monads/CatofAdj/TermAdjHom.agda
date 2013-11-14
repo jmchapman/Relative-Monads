@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module TermAdjHom where
+module Monads.CatofAdj.TermAdjHom where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
@@ -8,8 +8,8 @@ open import Categories
 open import Functors
 open import Adjunctions
 import Monads.EM
-open import CatofAdj
-open import TermAdjObj
+open import Monads.CatofAdj
+open import Monads.CatofAdj.TermAdjObj
 
 
 open Cat

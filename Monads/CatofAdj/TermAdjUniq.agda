@@ -1,14 +1,14 @@
 {-# OPTIONS --type-in-type #-}
-module TermAdjUniq where
+module Monads.CatofAdj.TermAdjUniq where
 
 open import Categories
 open import Functors
 open import Adjunctions
 open import Monads
 import Monads.EM
-open import CatofAdj
-open import TermAdjObj
-open import TermAdjHom
+open import Monads.CatofAdj
+open import Monads.CatofAdj.TermAdjObj
+open import Monads.CatofAdj.TermAdjHom
 open import Categories.Terminal
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
