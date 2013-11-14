@@ -1,15 +1,15 @@
 {-# OPTIONS --type-in-type #-}
-open import Monads2
-module EMAdj2 {C}(M : Monad C) where
+open import Monads
+module EMAdj {C}(M : Monad C) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
 open import Functors
-open import Adjunctions2
-open import EM2 M
-open import EMFunctors2 M
+open import Adjunctions
+open import EM M
+open import EMFunctors M
 
 open Cat C
 open Fun

@@ -6,7 +6,7 @@ open import Categories
 open import Functors
 open import Sets
 open import Fin
-open import RMonads2
+open import RMonads
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality

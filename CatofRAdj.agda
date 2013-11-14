@@ -1,12 +1,12 @@
 {-# OPTIONS --type-in-type #-}
-module CatofRAdj2 where
+module CatofRAdj where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import Functors
-open import RMonads2
-open import RAdjunctions2
+open import RMonads
+open import RAdjunctions
 
 open Fun
 open Cat

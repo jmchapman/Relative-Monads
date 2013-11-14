@@ -1,14 +1,14 @@
 {-# OPTIONS --type-in-type #-}
-open import Monads2
+open import Monads
 
-module CatofAdj2 {C}(M : Monad C) where
+module CatofAdj {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import Categories
 open import Functors
-open import Adjunctions2
+open import Adjunctions
 
 open Fun
 open Monad

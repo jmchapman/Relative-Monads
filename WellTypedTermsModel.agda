@@ -3,15 +3,13 @@ module WellTypedTermsModel where
 
 open import Function
 open import Data.Unit
-open import Naturals
 open import WellTypedTerms
-open import REM2
+open import REM
 open import FunctorCat
 open import Sets
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
-open NatT
 
 -- interpretation of types
 

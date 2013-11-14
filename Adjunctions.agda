@@ -1,6 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 
-module Adjunctions2 where
+module Adjunctions where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Categories

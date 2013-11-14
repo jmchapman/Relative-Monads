@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Monads2 where
+module Monads where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality

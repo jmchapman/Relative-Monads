@@ -1,18 +1,18 @@
-module InitAdj2 where
+module InitAdj where
 
-open import Monads2
+open import Monads
 open import Functors
 open import Naturals
-open import Adjunctions2
+open import Adjunctions
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
-open import CatofAdj2
+open import CatofAdj
 open import Initial
-open import Kleisli2
-open import KleisliFunctors2
-open import KleisliAdj2
-open import Adj2Mon2
+open import Kleisli
+open import KleisliFunctors
+open import KleisliAdj
+open import Adj2Mon
 
 open Cat
 open Fun

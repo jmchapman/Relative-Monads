@@ -1,11 +1,11 @@
 {-# OPTIONS --type-in-type #-}
-module RKleisli2 where
+module RKleisli where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
 open import Functors
-open import RMonads2
+open import RMonads
 
 open Cat
 open Fun

@@ -1,9 +1,9 @@
 {-# OPTIONS --type-in-type #-}
 open import Categories
 open import Functors
-open import RMonads2
+open import RMonads
 
-module REM2 {C D : Cat}{J : Fun C D}(M : RMonad J) where
+module REM {C D : Cat}{J : Fun C D}(M : RMonad J) where
 
 open RMonad M
 

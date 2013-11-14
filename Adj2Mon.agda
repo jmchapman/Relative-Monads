@@ -1,13 +1,13 @@
 {-# OPTIONS --type-in-type #-}
-module Adj2Mon2 where
+module Adj2Mon where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
 open import Functors
-open import Monads2
-open import Adjunctions2
+open import Monads
+open import Adjunctions
 
 open Cat
 open Fun

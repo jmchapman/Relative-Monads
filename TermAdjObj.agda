@@ -1,18 +1,18 @@
 {-# OPTIONS --type-in-type #-}
-module TermAdj2Obj where
+module TermAdjObj where
 
-open import Monads2
+open import Monads
 open import Functors
 open import Naturals
-open import Adjunctions2
+open import Adjunctions
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
-open import CatofAdj2
+open import CatofAdj
 open import Terminal
-open import EM2
-open import EMAdj2
-open import Adj2Mon2
+open import EM
+open import EMAdj
+open import Adj2Mon
 
 open Cat
 open Fun

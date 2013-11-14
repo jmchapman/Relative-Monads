@@ -1,10 +1,10 @@
 {-# OPTIONS --type-in-type #-}
-module Kleisli2 where
+module Kleisli where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
-open import Monads2
+open import Monads
 
 Kl : ∀{C} → Monad C → Cat
 Kl {C} M = let open Cat C; open Monad M in record{

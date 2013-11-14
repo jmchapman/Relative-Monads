@@ -1,10 +1,10 @@
 {-# OPTIONS --type-in-type #-}
-module MonadMorphs2 where
+module MonadMorphs where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Functors
 open import Categories
-open import Monads2
+open import Monads
 
 open Fun
 open Monad

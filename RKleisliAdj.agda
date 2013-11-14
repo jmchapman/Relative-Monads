@@ -1,16 +1,16 @@
 {-# OPTIONS --type-in-type #-}
 open import Functors
-open import RMonads2
+open import RMonads
 
-module RKleisliAdj2 {C D}{J : Fun C D}(M : RMonad J) where
+module RKleisliAdj {C D}{J : Fun C D}(M : RMonad J) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
-open import RKleisli2
-open import RAdjunctions2
-open import RKleisliFunctors2 J M
+open import RKleisli
+open import RAdjunctions
+open import RKleisliFunctors J M
 open Cat
 open Fun
 open RMonad M

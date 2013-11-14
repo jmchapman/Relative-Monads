@@ -1,25 +1,23 @@
 {-# OPTIONS --type-in-type #-}
 
-module TermRAdj2 where
+module TermRAdj where
 
-open import RMonads2
+open import RMonads
 open import Functors
-open import Naturals
-open import RAdjunctions2
+open import RAdjunctions
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
-open import CatofRAdj2
+open import CatofRAdj
 open import Terminal
-open import REM2
-open import REMAdj2
-open import RAdj2RMon2
-open import TermRAdj2Obj
-open import TermRAdj2Hom
+open import REM
+open import REMAdj
+open import RAdj2RMon
+open import TermRAdjObj
+open import TermRAdjHom
 
 open Cat
 open Fun
-open NatT
 open RAdj
 
 

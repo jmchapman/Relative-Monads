@@ -1,13 +1,13 @@
 {-# OPTIONS --type-in-type #-}
-open import Monads2
+open import Monads
 
-module EMFunctors2 {C}(M : Monad C) where
+module EMFunctors {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
 open import Functors
-open import EM2 M
+open import EM M
 
 open Cat C
 open Fun

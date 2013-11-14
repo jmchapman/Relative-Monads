@@ -1,8 +1,8 @@
 {-# OPTIONS --type-in-type #-}
 open import Categories
-open import Monads2
+open import Monads
 
-module KleisliAdj2 {C}(M : Monad C) where
+module KleisliAdj {C}(M : Monad C) where
 
 open Cat C
 open Monad M
@@ -11,9 +11,9 @@ open import Function
 open import Relation.Binary.HeterogeneousEquality
 open  ≅-Reasoning renaming (begin_ to proof_)
 open import Functors
-open import Kleisli2
-open import Adjunctions2
-open import KleisliFunctors2 M
+open import Kleisli
+open import Adjunctions
+open import KleisliFunctors M
 open Fun
 
 KlAdj : Adj C (Kl M)

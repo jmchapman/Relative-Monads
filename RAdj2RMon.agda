@@ -1,17 +1,15 @@
 {-# OPTIONS --type-in-type #-}
-module RAdj2RMon2 where
+module RAdj2RMon where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open import Categories
 open import Functors
-open import Naturals
-open import RMonads2
-open import RAdjunctions2
+open import RMonads
+open import RAdjunctions
 
 open Cat
 open Fun
-open NatT
 open RAdj
 
 Adj2Mon : ∀{C D E}{J : Fun C D} → RAdj J E → RMonad J

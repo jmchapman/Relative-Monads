@@ -3,16 +3,14 @@ module WellTypedTerms where
 
 open import Categories
 open import Functors
-open import Naturals
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
-open import RMonads2
+open import RMonads
 open import FunctorCat
 open import Sets
 open import Families
-open NatT
 
 data Ty : Set where
   ι   : Ty

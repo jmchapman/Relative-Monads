@@ -1,7 +1,7 @@
 {-# OPTIONS --type-in-type #-}
-open import Monads2
+open import Monads
 
-module EM2 {C}(M : Monad C) where
+module EM {C}(M : Monad C) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)

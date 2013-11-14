@@ -1,16 +1,16 @@
 {-# OPTIONS --type-in-type #-}
 
 open import Functors
-open import RMonads2
+open import RMonads
 
-module REMFunctors2 {C}{D}(J : Fun C D)(M : RMonad J) where
+module REMFunctors {C}{D}(J : Fun C D)(M : RMonad J) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Function
 open import Equality
 open import Categories
-open import REM2 M
+open import REM M
 
 open Cat
 open Fun

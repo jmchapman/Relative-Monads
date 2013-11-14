@@ -1,18 +1,18 @@
-module InitRAdj2 where
+module InitRAdj where
 
-open import RMonads2
+open import RMonads
 open import Functors
 open import Naturals
-open import RAdjunctions2
+open import RAdjunctions
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
-open import CatofRAdj2
+open import CatofRAdj
 open import Initial
-open import RKleisli2
-open import RKleisliFunctors2
-open import RKleisliAdj2
-open import RAdj2RMon2
+open import RKleisli
+open import RKleisliFunctors
+open import RKleisliAdj
+open import RAdj2RMon
 
 open Cat
 open Fun

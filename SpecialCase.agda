@@ -4,8 +4,8 @@ module SpecialCase where
 open import Categories
 open import Functors
 open import Naturals
-open import Monads2
-open import RMonads2
+open import Monads
+open import RMonads
 
 
 leftM : {C : Cat} → Monad C → RMonad (IdF C)
@@ -32,8 +32,8 @@ open import Isomorphism
 isoM : ∀{C} → Iso (RMonad (IdF C)) (Monad C)
 isoM = record {fun = rightM; inv = leftM; law1 = λ _ → refl; law2 = λ _ → refl}
 
-open import MonadMorphs2
-open import RMonadMorphs2
+open import MonadMorphs
+open import RMonadMorphs
 
 leftMM : ∀{C : Cat}{M M' : Monad C} → MonadMorph M M' → 
          RMonadMorph (leftM M) (leftM M')
@@ -57,8 +57,8 @@ isoMM = record {
  law1 = λ _ → refl; 
  law2 = λ _ → refl }
 
-open import Adjunctions2
-open import RAdjunctions2
+open import Adjunctions
+open import RAdjunctions
 
 leftA : {C D : Cat} → Adj C D → RAdj (IdF C) D
 leftA {C}{D} A = record{

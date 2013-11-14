@@ -7,8 +7,8 @@ open import WellScopedTerms
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
-open import RMonads2
-open import REM2
+open import RMonads
+open import REM
 open import Sets
 open import Data.Fin hiding (lift)
 open import Data.Nat
