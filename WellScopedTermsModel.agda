@@ -9,7 +9,7 @@ open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import RMonads
 open import REM
-open import Sets
+open import Categories.Sets
 open import Data.Fin hiding (lift)
 open import Data.Nat
 

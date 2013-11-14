@@ -3,7 +3,7 @@ module Fin where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
-open import Sets
+open import Categories.Sets
 open import Setoids
 open import Categories
 open import Functors

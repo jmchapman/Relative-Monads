@@ -4,7 +4,7 @@ module WellScopedTerms where
 open import Function
 open import Categories
 open import Functors
-open import Sets
+open import Categories.Sets
 open import Fin
 open import RMonads
 open import Relation.Binary.HeterogeneousEquality

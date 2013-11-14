@@ -8,7 +8,7 @@ open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import CatofAdj
-open import Initial
+open import Categories.Initial
 open import Kleisli
 open import KleisliFunctors
 open import KleisliAdj

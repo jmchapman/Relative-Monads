@@ -6,7 +6,7 @@ open import Data.Unit
 open import WellTypedTerms
 open import REM
 open import FunctorCat
-open import Sets
+open import Categories.Sets
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality

@@ -10,7 +10,7 @@ open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import CatofRAdj
-open import Terminal
+open import Categories.Terminal
 open import REM
 open import REMAdj
 open import RAdj2RMon

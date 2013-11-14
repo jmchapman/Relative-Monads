@@ -9,7 +9,7 @@ open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open import Categories
 open import CatofAdj
-open import Terminal
+open import Categories.Terminal
 open import EM
 open import EMAdj
 open import Adj2Mon

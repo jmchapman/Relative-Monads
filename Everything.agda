@@ -8,13 +8,14 @@ open import Setoids -- should be replaced by standard libary def
 
 -- basic category theory
 open import Categories
+open import Categories.Sets
+open import Categories.Families
+open import Categories.Initial
+open import Categories.Terminal
+
 open import Functors
 open import FullyFaithful
 open import Naturals
-open import Sets
-open import Families
-open import Initial
-open import Terminal
 
 -- basic examples
 open import Monoids

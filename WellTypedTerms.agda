@@ -9,8 +9,8 @@ open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
 open import RMonads
 open import FunctorCat
-open import Sets
-open import Families
+open import Categories.Sets
+open import Categories.Families
 
 data Ty : Set where
   ι   : Ty

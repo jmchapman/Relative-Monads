@@ -5,7 +5,7 @@ open import Monads
 open import Functors
 open import Categories
 open import CatofAdj
-open import Terminal
+open import Categories.Terminal
 open import TermAdjObj
 open import TermAdjHom
 open import TermAdjUniq

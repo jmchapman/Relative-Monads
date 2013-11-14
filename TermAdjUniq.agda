@@ -9,7 +9,7 @@ import EM
 open import CatofAdj
 open import TermAdjObj
 open import TermAdjHom
-open import Terminal
+open import Categories.Terminal
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
 open Fun

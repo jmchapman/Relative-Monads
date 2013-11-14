@@ -1,10 +1,10 @@
 {-# OPTIONS --type-in-type #-}
-module Initial where
+module Categories.Initial where
 
 open import Categories
 open import Relation.Binary.HeterogeneousEquality
 open import Equality
-open import Sets
+open import Categories.Sets
 open import Data.Empty
 open Cat
 

@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Families where
+module Categories.Families where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Function

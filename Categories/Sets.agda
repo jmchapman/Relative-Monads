@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Sets where
+module Categories.Sets where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Categories
