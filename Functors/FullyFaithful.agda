@@ -1,6 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 
-module FullyFaithful where
+module Functors.FullyFaithful where
 
 open import Equality
 open import Categories

@@ -10,8 +10,8 @@ open import Categories
 open import CatofAdj
 open import Categories.Initial
 open import Kleisli
-open import KleisliFunctors
-open import KleisliAdj
+open import Kleisli.Functors
+open import Kleisli.Adjunction
 open import Adj2Mon
 
 open Cat

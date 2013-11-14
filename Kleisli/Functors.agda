@@ -3,7 +3,7 @@
 open import Categories
 open import Monads
 
-module KleisliFunctors {C}(M : Monad C) where
+module Kleisli.Functors {C}(M : Monad C) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality

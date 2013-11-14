@@ -2,9 +2,8 @@ module Everything where
 
 -- basic utilities
 open import Equality
-open import Fin
 open import Isomorphism
-open import Setoids -- should be replaced by standard libary def
+
 
 -- basic category theory
 open import Categories
@@ -12,9 +11,12 @@ open import Categories.Sets
 open import Categories.Families
 open import Categories.Initial
 open import Categories.Terminal
+open import Categories.Setoids -- should be replaced by standard libary def
 
 open import Functors
-open import FullyFaithful
+open import Functors.Fin
+open import Functors.FullyFaithful
+
 open import Naturals
 
 -- basic examples
@@ -27,11 +29,11 @@ open import MonadMorphs
 open import Adjunctions
 open import Adj2Mon
 open import Kleisli
-open import KleisliFunctors
-open import KleisliAdj
+open import Kleisli.Functors
+open import Kleisli.Adjunction
 open import EM
-open import EMFunctors
-open import EMAdj
+open import EM.Functors
+open import EM.Adjunction
 open import CatofAdj
 open import InitAdj
 open import TermAdjObj

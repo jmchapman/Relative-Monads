@@ -11,7 +11,7 @@ open import Categories
 open import CatofAdj
 open import Categories.Terminal
 open import EM
-open import EMAdj
+open import EM.Adjunction
 open import Adj2Mon
 
 open Cat

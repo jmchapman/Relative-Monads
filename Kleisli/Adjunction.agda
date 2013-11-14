@@ -2,7 +2,7 @@
 open import Categories
 open import Monads
 
-module KleisliAdj {C}(M : Monad C) where
+module Kleisli.Adjunction {C}(M : Monad C) where
 
 open Cat C
 open Monad M
@@ -13,7 +13,7 @@ open  ≅-Reasoning renaming (begin_ to proof_)
 open import Functors
 open import Kleisli
 open import Adjunctions
-open import KleisliFunctors M
+open import Kleisli.Functors M
 open Fun
 
 KlAdj : Adj C (Kl M)

@@ -1,6 +1,6 @@
 {-# OPTIONS --type-in-type #-}
 open import Monads
-module EMAdj {C}(M : Monad C) where
+module EM.Adjunction {C}(M : Monad C) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
@@ -9,7 +9,7 @@ open import Categories
 open import Functors
 open import Adjunctions
 open import EM M
-open import EMFunctors M
+open import EM.Functors M
 
 open Cat C
 open Fun

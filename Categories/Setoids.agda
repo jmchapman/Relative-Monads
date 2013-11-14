@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Setoids where
+module Categories.Setoids where
 
 open import Categories
 open import Equality
