@@ -3,14 +3,14 @@
 open import Functors
 open import RMonads
 
-module REM.Functors {C}{D}(J : Fun C D)(M : RMonad J) where
+module RMonads.REM.Functors {C}{D}(J : Fun C D)(M : RMonad J) where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Function
 open import Equality
 open import Categories
-open import REM M
+open import RMonads.REM M
 
 open Cat
 open Fun

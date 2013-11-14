@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Restriction where
+module RMonads.Restriction where
 
 open import Equality
 open import Function
@@ -21,8 +21,8 @@ restrictM J M = let open Monad M in record {
   law2 = law2; 
   law3 = law3}
 
-open import MonadMorphs
-open import RMonadMorphs
+open import Monads.MonadMorphs
+open import RMonads.RMonadMorphs
 
 restrictMM : {C D : Cat}{M M' : Monad D}(J : Fun C D) → MonadMorph M M' → 
              RMonadMorph (restrictM J M) (restrictM J M')

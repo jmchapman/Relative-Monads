@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module RMonadMorphs where
+module RMonads.RMonadMorphs where
 
 open import Relation.Binary.HeterogeneousEquality
 open import Functors

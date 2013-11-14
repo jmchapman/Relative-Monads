@@ -4,7 +4,7 @@ module WellTypedTermsModel where
 open import Function
 open import Data.Unit
 open import WellTypedTerms
-open import REM
+open import RMonads.REM
 open import FunctorCat
 open import Categories.Sets
 open import Relation.Binary.HeterogeneousEquality

@@ -11,8 +11,8 @@ open import Equality
 open import Categories
 open import CatofRAdj
 open import Categories.Terminal
-open import REM
-open import REM.Adjunction
+open import RMonads.REM
+open import RMonads.REM.Adjunction
 open import RAdj2RMon
 
 open Cat

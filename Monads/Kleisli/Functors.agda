@@ -3,13 +3,13 @@
 open import Categories
 open import Monads
 
-module Kleisli.Functors {C}(M : Monad C) where
+module Monads.Kleisli.Functors {C}(M : Monad C) where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Functors
-open import Kleisli
+open import Monads.Kleisli
 
 open Cat C
 open Fun

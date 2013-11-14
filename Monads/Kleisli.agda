@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Kleisli where
+module Monads.Kleisli where
 
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)

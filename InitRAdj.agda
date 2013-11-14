@@ -9,9 +9,9 @@ open import Equality
 open import Categories
 open import CatofRAdj
 open import Categories.Initial
-open import RKleisli
-open import RKleisli.Functors
-open import RKleisli.Adjunction
+open import RMonads.RKleisli
+open import RMonads.RKleisli.Functors
+open import RMonads.RKleisli.Adjunction
 open import RAdj2RMon
 
 open Cat

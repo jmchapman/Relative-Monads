@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module SpecialCase where
+module RMonads.SpecialCase where
 
 open import Categories
 open import Functors
@@ -32,8 +32,8 @@ open import Isomorphism
 isoM : ∀{C} → Iso (RMonad (IdF C)) (Monad C)
 isoM = record {fun = rightM; inv = leftM; law1 = λ _ → refl; law2 = λ _ → refl}
 
-open import MonadMorphs
-open import RMonadMorphs
+open import Monads.MonadMorphs
+open import RMonads.RMonadMorphs
 
 leftMM : ∀{C : Cat}{M M' : Monad C} → MonadMorph M M' → 
          RMonadMorph (leftM M) (leftM M')

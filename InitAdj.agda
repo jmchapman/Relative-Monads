@@ -9,9 +9,9 @@ open import Equality
 open import Categories
 open import CatofAdj
 open import Categories.Initial
-open import Kleisli
-open import Kleisli.Functors
-open import Kleisli.Adjunction
+open import Monads.Kleisli
+open import Monads.Kleisli.Functors
+open import Monads.Kleisli.Adjunction
 open import Adj2Mon
 
 open Cat

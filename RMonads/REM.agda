@@ -3,7 +3,7 @@ open import Categories
 open import Functors
 open import RMonads
 
-module REM {C D : Cat}{J : Fun C D}(M : RMonad J) where
+module RMonads.REM {C D : Cat}{J : Fun C D}(M : RMonad J) where
 
 open RMonad M
 
