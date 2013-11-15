@@ -12,7 +12,7 @@ open import Categories.Initial
 open import Monads.Kleisli
 open import Monads.Kleisli.Functors
 open import Monads.Kleisli.Adjunction
-open import Adj2Mon
+open import Adjunctions.Adj2Mon
 
 open Cat
 open Fun

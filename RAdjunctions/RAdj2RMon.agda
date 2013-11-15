@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module RAdj2RMon where
+module RAdjunctions.RAdj2RMon where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality

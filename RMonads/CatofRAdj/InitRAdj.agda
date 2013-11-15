@@ -12,7 +12,7 @@ open import Categories.Initial
 open import RMonads.RKleisli
 open import RMonads.RKleisli.Functors
 open import RMonads.RKleisli.Adjunction
-open import RAdj2RMon
+open import RAdjunctions.RAdj2RMon
 
 open Cat
 open Fun

@@ -13,7 +13,7 @@ open import RMonads.CatofRAdj
 open import Categories.Terminal
 open import RMonads.REM
 open import RMonads.REM.Adjunction
-open import RAdj2RMon
+open import RAdjunctions.RAdj2RMon
 
 open Cat
 open Fun

@@ -27,7 +27,7 @@ open import FunctorCat
 open import Monads
 open import Monads.MonadMorphs
 open import Adjunctions
-open import Adj2Mon
+open import Adjunctions.Adj2Mon
 open import Monads.Kleisli
 open import Monads.Kleisli.Functors
 open import Monads.Kleisli.Adjunction
@@ -45,7 +45,7 @@ open import Monads.CatofAdj.TermAdj
 open import RMonads
 open import RMonads.RMonadMorphs
 open import RAdjunctions
-open import RAdj2RMon
+open import RAdjunctions.RAdj2RMon
 open import RMonads.REM
 open import RMonads.REM.Functors
 open import RMonads.REM.Adjunction

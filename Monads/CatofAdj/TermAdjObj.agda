@@ -12,7 +12,7 @@ open import Monads.CatofAdj
 open import Categories.Terminal
 open import Monads.EM
 open import Monads.EM.Adjunction
-open import Adj2Mon
+open import Adjunctions.Adj2Mon
 
 open Cat
 open Fun

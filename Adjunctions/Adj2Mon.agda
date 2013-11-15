@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module Adj2Mon where
+module Adjunctions.Adj2Mon where
 
 open import Function
 open import Relation.Binary.HeterogeneousEquality
