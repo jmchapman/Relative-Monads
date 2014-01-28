@@ -72,7 +72,6 @@ mutual
     renNf (wk ρ') (renNf (wk ρ) v) 
     ∎
   renNfcomp ρ ρ' ι       (ne x)  = cong ne (renNecomp ρ ρ' ι x)
--- interpretation of types
 
 mutual
   Val : Con → Ty → Set
@@ -109,8 +108,10 @@ eval γ (lam t)   = λ ρ v → eval ((renV ρ ∘ γ) << v) t
 eval γ (app t u) = eval γ t id (eval γ u)
 
 
+
+lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
+lem = {!!}
 {-
-  lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → renV ρ (eval γ t) ≅ eval (renV ρ • γ) t
   lem ρ γ (var x)   = refl
   lem ρ γ (app t u) = trans (snd (eval γ t) id ρ (eval γ u)) 
                             (resp2 (λ f x → f x)
@@ -139,15 +140,13 @@ renV<< : ∀{B' B Γ}(α  : Ren B B')(β : Env Γ B){σ}(v : Val B σ) →
 renV<< α β v vz = refl
 renV<< α β v (vs y) = refl
 
-{-
-
 substeval : ∀{σ τ}(p : σ ≅ τ){Γ B : Con}{γ : Env Γ B}(t : Tm Γ σ) → 
-      (subst (Val B) p  • eval γ) t ≅ (eval γ • subst (Tm Γ) p) t
+      (subst (Val B) p  ∘ eval γ) t ≅ (eval γ ∘ subst (Tm Γ) p) t
 substeval refl t = refl
 
 wk<< : ∀{B Γ Δ}(α  : Ren Γ Δ)(β : Env Δ B){σ}(v : Val B σ) →
         ∀{ρ}(y : Var (Γ < σ) ρ) → 
-        ((β • α) << v) y ≅ (β << v) (wk α y)
+        ((β ∘ α) << v) y ≅ (β << v) (wk α y)
 wk<< α β v vz     = refl
 wk<< α β v (vs y) = refl
 
@@ -156,38 +155,47 @@ wk<< α β v (vs y) = refl
 <<eq refl v = refl
 
 
-
 reneval : ∀{B Γ Δ σ}(α : Ren Γ Δ)(β : Env Δ B)(t : Tm Γ σ) →
-          eval (eval β • (var • α)) t
+          eval (β ∘ α) t
           ≅ 
-          (eval β • ren α) t
+          (eval β ∘ ren α) t
 reneval α β (var x)   = refl
 reneval α β (app t u) = 
-  resp2 (λ f x → (fst f) id x) (reneval α β t) (reneval α β u)
-reneval {B} α β (lam t) = 
-  funeq (λ {B'} → ext (λ (ρ : Ren B B') → ext (λ (v : Val B' _) → 
-    trans (resp (λ (γ : Env _ B') → eval γ t) 
-                (iext (λ σ' → ext (wk<< α (renV ρ • β) v)))) 
-          (reneval (wk α) ((renV ρ • β) << v) t)))) 
+  cong₂ (λ f x → f id x) (reneval α β t) (reneval α β u)
+reneval {B} α β (lam t) = iext λ B' → ext λ (ρ : Ren B B') → ext λ v → 
+  proof 
+  eval ((renV ρ ∘ β ∘ α) << v) t 
+  ≅⟨ cong (λ (γ : Env _ B') → eval γ t) 
+          (iext λ _ → ext (wk<< α (renV ρ ∘ β) v)) ⟩
+  eval (((renV ρ ∘ β) << v) ∘ wk α) t
+  ≅⟨ reneval (wk α) ((renV ρ ∘ β) << v) t ⟩
+  eval ((renV ρ ∘ β) << v) (ren (wk α) t) 
+  ∎
+
 
 lifteval : ∀{B Γ Δ σ τ}(α : Sub Γ Δ)(β : Env Δ B)
            (v : Val B σ)(y : Var (Γ < σ) τ) →
-           ((eval β • α) << v) y ≅ (eval (β << v) • lift α) y
+           ((eval β ∘ α) << v) y ≅ (eval (β << v) ∘ lift α) y
 lifteval α β v vz     = refl
 lifteval α β v (vs x) = reneval vs (β << v) (α x)
 
 
 subeval : ∀{B Γ Δ σ}(α : Sub Γ Δ)(β : Env Δ B)(t : Tm Γ σ) → 
-          eval (eval β • α) t ≅ (eval β • sub α) t
+          eval (eval β ∘ α) t ≅ (eval β ∘ sub α) t
 subeval α β (var x)   = refl
-subeval α β (app t u) = resp2 (λ f x → (fst f) id x) (subeval α β t) (subeval α β u) 
-subeval {B} α β (lam t) = funeq (λ {B'} → ext (λ (ρ : Ren B B') → ext (λ (v : Val B' _) →
-  trans (resp (λ (γ : Env _ B') → eval γ t)
-              (iext (λ σ' → ext (λ x → trans
-                (resp (λ (γ : Env _ B') → (γ << v) x)
-                      (iext (λ σ'' → ext (λ a → lem ρ β (α a)))))
-                (lifteval α (renV ρ • β) v x)))))
-        (subeval (lift α) ((renV ρ • β) << v) t))))
+subeval α β (app t u) = cong₂ (λ f x → f id x) (subeval α β t) (subeval α β u) 
+subeval {B} α β (lam t) = iext λ B' → ext λ (ρ : Ren B B') → ext λ v → 
+  proof
+  eval ((renV ρ ∘ eval β ∘ α) << v) t 
+  ≅⟨ cong (λ (γ : Env _ B') → eval (γ << v) t) 
+          (iext λ _ → ext λ x → lem ρ β (α x)) ⟩
+  eval ((eval (renV ρ ∘ β) ∘ α) << v) t
+  ≅⟨ cong (λ (γ : Env _ B') → eval γ t) 
+          (iext λ _ → ext λ x → lifteval α (renV ρ ∘ β) v x) ⟩
+  eval (eval ((renV ρ ∘ β) << v) ∘ lift α) t
+  ≅⟨ subeval (lift α) ((renV ρ ∘ β) << v) t ⟩
+  eval ((λ {σ} x → renV ρ (β x)) << v) (sub (lift α) t) 
+  ∎
 
 modelRAlg : Con → RAlg TmRMonad
 modelRAlg Γ = record {
@@ -195,5 +203,4 @@ modelRAlg Γ = record {
   astr  = λ γ → eval γ;
   alaw1 = refl;
   alaw2 = λ {B} {Δ} {α} {γ} → iext (λ σ → ext (subeval α γ))} 
--}
 
