@@ -109,7 +109,8 @@ eval γ (app t u) = eval γ t id (eval γ u)
 
 
 
-lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
+lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → 
+      renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
 lem = {!!}
 {-
   lem ρ γ (var x)   = refl
@@ -171,7 +172,6 @@ reneval {B} α β (lam t) = iext λ B' → ext λ (ρ : Ren B B') → ext λ v �
   ≅⟨ reneval (wk α) ((renV ρ ∘ β) << v) t ⟩
   eval ((renV ρ ∘ β) << v) (ren (wk α) t) 
   ∎
-
 
 lifteval : ∀{B Γ Δ σ τ}(α : Sub Γ Δ)(β : Env Δ B)
            (v : Val B σ)(y : Var (Γ < σ) τ) →
