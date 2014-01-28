@@ -238,3 +238,18 @@ TmRMonad = record {
   law1 = iext λ _ → ext subid ;
   law2 = refl; 
   law3 = λ{_ _ _ f g} → iext λ σ → ext (subcomp g f)}
+
+sub<< : ∀{Γ Δ σ}(f : Sub Γ Δ)(t : Tm Δ σ) → Sub (Γ < σ) Δ
+sub<< f t vz     = t
+sub<< f t (vs x) = f x 
+
+lem1 : ∀{B Γ Δ σ}{f : Sub Γ Δ}{g : Ren B Γ}{t : Tm Δ σ}{τ}(x : Var (B < σ) τ) → 
+        (sub<< f t ∘ wk g) x ≅ (sub<< (f ∘ g) t) x
+lem1 vz     = refl
+lem1 (vs x) = refl
+
+lem2 : ∀{B Γ Δ σ}{f : Sub Γ Δ}{g : Sub B Γ}{t : Tm Δ σ}{τ}(x : Var (B < σ) τ) → 
+       (subComp (sub<< f t) (lift g)) x ≅ (sub<< (subComp f g) t) x
+lem2 vz     = refl
+lem2 {f = f}{g = g}{t = t} (vs x) = subren (sub<< f t) vs (g x) 
+                                          
