@@ -9,13 +9,14 @@ open import RMonads
 
 
 leftM : {C : Cat} → Monad C → RMonad (IdF C)
-leftM {C} M = record {
+leftM M = record {
   T    = T;
   η    = η;
   bind = bind;
   law1 = law1;
   law2 = law2;
-  law3 = law3} where open Monad M
+  law3 = law3} 
+  where open Monad M
 
 rightM : {C : Cat} → RMonad (IdF C) → Monad C
 rightM {C} M = record {

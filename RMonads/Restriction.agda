@@ -13,29 +13,30 @@ open Cat
 open Fun
 
 restrictM : {C D : Cat}(J : Fun C D) → Monad D → RMonad J
-restrictM J M = let open Monad M in record {
+restrictM J M = record {
   T    = T ∘ OMap J;
   η    = η;
   bind = bind;
   law1 = law1;
   law2 = law2; 
   law3 = law3}
+  where open Monad M
 
 open import Monads.MonadMorphs
 open import RMonads.RMonadMorphs
 
 restrictMM : {C D : Cat}{M M' : Monad D}(J : Fun C D) → MonadMorph M M' → 
              RMonadMorph (restrictM J M) (restrictM J M')
-restrictMM J MM = let open MonadMorph MM in record { 
+restrictMM J MM = record { 
   morph   = λ{X} → morph {OMap J X}; 
   lawη    = lawη; 
   lawbind = lawbind}
-
+  where open MonadMorph MM
 open import Adjunctions
 open import RAdjunctions
 
 restrictA : {C D E : Cat}(J : Fun C D) → Adj D E → RAdj J E 
-restrictA J A = let open Adj A in record{
+restrictA J A = record{
   L        = L ○ J;
   R        = R;
   left     = left;
@@ -44,3 +45,4 @@ restrictA J A = let open Adj A in record{
   lawb     = lawb;
   natleft  = natleft ∘ HMap J;
   natright = natright ∘ HMap J}
+  where open Adj A
