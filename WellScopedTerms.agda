@@ -4,9 +4,9 @@ module WellScopedTerms where
 open import Function
 open import Categories
 open import Functors
-open import Sets
-open import Fin
-open import RMonads2
+open import Categories.Sets
+open import Functors.Fin
+open import RMonads
 open import Relation.Binary.HeterogeneousEquality
 open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality

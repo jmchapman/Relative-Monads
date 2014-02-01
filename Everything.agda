@@ -2,56 +2,66 @@ module Everything where
 
 -- basic utilities
 open import Equality
-open import Fin
 open import Isomorphism
-open import Setoids -- should be replaced by standard libary def
+
 
 -- basic category theory
 open import Categories
+open import Categories.Sets
+open import Categories.Families
+open import Categories.Initial
+open import Categories.Terminal
+open import Categories.Setoids -- should be replaced by standard libary def
+
 open import Functors
-open import FullyFaithful
+open import Functors.Fin
+open import Functors.FullyFaithful
+
 open import Naturals
-open import Sets
-open import Families
-open import Initial
-open import Terminal
 
 -- basic examples
 open import Monoids
 open import FunctorCat
 
 -- ordinary monads
-open import Monads2
-open import MonadMorphs2
-open import Adjunctions2
-open import Adj2Mon2
-open import Kleisli2
-open import KleisliFunctors2
-open import KleisliAdj2
-open import EM2
-open import EMFunctors2
-open import EMAdj2
-open import CatofAdj2
-open import InitAdj2
+open import Monads
+open import Monads.MonadMorphs
+open import Adjunctions
+open import Adjunctions.Adj2Mon
+open import Monads.Kleisli
+open import Monads.Kleisli.Functors
+open import Monads.Kleisli.Adjunction
+open import Monads.EM
+open import Monads.EM.Functors
+open import Monads.EM.Adjunction
+open import Monads.CatofAdj
+open import Monads.CatofAdj.InitAdj
+open import Monads.CatofAdj.TermAdjObj
+open import Monads.CatofAdj.TermAdjHom
+open import Monads.CatofAdj.TermAdjUniq
+open import Monads.CatofAdj.TermAdj
 
 -- relative monads
-open import RMonads2
-open import RMonadMorphs2
-open import RAdjunctions2
-open import RAdj2RMon2
-open import REM2
-open import REMFunctors2
-open import REMAdj2
-open import RKleisli2
-open import RKleisliFunctors2
-open import RKleisliAdj2
-open import Restriction
-open import SpecialCase
-open import CatofRAdj2
-open import InitRAdj2
+open import RMonads
+open import RMonads.RMonadMorphs
+open import RAdjunctions
+open import RAdjunctions.RAdj2RMon
+open import RMonads.REM
+open import RMonads.REM.Functors
+open import RMonads.REM.Adjunction
+open import RMonads.RKleisli
+open import RMonads.RKleisli.Functors
+open import RMonads.RKleisli.Adjunction
+open import RMonads.Restriction
+open import RMonads.SpecialCase
+open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj.InitRAdj
+open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.CatofRAdj.TermRAdjHom
+open import RMonads.CatofRAdj.TermRAdj
 
 -- rmonad examples
 open import WellScopedTerms
 open import WellScopedTermsModel
-open import WellTypedTerms3
-open import WellTypedTermsModel3
+open import WellTypedTerms
+open import WellTypedTermsModel

@@ -5,10 +5,11 @@ module WellScopedTermsModel where
 open import Function
 open import WellScopedTerms
 open import Relation.Binary.HeterogeneousEquality
+open ≅-Reasoning renaming (begin_ to proof_)
 open import Equality
-open import RMonads2
-open import REM2
-open import Sets
+open import RMonads
+open import RMonads.REM
+open import Categories.Sets
 open import Data.Fin hiding (lift)
 open import Data.Nat
 
@@ -18,77 +19,116 @@ _<<_ : ∀{n X} → (Fin n → X) → X → Fin (suc n) → X
 
 record LambdaModel : Set where
   field S      : Set
-        eval   : ∀{n} → (Fin n → S) → Tm n → S
+  Env = λ n → Fin n → S
+  field eval   : ∀{n} → Env n → Tm n → S
         ap     : S → S → S
-        lawvar : ∀{n}{i : Fin n}{γ : Fin n → S} →
+        lawvar : ∀{n}{i : Fin n}{γ : Env n} →
                  eval γ (var i) ≅ γ i
-        lawapp : ∀{n}{t u : Tm n}{γ : Fin n → S} → 
+        lawapp : ∀{n}{t u : Tm n}{γ : Env n} → 
                  eval γ (app t u) ≅ ap (eval γ t) (eval γ u)
-        lawlam : ∀{n}{t : Tm (suc n)}{γ : Fin n → S}{s : S} →
+        lawlam : ∀{n}{t : Tm (suc n)}{γ : Env n}{s : S} →
                  ap (eval γ (lam t)) s ≅ eval (γ << s) t
         lawext : ∀{f g : S} → ((a : S) → ap f a ≅ ap g a) → f ≅ g
-open LambdaModel
 
-wk<< : ∀(l : LambdaModel){m n}(α  : Fin m → Fin n)(β : Fin n → S l)
-          (v : S l) → (y : Fin (suc m)) → 
-          ((β ∘ α) << v) y ≅ (β << v) (wk α y)
-wk<< l α β v zero     = refl
-wk<< l α β v (suc i) = refl
+module Model (l : LambdaModel) where
+  open LambdaModel l
 
-reneval : ∀(l : LambdaModel){m n}(α : Fin m → Fin n)(β : Fin n → S l)
-          (t : Tm m) →
-          eval l (eval l β ∘ (var ∘ α)) t
-          ≅
-          (eval l β ∘ ren α) t
-reneval l α β (var i)   = lawvar l
-reneval l {m} {n} α β (lam t)   = lawext l λ a → 
-  trans (lawlam l) 
-        (trans (trans (cong (λ (f : Fin _ → S l) → eval l f t) 
-                            (ext λ i → trans (trans (cong (λ (f : Fin m → S l) 
-                                                           → (f << a) i) 
-                                                          (ext λ i → lawvar l))
-                                                    (wk<< l α β a i)) 
-                                             (sym (lawvar l))))
-                      (reneval l (wk α) (β << a) t)) 
-               (sym (lawlam l)))
-reneval l α β (app t u) = trans (lawapp l) 
-                                (trans (cong₂ (ap l) 
-                                              (reneval l α β t)
-                                              (reneval l α β u)) 
-                                       (sym (lawapp l)))
+  wk<< : ∀{m n}(α  : Ren m n)(β : Env n)
+            (v : S) → (y : Fin (suc m)) → 
+            ((β ∘ α) << v) y ≅ (β << v) (wk α y)
+  wk<< α β v zero    = refl
+  wk<< α β v (suc i) = refl
+  
+  reneval : ∀{m n}(α : Ren m n)(β : Env n)
+            (t : Tm m) → eval (β ∘ α) t ≅ (eval β ∘ ren α) t
+  reneval α β (var i) = 
+    proof
+    eval (β ∘ α) (var i) 
+    ≅⟨ lawvar ⟩
+    β (α i)
+    ≅⟨ sym lawvar ⟩
+    eval β (var (α i)) ∎
+  reneval α β (lam t) = lawext λ a → 
+    proof
+    ap (eval (β ∘ α) (lam t)) a 
+    ≅⟨ lawlam ⟩
+    eval ((β ∘ α) << a) t
+    ≅⟨ cong (λ (f : Env _) → eval f t) (ext (wk<< α β a)) ⟩
+    eval ((β << a) ∘ wk α) t
+    ≅⟨ reneval (wk α) (β << a) t ⟩
+    eval (β << a) (ren (wk α) t)
+    ≅⟨ sym lawlam ⟩
+    ap (eval β (lam (ren (wk α) t))) a 
+    ∎
+  reneval α β (app t u) = 
+    proof
+    eval (β ∘ α) (app t u) 
+    ≅⟨ lawapp ⟩
+    ap (eval (β ∘ α) t) (eval (β ∘ α) u)
+    ≅⟨ cong₂ ap (reneval α β t) (reneval α β u) ⟩
+    ap (eval β (ren α t)) (eval β (ren α u))
+    ≅⟨ sym lawapp ⟩
+    eval β (app (ren α t) (ren α u))
+    ∎
+  
+  lift<< : ∀{m n}(γ  : Sub m n)(α : Env n)
+           (a  : S)(i : Fin (suc m)) → 
+           ((eval α ∘ γ ) << a) i ≅ (eval (α << a) ∘ lift γ) i
+  lift<< γ α a zero = 
+    proof 
+    a 
+    ≅⟨ sym lawvar ⟩ 
+    eval (α << a) (var zero)
+    ∎
+  lift<< γ α a (suc i) = 
+    proof
+    eval α (γ i)
+    ≡⟨⟩
+    eval ((α << a) ∘ suc) (γ i)
+    ≅⟨ reneval suc (α << a) (γ i) ⟩
+    eval (α << a) (ren suc (γ i))
+    ∎
+  
+  subeval : ∀{m n}(t : Tm m)(γ : Sub m n)(α : Env n) → 
+            eval (eval α ∘ γ) t  ≅ (eval α ∘ sub γ) t
+  subeval (var i)   γ α = 
+    proof
+    eval (eval α ∘ γ) (var i) 
+    ≅⟨ lawvar ⟩
+    eval α (γ i)
+    ∎
+  subeval (lam t)   γ α = lawext λ a → 
+    proof
+    ap (eval (eval α ∘ γ) (lam t)) a
+    ≅⟨ lawlam ⟩
+    eval ((eval α ∘ γ) << a) t
+    ≅⟨ cong (λ (f : Env _) → eval f t) (ext (lift<< γ α a)) ⟩
+    eval (eval (α << a) ∘ lift γ) t
+    ≅⟨ subeval t (lift γ) (α << a) ⟩
+    eval (α << a) (sub (lift γ) t) 
+    ≅⟨ sym lawlam ⟩
+    ap (eval α (lam (sub (lift γ) t))) a 
+    ∎
+  subeval (app t u) γ α = 
+    proof
+    eval (eval α ∘ γ) (app t u) 
+    ≅⟨ lawapp ⟩
+    ap (eval (eval α ∘ γ) t) (eval (eval α ∘ γ) u)
+    ≅⟨ cong₂ ap (subeval t γ α) (subeval u γ α) ⟩
+    ap (eval α (sub γ t)) (eval α (sub γ u))
+    ≅⟨ sym lawapp ⟩
+    eval α (app (sub γ t) (sub γ u)) 
+    ∎
 
+  TmRAlg : RAlg TmRMonad
+  TmRAlg = record{
+    acar  = S;
+    astr  = eval;
+    alaw1 = ext λ _ → sym lawvar;
+    alaw2 =  ext λ t → subeval t _ _}       
+  
 
-lift<< : ∀(l : LambdaModel){m n}(γ  : Fin m → Tm n)(α : Fin n → S l)
-         (a  : S l)(i : Fin (suc m)) → 
-         ((eval l α ∘ γ ) << a) i ≅ (eval l (α << a) ∘ lift γ) i
-lift<< l γ α a zero = sym (lawvar l)
-lift<< l γ α a (suc i) = trans (cong (λ (f : Fin _ → S l) → eval l f (γ i)) 
-                                    (ext λ i → sym (lawvar l)))
-                              (reneval l suc (α << a) (γ i))
-
-
-subeval : ∀(l : LambdaModel){m n}(t : Tm m)
-          (γ : Fin m → Tm n)(α : Fin n → S l) → 
-          eval l (eval l α ∘ γ) t  ≅ (eval l α ∘ sub γ) t
-subeval l (var i)   γ α = lawvar l 
-subeval l (lam t)   γ α = lawext l λ a → 
-  trans (lawlam l) 
-        (trans (trans (cong (λ (f : Fin _ → S l) → eval l f t) 
-                            (ext (lift<< l γ α a)))
-                      (subeval l t (lift γ) (α << a))) 
-               (sym (lawlam l)))
-subeval l (app t u) γ α = trans (lawapp l) 
-                             (trans (cong₂ (ap l) 
-                                           (subeval l t γ α) 
-                                           (subeval l u γ α)) 
-                                    (sym (lawapp l)))
-TmRAlg : LambdaModel → RAlg TmRMonad
-TmRAlg l = record{
-  acar  = S l;
-  astr  = eval l;
-  alaw1 = ext λ _ → sym (lawvar l);
-  alaw2 =  ext λ t → subeval l t _ _}       
-
+-- some experiments
 open import Coinduction
 
 data Delay (X : Set) : Set where

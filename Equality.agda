@@ -18,6 +18,17 @@ icong : ∀{A}{B : A → Set}(f : ∀ {a} → B a){a a' : A} →
         a ≅ a' → f {a} ≅ f {a'}
 icong f refl = refl
 
+-- should be replaced by dcong
+cong' : ∀{A A'} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
+        {f : ∀ a → B a}{f' : ∀ a → B' a} → f ≅ f' → 
+        {a : A}{a' : A'} → a ≅ a' → f a ≅ f' a'
+cong' refl refl refl refl = refl
+
+-- should be replaced by dicong
+icong' : ∀{A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
+        {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
+        {a : A}{a' : A'} → a ≅ a' → f {a} ≅ f' {a'}
+icong' refl refl refl refl = refl
 
 fcong : ∀{A}{B : A → Set}{f f' : (x : A) → B x}
         (a : A) → f ≅ f' → f a ≅ f' a
@@ -27,9 +38,23 @@ dcong : ∀{A A'}{B : A → Set}{B' : A' → Set}{f : (a : A) → B a}{f' : (a :
         a ≅ a' → B ≅ B' → f ≅ f' → f a ≅ f' a'
 dcong refl refl refl = refl
 
+dicong : ∀{A A' : Set}{B : A → Set}{B' : A' → Set}{f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → {a : A}{a' : A'} → a ≅ a' →  B ≅ B' → 
+        (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
+        f {a} ≅ f' {a'}
+dicong refl refl refl = refl
+
 ifcong : ∀{A}{B : A → Set}{f f' : {x : A} → B x}(a : A) → 
          _≅_ {_}{ {x : A} → B x} f { {x : A} → B x} f' → f {a} ≅ f' {a}
 ifcong a refl = refl
+
+
+cong₃ : ∀{A}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C x y → Set}
+        (f : ∀ x y z → D x y z)
+        {a a' : A} → a ≅ a' → 
+        {b : B a}{b' : B a'} → b ≅ b' → 
+        {c : C a b}{c' : C a' b'} → c ≅ c' → 
+        f a b c ≅ f a' b' c'
+cong₃ f refl refl refl = refl
 
 funnycong : ∀{A}{B : A → Set}{C : Set}{a a' : A} → 
             a ≅ a' → {b : B a}{b' : B a'} → b ≅ b' → 
