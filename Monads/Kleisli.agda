@@ -7,7 +7,7 @@ open import Categories
 open import Monads
 
 Kl : ∀{C} → Monad C → Cat
-Kl {C} M = let open Cat C; open Monad M in record{
+Kl {C} M = record{
   Obj  = Obj;
   Hom  = λ X Y → Hom X (T Y);
   iden = η;
@@ -29,4 +29,4 @@ Kl {C} M = let open Cat C; open Monad M in record{
     ≅⟨ ass ⟩
     comp (bind f) (comp (bind g) h) 
     ∎}
-
+  where open Cat C; open Monad M
