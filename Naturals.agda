@@ -19,7 +19,8 @@ record NatT {C D}(F G : Fun C D) : Set where
 open NatT
 
 NatTEq : {C D : Cat}{F G : Fun C D}{α β : NatT F G} → 
-         (λ {X : Cat.Obj C} → cmp α {X}) ≅ (λ {X : Cat.Obj C} → cmp β {X}) → α ≅ β
+         (λ {X : Cat.Obj C} → cmp α {X}) ≅ (λ {X : Cat.Obj C} → cmp β {X}) → 
+         α ≅ β
 NatTEq {C}{D}{F}{G} {α} {β} p = let open Cat in funnycong
   {∀ {X} → Hom D (OMap F X) (OMap G X)}
   {λ cmp → ∀{X Y}{f : Hom C X Y} → 

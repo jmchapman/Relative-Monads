@@ -54,7 +54,7 @@ wkid (suc i) = refl
 
 wkcomp : ∀{m n o}(f : Ren n o)(g : Ren m n)(i : Fin (suc m)) → 
             wk (renComp f g) i ≅ renComp (wk f) (wk g) i
-wkcomp f g zero     = refl
+wkcomp f g zero    = refl
 wkcomp f g (suc i) = refl
 
 -- we prove that renamings is a functor
@@ -62,16 +62,27 @@ wkcomp f g (suc i) = refl
 renid : ∀{n}(t : Tm n) → ren renId t ≅ t
 renid (var i)   = refl
 renid (app t u) = cong₂ app (renid t) (renid u)
-renid (lam t)   = cong lam (trans (cong (λ f → ren f t) (ext wkid)) 
-                                  (renid t))
+renid (lam t)   = 
+  proof 
+  lam (ren (wk renId) t) 
+  ≅⟨ cong (λ f → lam (ren f t)) (ext wkid) ⟩ 
+  lam (ren renId t) 
+  ≅⟨ cong lam (renid t) ⟩ 
+  lam t 
+  ∎
 
 rencomp : ∀{m n o}(f : Ren n o)(g : Ren m n)(t : Tm m) → 
           ren (renComp f g) t ≅ ren f (ren g t)
 rencomp f g (var i)   = refl
 rencomp f g (app t u) = cong₂ app (rencomp f g t) (rencomp f g u)
-rencomp f g (lam t)   = cong lam (trans (cong (λ f → ren f t) 
-                                              (ext (wkcomp f g))) 
-                                        (rencomp (wk f) (wk g) t))
+rencomp f g (lam t)   = 
+  proof 
+  lam (ren (wk (renComp f g)) t)  
+  ≅⟨ cong (λ f → lam (ren f t)) (ext (wkcomp f g)) ⟩ 
+  lam (ren (renComp (wk f) (wk g)) t)  
+  ≅⟨ cong lam (rencomp (wk f) (wk g) t) ⟩ 
+  lam (ren (wk f) (ren (wk g) t))
+  ∎
 
 -- Substitutions
 
