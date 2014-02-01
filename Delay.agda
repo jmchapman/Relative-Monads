@@ -3,8 +3,14 @@
 -- {-# OPTIONS -v tc.conv:10 -v tc.conv.size:15 #-}
 module Delay where
 
-open import Library
-
+--open import Library
+open import Size
+open import Category.Monad
+open import Level renaming (zero to lzero; suc to lsuc)
+open import Relation.Binary public
+import Relation.Binary.PreorderReasoning
+module Pre = Relation.Binary.PreorderReasoning
+open import Data.Product
 -- Coinductive delay monad.
 
 mutual
