@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module WellTypedTerms where
 
 open import Library
@@ -236,6 +235,7 @@ TmRMonad = record {
   law2 = refl; 
   law3 = λ{_ _ _ f g} → iext λ σ → ext (subcomp g f)}
 
+-- not needed here
 sub<< : ∀{Γ Δ σ}(f : Sub Γ Δ)(t : Tm Δ σ) → Sub (Γ < σ) Δ
 sub<< f t vz     = t
 sub<< f t (vs x) = f x 
@@ -249,4 +249,3 @@ lem2 : ∀{B Γ Δ σ}{f : Sub Γ Δ}{g : Sub B Γ}{t : Tm Δ σ}{τ}(x : Var (B
        (subComp (sub<< f t) (lift g)) x ≅ (sub<< (subComp f g) t) x
 lem2 vz     = refl
 lem2 {f = f}{g = g}{t = t} (vs x) = subren (sub<< f t) vs (g x) 
-                                          

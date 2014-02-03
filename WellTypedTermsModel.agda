@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module WellTypedTermsModel where
 
 open import Library

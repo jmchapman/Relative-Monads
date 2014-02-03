@@ -1,4 +1,4 @@
-{-# OPTIONS --type-in-type --copatterns #-}
+{-# OPTIONS --copatterns #-}
 
 module WellScopedTermsModel where
 
@@ -8,11 +8,11 @@ open import RMonads
 open import RMonads.REM
 open import Categories.Sets
 
-_<<_ : ∀{n X} → (Fin n → X) → X → Fin (suc n) → X
+_<<_ : ∀{n}{X : Set} → (Fin n → X) → X → Fin (suc n) → X
 (f << x) zero     = x
 (f << x) (suc i) = f i
 
-record LambdaModel : Set where
+record LambdaModel : Set₁ where
   field S      : Set
   Env = λ n → Fin n → S
   field eval   : ∀{n} → Env n → Tm n → S

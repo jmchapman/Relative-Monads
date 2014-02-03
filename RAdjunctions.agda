@@ -1,15 +1,14 @@
-{-# OPTIONS --type-in-type #-}
-
 module RAdjunctions where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 open import Categories
 open import Functors
 
 open Cat
 open Fun
 
-record RAdj {C D : Cat}(J : Fun C D)(E : Cat) : Set where
+record RAdj {a b c d e f}{C : Cat {a}{b}}{D : Cat {c}{d}}
+            (J : Fun C D)(E : Cat {e}{f}) : Set (a ⊔ b ⊔ c ⊔ d ⊔ e ⊔ f) where
   field L : Fun C E
         R : Fun E D
         left : {X : Obj C}{Y : Obj E} → 

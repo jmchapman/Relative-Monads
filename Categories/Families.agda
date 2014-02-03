@@ -1,7 +1,6 @@
 module Categories.Families where
 
-open import Relation.Binary.HeterogeneousEquality
-open import Function
+open import Library
 open import Categories
 
 open Cat

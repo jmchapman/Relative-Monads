@@ -42,13 +42,13 @@ open import Monads.CatofAdj.TermAdjUniq
 open import Monads.CatofAdj.TermAdj
 
 -- -- relative monads
--- open import RMonads
--- open import RMonads.RMonadMorphs
--- open import RAdjunctions
--- open import RAdjunctions.RAdj2RMon
--- open import RMonads.REM
--- open import RMonads.REM.Functors
--- open import RMonads.REM.Adjunction
+open import RMonads
+open import RMonads.RMonadMorphs
+open import RAdjunctions
+open import RAdjunctions.RAdj2RMon
+open import RMonads.REM
+open import RMonads.REM.Functors
+open import RMonads.REM.Adjunction
 -- open import RMonads.RKleisli
 -- open import RMonads.RKleisli.Functors
 -- open import RMonads.RKleisli.Adjunction
@@ -61,7 +61,7 @@ open import Monads.CatofAdj.TermAdj
 -- open import RMonads.CatofRAdj.TermRAdj
 -- 
 -- -- rmonad examples
--- open import WellScopedTerms
--- open import WellScopedTermsModel
--- open import WellTypedTerms
--- open import WellTypedTermsModel
+open import WellScopedTerms
+open import WellScopedTermsModel
+open import WellTypedTerms
+open import WellTypedTermsModel

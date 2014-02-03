@@ -1,12 +1,11 @@
-{-# OPTIONS --type-in-type #-}
-
 open import Functors
+open import Categories
 open import RMonads
 
-module RMonads.REM.Functors {C}{D}(J : Fun C D)(M : RMonad J) where
+module RMonads.REM.Functors {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+                            (J : Fun C D)(M : RMonad J) where
 
 open import Library
-open import Categories
 open import RMonads.REM M
 
 open Cat

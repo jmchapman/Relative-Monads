@@ -1,14 +1,14 @@
-{-# OPTIONS --type-in-type #-}
 open import Categories
 open import Functors
 open import RMonads
 
-module RMonads.REM {C D : Cat}{J : Fun C D}(M : RMonad J) where
+module RMonads.REM {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}
+                   (M : RMonad J) where
 open import Library
 open RMonad M
 open Fun
 
-record RAlg : Set where
+record RAlg : Set (a ⊔ c ⊔ d) where
   open Cat D
   field acar  : Obj
         astr  : ∀ {Z} → Hom (OMap J Z) acar → Hom (T Z) acar
@@ -22,13 +22,13 @@ AlgEq : {X Y : RAlg} → RAlg.acar X ≅ RAlg.acar Y →
   (∀ Z → RAlg.astr X {Z} ≅ RAlg.astr Y {Z}) → 
         X ≅ Y
 AlgEq {X}{Y} p q = let open Cat; open RAlg in funnycong4 
-  {Obj D}
-  {λ acar → ∀{Z} → Hom D (OMap J Z) acar → Hom D (T Z) acar}
-  {λ acar astr → ∀{Z} {f : Hom D (OMap J Z) acar} → f ≅ comp D (astr f) η}
-  {λ acar astr _ → ∀{Z W}
+  {A = Obj D}
+  {B = λ acar → ∀{Z} → Hom D (OMap J Z) acar → Hom D (T Z) acar}
+  {C = λ acar astr → ∀{Z} {f : Hom D (OMap J Z) acar} → f ≅ comp D (astr f) η}
+  {D = λ acar astr _ → ∀{Z W}
     {k : Hom D (OMap J Z) (T W)}{f : Hom D (OMap J W) acar} →
     astr (comp D (astr f) k) ≅ comp D (astr f) (bind k)}
-  {RAlg}
+  {E = RAlg}
   (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
   p 
   (iext q)
@@ -75,7 +75,8 @@ astrnat alg f g g' p = let
   ≅⟨ cong astr p ⟩
   astr g ∎
 
-record RAlgMorph (A B : RAlg) : Set 
+
+record RAlgMorph (A B : RAlg) : Set (a ⊔ c ⊔ d) 
   where
   open Cat D
   open RAlg
@@ -86,8 +87,8 @@ open RAlgMorph
 
 RAlgMorphEq : ∀{X Y : RAlg}{f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
 RAlgMorphEq {X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
-  {Cat.Hom D (RAlg.acar X) (RAlg.acar Y)}
-  {λ amor → ∀{Z}{f : Hom (OMap J Z) (acar X)} → 
+  {A = Cat.Hom D (RAlg.acar X) (RAlg.acar Y)}
+  {B = λ amor → ∀{Z}{f : Hom (OMap J Z) (acar X)} → 
               comp amor (astr X f) ≅ astr Y (comp amor f)}
   p
   (iext λ Z → iext λ h → fixtypes (

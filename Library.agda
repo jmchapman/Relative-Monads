@@ -7,7 +7,7 @@ open import Data.Empty public using (⊥)
 open import Data.Unit public using (⊤)
 open import Data.Nat public using (ℕ; zero; suc; _+_; module ℕ)
 open import Data.Fin public using (Fin; zero; suc)
-open import Level public renaming (suc to lsuc; zero to lzero)
+open import Level public renaming (suc to lsuc; zero to lzero) hiding (lift)
 
 congid : ∀{a}{A : Set a}{a a' : A}(p : a ≅ a') → cong id p ≅ p
 congid refl = refl

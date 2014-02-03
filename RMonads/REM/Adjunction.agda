@@ -1,12 +1,11 @@
-{-# OPTIONS --type-in-type #-}
-
+open import Categories
 open import Functors
 open import RMonads
 
-module RMonads.REM.Adjunction {C D}{J : Fun C D}(M : RMonad J)  where
+module RMonads.REM.Adjunction {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+                              {J : Fun C D}(M : RMonad J)  where
 
 open import Library
-open import Categories
 open import RAdjunctions
 open import RMonads.REM M
 open import RMonads.REM.Functors J M

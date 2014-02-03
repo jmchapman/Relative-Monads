@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module WellScopedTerms where
 
 open import Library

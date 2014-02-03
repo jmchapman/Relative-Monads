@@ -1,15 +1,13 @@
-{-# OPTIONS --type-in-type #-}
 module RMonads where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Categories
 open import Functors
 
 open Fun
 
-record RMonad {C D : Cat}(J : Fun C D) : Set where
+record RMonad {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) : 
+  Set (a ⊔ b ⊔ c ⊔ d) where
   open Cat
   field T    : Obj C → Obj D
         η    : ∀{X} → Hom D (OMap J  X) (T X)
@@ -22,8 +20,8 @@ record RMonad {C D : Cat}(J : Fun C D) : Set where
 
 open import Functors
 
-TFun : ∀{C D}{J : Fun C D} → RMonad J → Fun C D
-TFun {C}{D}{J} M = let open RMonad M; open Cat in record { 
+TFun : ∀{a b}{C D : Cat {a}{b}}{J : Fun C D} → RMonad J → Fun C D
+TFun {C = C}{D = D}{J = J} M = let open RMonad M; open Cat in record { 
   OMap  = T; 
   HMap  = bind ∘ comp D η ∘ HMap J; 
   fid   = 

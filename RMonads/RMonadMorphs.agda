@@ -1,7 +1,6 @@
-{-# OPTIONS --type-in-type #-}
 module RMonads.RMonadMorphs where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 open import Functors
 open import Categories
 open import RMonads
@@ -9,7 +8,8 @@ open import RMonads
 open Fun
 open RMonad
 
-record RMonadMorph {C D : Cat}{J : Fun C D}(M M' : RMonad J) : Set where
+record RMonadMorph {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}
+                   (M M' : RMonad J) : Set (a ⊔ b ⊔ c ⊔ d) where
   open Cat D
   field morph    : ∀ {X} → Hom (T M X) (T M' X)
         lawη     : ∀ {X} → comp morph (η M {X}) ≅ η M' {X}
