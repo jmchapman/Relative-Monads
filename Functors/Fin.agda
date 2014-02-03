@@ -1,16 +1,13 @@
 {-# OPTIONS --type-in-type #-}
 module Functors.Fin where
 
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
+open import Library
 open import Categories.Sets
 open import Categories.Setoids
 open import Categories
 open import Functors
 open import Isomorphism
 open import Functors.FullyFaithful
-open import Function
-open import Data.Bool
 
 open Cat
 open Fun

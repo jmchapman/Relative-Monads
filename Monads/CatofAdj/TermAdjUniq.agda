@@ -1,6 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Monads.CatofAdj.TermAdjUniq where
 
+open import Library
 open import Categories
 open import Functors
 open import Adjunctions
@@ -10,8 +11,6 @@ open import Monads.CatofAdj
 open import Monads.CatofAdj.TermAdjObj
 open import Monads.CatofAdj.TermAdjHom
 open import Categories.Terminal
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
 open Fun
 open Adj
 open ObjAdj

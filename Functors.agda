@@ -1,10 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Functors where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
+open import Library
 open import Categories
 open Cat
 

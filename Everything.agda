@@ -1,7 +1,7 @@
 module Everything where 
 
 -- basic utilities
-open import Equality
+open import Library
 open import Isomorphism
 
 

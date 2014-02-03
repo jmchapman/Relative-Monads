@@ -1,10 +1,8 @@
 {-# OPTIONS --type-in-type #-}
 module Categories.Setoids where
 
+open import Library
 open import Categories
-open import Equality
-open import Relation.Binary.HeterogeneousEquality
-open import Function
 
 record Setoid : Set where
   field set : Set

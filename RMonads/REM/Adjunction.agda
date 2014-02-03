@@ -5,14 +5,11 @@ open import RMonads
 
 module RMonads.REM.Adjunction {C D}{J : Fun C D}(M : RMonad J)  where
 
-open import Relation.Binary.HeterogeneousEquality
-open  ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
+open import Library
 open import Categories
 open import RAdjunctions
 open import RMonads.REM M
 open import RMonads.REM.Functors J M
-open import Function
 
 open Fun
 open RAdj

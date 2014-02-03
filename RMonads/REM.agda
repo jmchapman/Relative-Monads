@@ -4,13 +4,8 @@ open import Functors
 open import RMonads
 
 module RMonads.REM {C D : Cat}{J : Fun C D}(M : RMonad J) where
-
+open import Library
 open RMonad M
-
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
-
 open Fun
 
 record RAlg : Set where

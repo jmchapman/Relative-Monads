@@ -2,16 +2,11 @@
 
 module WellScopedTermsModel where
 
-open import Function
+open import Library
 open import WellScopedTerms
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
 open import RMonads
 open import RMonads.REM
 open import Categories.Sets
-open import Data.Fin hiding (lift)
-open import Data.Nat
 
 _<<_ : ∀{n X} → (Fin n → X) → X → Fin (suc n) → X
 (f << x) zero     = x

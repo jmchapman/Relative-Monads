@@ -1,8 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Monads.CatofAdj.TermAdjHom where
 
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
+open import Library
 open import Monads
 open import Categories
 open import Functors

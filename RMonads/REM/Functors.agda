@@ -5,10 +5,7 @@ open import RMonads
 
 module RMonads.REM.Functors {C}{D}(J : Fun C D)(M : RMonad J) where
 
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Function
-open import Equality
+open import Library
 open import Categories
 open import RMonads.REM M
 

@@ -1,11 +1,14 @@
 {-# OPTIONS --type-in-type #-}
 
-module Equality where
+module Library where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-
-
+open import Function using (id; _∘_) public
+open import Relation.Binary.HeterogeneousEquality public
+open ≅-Reasoning renaming (begin_ to proof_) public
+open import Data.Empty public using (⊥)
+open import Data.Unit public using (⊤)
+open import Data.Nat public using (ℕ; zero; suc; _+_; module ℕ)
+open import Data.Fin public using (Fin; zero; suc)
 
 congid : ∀{A}{a a' : A}(p : a ≅ a') → cong id p ≅ p
 congid refl = refl
@@ -26,7 +29,8 @@ cong' refl refl refl refl = refl
 
 -- should be replaced by dicong
 icong' : ∀{A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
-        {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
+        {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → 
+        (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
         {a : A}{a' : A'} → a ≅ a' → f {a} ≅ f' {a'}
 icong' refl refl refl refl = refl
 
@@ -34,19 +38,21 @@ fcong : ∀{A}{B : A → Set}{f f' : (x : A) → B x}
         (a : A) → f ≅ f' → f a ≅ f' a
 fcong a refl = refl
 
-dcong : ∀{A A'}{B : A → Set}{B' : A' → Set}{f : (a : A) → B a}{f' : (a : A') → B' a}{a : A}{a' : A'} → 
+dcong : ∀{A A'}{B : A → Set}{B' : A' → Set}
+        {f : (a : A) → B a}{f' : (a : A') → B' a}{a : A}{a' : A'} → 
         a ≅ a' → B ≅ B' → f ≅ f' → f a ≅ f' a'
 dcong refl refl refl = refl
 
-dicong : ∀{A A' : Set}{B : A → Set}{B' : A' → Set}{f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → {a : A}{a' : A'} → a ≅ a' →  B ≅ B' → 
-        (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
-        f {a} ≅ f' {a'}
+dicong : ∀{A A' : Set}{B : A → Set}{B' : A' → Set}
+         {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → {a : A}{a' : A'} → 
+         a ≅ a' →  B ≅ B' → 
+         (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
+         f {a} ≅ f' {a'}
 dicong refl refl refl = refl
 
 ifcong : ∀{A}{B : A → Set}{f f' : {x : A} → B x}(a : A) → 
          _≅_ {_}{ {x : A} → B x} f { {x : A} → B x} f' → f {a} ≅ f' {a}
 ifcong a refl = refl
-
 
 cong₃ : ∀{A}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C x y → Set}
         (f : ∀ x y z → D x y z)
@@ -80,7 +86,6 @@ funnycong4 : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}
              {d : D a b c}{d' : D a' b' c'} → d ≅ d' → 
              f a b c d ≅ f a' b' c' d'
 funnycong4 f refl refl refl refl = refl
-
 
 funnycong4' : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}
               {D : (a : A) → B a → Set}{E : Set}
@@ -157,7 +162,6 @@ postulate dext : {A A' : Set}{B : A → Set}{B' : A' → Set}
                 (∀ {a a'} → a ≅ a' → f a ≅ g a') → f ≅ g
 
 -- this could just be derived from ext
-
 
 postulate iext : {A : Set}{B B' : A → Set}{f : ∀ {a} → B a}{g : ∀{a} → B' a} → 
                  (∀ a → f {a} ≅ g {a}) → 

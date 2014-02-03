@@ -1,8 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module RMonads.Restriction where
 
-open import Equality
-open import Function
+open import Library
 open import Categories
 open import Functors
 open import Naturals

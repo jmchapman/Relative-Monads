@@ -1,12 +1,9 @@
 {-# OPTIONS --type-in-type #-}
 module WellTypedTerms where
 
+open import Library
 open import Categories
 open import Functors
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
 open import RMonads
 open import FunctorCat
 open import Categories.Sets

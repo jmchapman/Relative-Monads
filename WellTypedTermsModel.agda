@@ -1,20 +1,17 @@
 {-# OPTIONS --type-in-type #-}
 module WellTypedTermsModel where
 
-open import Function
-open import Data.Unit
+open import Library
 open import WellTypedTerms
 open import RMonads.REM
 open import FunctorCat
 open import Categories.Sets
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
+
 
 -- interpretation of types
 
 Val : Ty → Set
-Val ι       = Unit
+Val ι       = ⊤
 Val (σ ⇒ τ) = Val σ → Val τ
 
 -- interpretation of contexts

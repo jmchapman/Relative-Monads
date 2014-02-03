@@ -1,11 +1,10 @@
 module Monads.CatofAdj.InitAdj where
 
+open import Library
 open import Monads
 open import Functors
 open import Naturals
 open import Adjunctions
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
 open import Categories
 open import Monads.CatofAdj
 open import Categories.Initial

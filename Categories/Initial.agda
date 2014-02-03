@@ -1,11 +1,9 @@
 {-# OPTIONS --type-in-type #-}
 module Categories.Initial where
 
+open import Library
 open import Categories
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
 open import Categories.Sets
-open import Data.Empty
 open Cat
 
 record Init (C : Cat) : Set where

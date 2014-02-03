@@ -2,11 +2,10 @@
 
 module RMonads.CatofRAdj.TermRAdj where
 
+open import Library
 open import RMonads
 open import Functors
 open import RAdjunctions
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
 open import Categories
 open import RMonads.CatofRAdj
 open import Categories.Terminal

@@ -2,7 +2,7 @@
 
 module Functors.FullyFaithful where
 
-open import Equality
+open import Library
 open import Categories
 open import Functors
 open import Naturals

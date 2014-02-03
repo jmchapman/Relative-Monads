@@ -1,8 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module RMonads.CatofRAdj where
 
-open import Relation.Binary.HeterogeneousEquality
-open import Equality
+open import Library
 open import Categories
 open import Functors
 open import RMonads

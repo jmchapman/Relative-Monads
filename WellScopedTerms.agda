@@ -1,17 +1,13 @@
 {-# OPTIONS --type-in-type #-}
 module WellScopedTerms where
 
-open import Function
+open import Library
 open import Categories
 open import Functors
 open import Categories.Sets
 open import Functors.Fin
 open import RMonads
 open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Equality
-open import Data.Nat
-open import Data.Fin hiding (lift)
 open Cat
 open Fun
 
