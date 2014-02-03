@@ -1,6 +1,6 @@
 module Monads.MonadMorphs where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 open import Functors
 open import Categories
 open import Monads
@@ -8,7 +8,7 @@ open import Monads
 open Fun
 open Monad
 
-record MonadMorph {C : Cat}(M M' : Monad C) : Set where
+record MonadMorph {a b}{C : Cat {a}{b}}(M M' : Monad C) : Set (a ⊔ b) where
   open Cat C
   field morph    : ∀ {X} → Hom (T M X) (T M' X)
         lawη     : ∀ {X} → comp morph (η M {X}) ≅ η M' {X}

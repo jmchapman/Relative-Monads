@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module RMonads.RKleisli where
 
 open import Relation.Binary.HeterogeneousEquality
@@ -10,8 +9,8 @@ open import RMonads
 open Cat
 open Fun
 
-Kl : ∀{C D}{J : Fun C D}  → RMonad J → Cat
-Kl {C}{D}{J} M = let open RMonad M in record{
+Kl : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}  → RMonad J → Cat
+Kl {C = C}{D = D}{J = J} M = let open RMonad M in record{
   Obj  = Obj C; 
   Hom  = λ X Y → Hom D (OMap J X) (T Y);
   iden = η;

@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module RMonads.Restriction where
 
 open import Library
@@ -11,7 +10,8 @@ open import RMonads
 open Cat
 open Fun
 
-restrictM : {C D : Cat}(J : Fun C D) → Monad D → RMonad J
+restrictM : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) → 
+            Monad D → RMonad J
 restrictM J M = record {
   T    = T ∘ OMap J;
   η    = η;
@@ -24,7 +24,8 @@ restrictM J M = record {
 open import Monads.MonadMorphs
 open import RMonads.RMonadMorphs
 
-restrictMM : {C D : Cat}{M M' : Monad D}(J : Fun C D) → MonadMorph M M' → 
+restrictMM : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{M M' : Monad D}
+             (J : Fun C D) → MonadMorph M M' → 
              RMonadMorph (restrictM J M) (restrictM J M')
 restrictMM J MM = record { 
   morph   = λ{X} → morph {OMap J X}; 
@@ -34,7 +35,8 @@ restrictMM J MM = record {
 open import Adjunctions
 open import RAdjunctions
 
-restrictA : {C D E : Cat}(J : Fun C D) → Adj D E → RAdj J E 
+restrictA : ∀{a b c d e f}{C : Cat {a}{b}}{D : Cat {c}{d}}{E : Cat {e}{f}}
+            (J : Fun C D) → Adj D E → RAdj J E 
 restrictA J A = record{
   L        = L ○ J;
   R        = R;

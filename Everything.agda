@@ -49,11 +49,11 @@ open import RAdjunctions.RAdj2RMon
 open import RMonads.REM
 open import RMonads.REM.Functors
 open import RMonads.REM.Adjunction
--- open import RMonads.RKleisli
--- open import RMonads.RKleisli.Functors
--- open import RMonads.RKleisli.Adjunction
--- open import RMonads.Restriction
--- open import RMonads.SpecialCase
+open import RMonads.RKleisli
+open import RMonads.RKleisli.Functors
+open import RMonads.RKleisli.Adjunction
+open import RMonads.Restriction
+open import RMonads.SpecialCase
 -- open import RMonads.CatofRAdj
 -- open import RMonads.CatofRAdj.InitRAdj
 -- open import RMonads.CatofRAdj.TermRAdjObj
