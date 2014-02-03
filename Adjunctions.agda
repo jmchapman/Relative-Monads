@@ -1,15 +1,14 @@
-{-# OPTIONS --type-in-type #-}
-
 module Adjunctions where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 open import Categories
 open import Functors
 
 open Cat
 open Fun
 
-record Adj (C D : Cat) : Set where
+record Adj {a b c d}(C : Cat {a}{b})(D : Cat {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d) 
+  where
   field L : Fun C D
         R : Fun D C
         left : {X : Obj C}{Y : Obj D} → 

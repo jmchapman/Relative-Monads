@@ -9,51 +9,55 @@ open import Data.Nat public using (ℕ; zero; suc; _+_; module ℕ)
 open import Data.Fin public using (Fin; zero; suc)
 open import Level public renaming (suc to lsuc; zero to lzero)
 
-congid : {A : Set}{a a' : A}(p : a ≅ a') → cong id p ≅ p
+congid : ∀{a}{A : Set a}{a a' : A}(p : a ≅ a') → cong id p ≅ p
 congid refl = refl
 
-congcomp : {A B C : Set}{a a' : A}(f : B → C)(g : A → B)(p : a ≅ a') →
+congcomp : ∀{a b c}{A : Set a}{B : Set b}{C : Set c}
+           {a a' : A}(f : B → C)(g : A → B)(p : a ≅ a') →
             cong (f ∘ g) p ≅ cong f (cong g p)
 congcomp f g refl = refl
 
-icong : {A : Set}{B : A → Set}(f : ∀ {a} → B a){a a' : A} → 
+icong : ∀{a b}{A : Set a}{B : A → Set b}(f : ∀ {a} → B a){a a' : A} → 
         a ≅ a' → f {a} ≅ f {a'}
 icong f refl = refl
 
 -- should be replaced by dcong
-cong' : {A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
+cong' : ∀{a b}{A A' : Set a} → A ≅ A' → 
+        {B : A → Set b}{B' : A' → Set b} → B ≅ B' → 
         {f : ∀ a → B a}{f' : ∀ a → B' a} → f ≅ f' → 
         {a : A}{a' : A'} → a ≅ a' → f a ≅ f' a'
 cong' refl refl refl refl = refl
 
 -- should be replaced by dicong
-icong' : {A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
-        {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → 
-        (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
-        {a : A}{a' : A'} → a ≅ a' → f {a} ≅ f' {a'}
+icong' : ∀{a b}{A A' : Set a} → A ≅ A' → 
+         {B : A → Set b}{B' : A' → Set b} → B ≅ B' → 
+         {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → 
+         (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
+         {a : A}{a' : A'} → a ≅ a' → f {a} ≅ f' {a'}
 icong' refl refl refl refl = refl
 
-fcong : {A : Set}{B : A → Set}{f f' : (x : A) → B x}
+fcong : ∀{a b}{A : Set a}{B : A → Set b}{f f' : (x : A) → B x}
         (a : A) → f ≅ f' → f a ≅ f' a
 fcong a refl = refl
 
-dcong : {A A' : Set}{B : A → Set}{B' : A' → Set}
+dcong : ∀{a b}{A A' : Set a}{B : A → Set b}{B' : A' → Set b}
         {f : (a : A) → B a}{f' : (a : A') → B' a}{a : A}{a' : A'} → 
         a ≅ a' → B ≅ B' → f ≅ f' → f a ≅ f' a'
 dcong refl refl refl = refl
 
-dicong : ∀{A A' : Set}{B : A → Set}{B' : A' → Set}
+dicong : ∀{a b}{A A' : Set a}{B : A → Set b}{B' : A' → Set b}
          {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → {a : A}{a' : A'} → 
          a ≅ a' →  B ≅ B' → 
          (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
          f {a} ≅ f' {a'}
 dicong refl refl refl = refl
 
-ifcong : {A : Set}{B : A → Set}{f f' : {x : A} → B x}(a : A) → 
+ifcong : ∀{a b}{A : Set a}{B : A → Set b}{f f' : {x : A} → B x}(a : A) → 
          _≅_ {_}{ {x : A} → B x} f { {x : A} → B x} f' → f {a} ≅ f' {a}
 ifcong a refl = refl
 
-cong₃ : {A : Set}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C x y → Set}
+cong₃ : ∀{a b c d}{A : Set a}{B : A → Set b}
+        {C : ∀ x → B x → Set c }{D : ∀ x y → C x y → Set d}
         (f : ∀ x y z → D x y z)
         {a a' : A} → a ≅ a' → 
         {b : B a}{b' : B a'} → b ≅ b' → 
@@ -61,7 +65,7 @@ cong₃ : {A : Set}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C 
         f a b c ≅ f a' b' c'
 cong₃ f refl refl refl = refl
 
-funnycong : {A : Set}{B : A → Set}{C : Set}{a a' : A} → 
+funnycong : ∀{a b c}{A : Set a}{B : A → Set b}{C : Set c}{a a' : A} → 
             a ≅ a' → {b : B a}{b' : B a'} → b ≅ b' → 
             (f : (a : A) → B a → C) → f a b ≅ f a' b'
 funnycong refl refl f = refl
@@ -76,8 +80,9 @@ funnyresp3 : ∀{A}{B : A → Set}{C : A → Set}{D : Set}
 funnyresp3 f refl refl refl = refl
 -}
 
-funnycong4 : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}
-             {D : (a : A)(b : B a) → C a b  → Set}{E : Set}
+funnycong4 : ∀{a b c d e}
+             {A : Set a}{B : A → Set b}{C : (a : A) → B a → Set c}
+             {D : (a : A)(b : B a) → C a b  → Set d}{E : Set e}
              (f : (a : A)(b : B a)(c : C a b) → D a b c → E) → 
              {a a' : A} → a ≅ a' → 
              {b : B a}{b' : B a'} → b ≅ b' → 
@@ -86,8 +91,8 @@ funnycong4 : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}
              f a b c d ≅ f a' b' c' d'
 funnycong4 f refl refl refl refl = refl
 
-funnycong4' : {A : Set}{B : A → Set}{C : (a : A) → B a → Set}
-              {D : (a : A) → B a → Set}{E : Set}
+funnycong4' : ∀{a b c d e}{A : Set a}{B : A → Set b}{C : (a : A) → B a → Set c}
+              {D : (a : A) → B a → Set d}{E : Set e}
               {a a' : A} → a ≅ a' → 
               {b : B a}{b' : B a'} → b ≅ b' → 
               {c : C a b}{c' : C a' b'} → c ≅ c' → 
@@ -147,34 +152,36 @@ substtrans : ∀{A}(P : A → Set){a a' a''}(p : a ≅ a')(q : a' ≅ a'') →
 substtrans P refl refl x = refl
 -}
 
-stripsubst : {A : Set} → (C : A → Set) → 
+stripsubst : ∀{a c}{A : Set a}(C : A → Set c) → 
              {a : A} → (c : C a) → 
              {b : A} → (p : a ≅ b) → 
              subst C p c ≅ c
 stripsubst C c refl = refl 
 
-postulate ext : {A : Set}{B B' : A → Set}{f : ∀ a → B a}{g : ∀ a → B' a} → 
+postulate ext : ∀{a b}{A : Set a}{B B' : A → Set b}
+                {f : ∀ a → B a}{g : ∀ a → B' a} → 
                 (∀ a → f a ≅ g a) → f ≅ g
 
-postulate dext : {A A' : Set}{B : A → Set}{B' : A' → Set}
+postulate dext : ∀{a b}{A A' : Set a}{B : A → Set b}{B' : A' → Set b}
                  {f : ∀ a → B a}{g : ∀ a → B' a} → 
                 (∀ {a a'} → a ≅ a' → f a ≅ g a') → f ≅ g
 
 -- this could just be derived from ext
 
-postulate iext : {A : Set}{B B' : A → Set}{f : ∀ {a} → B a}{g : ∀{a} → B' a} → 
+postulate iext : ∀{a b}{A : Set a}{B B' : A → Set b}
+                 {f : ∀ {a} → B a}{g : ∀{a} → B' a} → 
                  (∀ a → f {a} ≅ g {a}) → 
                  _≅_ {_}{ {a : A} → B a} f { {a : A} → B' a} g
 
-postulate diext : {A A' : Set}{B : A → Set}{B' : A' → Set}
+postulate diext : ∀{a b}{A A' : Set a}{B : A → Set b}{B' : A' → Set b}
                   {f : ∀ {a} → B a}{f' : ∀{a'} → B' a'} → 
                   (∀{a a'} → a ≅ a' → f {a} ≅ f' {a'}) → 
                   _≅_ {_}{ {a : A} → B a} f { {a' : A'} → B' a'} f'
 
-ir : ∀ {A A' : Set}{a : A}{a' : A'}{p q : a ≅ a'} → p ≅ q
-ir {p = refl}{q = refl} = refl
+--ir : ∀ {A A' : Set}{a : A}{a' : A'}{p q : a ≅ a'} → p ≅ q
+--ir {p = refl}{q = refl} = refl
 
-fixtypes : ∀{A A' A'' A''' : Set}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
+fixtypes : ∀{a}{A A' A'' A''' : Set a}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
            {p : a ≅ a'}{q : a'' ≅ a'''} → a' ≅ a'' → p ≅ q
 fixtypes {p = refl} {q = refl} refl = refl
 

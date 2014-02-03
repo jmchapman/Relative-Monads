@@ -1,11 +1,10 @@
-{-# OPTIONS --type-in-type #-}
-open import Monads
-module Monads.EM.Adjunction {C}(M : Monad C) where
-
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
 open import Categories
+open import Monads
+
+module Monads.EM.Adjunction {a b}{C : Cat {a}{b}}(M : Monad C) where
+
+open import Library
+
 open import Functors
 open import Adjunctions
 open import Monads.EM M

@@ -1,9 +1,6 @@
-{-# OPTIONS --type-in-type #-}
 module Adjunctions.Adj2Mon where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Categories
 open import Functors
 open import Monads
@@ -12,8 +9,8 @@ open import Adjunctions
 open Cat
 open Fun
 
-Adj2Mon : ∀{C D} → Adj C D → Monad C
-Adj2Mon {C}{D} A = record{
+Adj2Mon : ∀{a b}{C D : Cat {a}{b}} → Adj C D → Monad C
+Adj2Mon {C = C}{D = D} A = record{
   T    = OMap R ∘ OMap L;
   η    = left (iden D);
   bind = HMap R ∘ right;

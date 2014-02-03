@@ -1,11 +1,9 @@
-{-# OPTIONS --type-in-type #-}
+open import Categories
 open import Monads
 
-module Monads.EM.Functors {C}(M : Monad C) where
+module Monads.EM.Functors {a b}{C : Cat {a}{b}}(M : Monad C) where
 
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Categories
+open import Library
 open import Functors
 open import Monads.EM M
 

@@ -1,15 +1,12 @@
-{-# OPTIONS --type-in-type #-}
 open import Categories
 open import Monads
 
-module Monads.Kleisli.Adjunction {C}(M : Monad C) where
+module Monads.Kleisli.Adjunction {a b}{C : Cat {a}{b}}(M : Monad C) where
 
 open Cat C
 open Monad M
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open  ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Functors
 open import Monads.Kleisli
 open import Adjunctions

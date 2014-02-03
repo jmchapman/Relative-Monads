@@ -1,12 +1,9 @@
-{-# OPTIONS --type-in-type #-}
 module Monads where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Categories
 
-record Monad (C : Cat) : Set where
+record Monad {a}{b}(C : Cat {a}{b}) : Set (a ⊔ b) where
   open Cat C
   field T    : Obj → Obj
         η    : ∀ {X} → Hom X (T X)
@@ -18,8 +15,8 @@ record Monad (C : Cat) : Set where
 
 open import Functors
 
-TFun : ∀{C} → Monad C → Fun C C
-TFun {C} M = let open Monad M; open Cat C in record { 
+TFun : ∀{a b}{C : Cat {a}{b}} → Monad C → Fun C C
+TFun {C = C} M = let open Monad M; open Cat C in record { 
   OMap  = T; 
   HMap  = bind ∘ comp η; 
   fid   = 

@@ -1,13 +1,9 @@
-{-# OPTIONS --type-in-type #-}
-
 open import Categories
 open import Monads
 
-module Monads.Kleisli.Functors {C}(M : Monad C) where
+module Monads.Kleisli.Functors {a b}{C : Cat {a}{b}}(M : Monad C) where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Functors
 open import Monads.Kleisli
 

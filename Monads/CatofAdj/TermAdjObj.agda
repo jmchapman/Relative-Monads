@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Monads.CatofAdj.TermAdjObj where
 
 open import Library
@@ -19,17 +18,17 @@ open Monad
 open NatT
 open Adj
 
-lemX : ∀{C}(M : Monad C) → R (EMAdj M) ○ L (EMAdj M) ≅ TFun M
+lemX : ∀{a b}{C : Cat {a}{b}}(M : Monad C) → R (EMAdj M) ○ L (EMAdj M) ≅ TFun M
 lemX {C} M = FunctorEq _ _ refl (λ f → refl) 
 
-EMObj : {C : Cat}(M : Monad C) → 
-        Obj (CatofAdj M)
-EMObj {C} M = record { 
+EMObj : ∀{a b}{C : Cat {a}{b}}(M : Monad C) → 
+        Obj (CatofAdj M {a ⊔ b}{a ⊔ b})
+EMObj {C = C} M = record { 
   D       = EM M;
   adj     = EMAdj M;
   law     = lemX M;
   ηlaw    = idl C;
-  bindlaw = λ{X Y f} → 
+  bindlaw = λ{X Y f} →
     cong (bind M) 
          (stripsubst (Hom C X) f (fcong Y (cong OMap (sym (lemX M)))))}
 
@@ -37,7 +36,9 @@ EMObj {C} M = record {
 open ObjAdj
 open Adj
 
-alaw1lem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T)
+alaw1lem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+  (T : Fun C C)(L : Fun C D)(R : Fun D C)
+  (p : R ○ L ≅ T)
   (η : ∀ {X} → Hom C X (OMap T X)) → 
   (right : ∀ {X Y} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) → 
   (left : ∀ {X Y} → Hom D (OMap L X) Y → Hom C X (OMap R Y)) → 
@@ -53,7 +54,7 @@ alaw1lem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T)
                 (fcong Z (cong OMap p))
                 (HMap R (right f))) 
          η
-alaw1lem {C}{D} .(R ○ L) L R refl η right left ηlaw {X}{Z}{f} nat lawb = 
+alaw1lem {C = C}{D = D} .(R ○ L) L R refl η right left ηlaw {X}{Z}{f} nat lawb =
   trans (trans (trans (sym lawb) 
                       (cong left 
                             (trans (sym (idr D)) 
@@ -65,7 +66,9 @@ alaw1lem {C}{D} .(R ○ L) L R refl η right left ηlaw {X}{Z}{f} nat lawb =
                             (idr C)))) 
         (cong (comp C (HMap R (right f))) ηlaw)
 
-alaw2lem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) → 
+alaw2lem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+  (T : Fun C C)(L : Fun C D)(R : Fun D C)
+  (p : R ○ L ≅ T) → 
   (right : ∀ {X Y} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) → 
   (bind : ∀ {X Y} → Hom C X (OMap T Y) → Hom C (OMap T X) (OMap T Y)) → 
   (natright : {X₁ X' : Obj C} {Y Y' : Obj D} (f₁ : Hom C X' X₁)
@@ -89,7 +92,7 @@ alaw2lem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) �
   (subst (λ Z → Hom C Z (OMap R X))
    (fcong W (cong OMap p)) (HMap R (right f)))
   (bind k)
-alaw2lem {C}{D} .(R ○ L) L R refl right bind natright {X}{Z}{W}{k}{f} bindlaw =
+alaw2lem {C = C}{D = D} .(R ○ L) L R refl right bind natright {X}{Z}{W}{k}{f} bindlaw =
   trans (trans (cong (HMap R) 
                      (trans (cong (λ k₁ → right (comp C (HMap R (right f)) k₁))
                                   (sym (idr C))) 
@@ -106,7 +109,8 @@ alaw2lem {C}{D} .(R ○ L) L R refl right bind natright {X}{Z}{W}{k}{f} bindlaw 
         (cong (comp C (HMap R (right f))) bindlaw)
 
 
-ahomlem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) → 
+ahomlem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+          (T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) → 
   (right : ∀ {X Y} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) →
   (natright : {X₁ X' : Obj C} {Y Y' : Obj D} (f₁ : Hom C X' X₁)
     (g : Hom D Y Y') (h : Hom C X₁ (OMap R Y)) →
@@ -123,7 +127,7 @@ ahomlem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) →
   subst (λ Z₁ → Hom C Z₁ (OMap R Y))
   (fcong Z (cong OMap p))
   (HMap R (right (comp C (HMap R f) f₁)))
-ahomlem {C}{D} .(R ○ L) L R refl right natright {X}{Y}{f}{Z}{g} = 
+ahomlem {C = C}{D = D} .(R ○ L) L R refl right natright {X}{Y}{f}{Z}{g} = 
   trans (sym (fcomp R))
     (cong (HMap R)
      (sym
@@ -133,7 +137,8 @@ ahomlem {C}{D} .(R ○ L) L R refl right natright {X}{Y}{f}{Z}{g} =
          (trans (sym (ass D)) (idr D)))))))
 
 
-Llawlem : ∀{C D}(T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) → 
+Llawlem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+  (T : Fun C C)(L : Fun C D)(R : Fun D C)(p : R ○ L ≅ T) → 
   (right : ∀ {X Y} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) → 
   (bind : ∀ {X Y} → Hom C X (OMap T Y) → Hom C (OMap T X) (OMap T Y)) → 
   (bindlaw : {X Y : Obj C} {f : Hom C X (OMap T Y)} →

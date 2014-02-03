@@ -21,9 +21,9 @@ open SetoidFun
 SetoidFunEq : {S S' : Setoid}{f g : SetoidFun S S'} → fun f ≅ fun g → 
               (∀ s s' → feq f {s}{s'} ≅ feq g {s}{s'}) → f ≅ g
 SetoidFunEq {S}{S'} p q = funnycong
-  {set S → set S'}
-  {λ fun → {s s' : set S} → eq S s s' → eq S' (fun s) (fun s')}
-  {SetoidFun S S'} 
+  {A = set S → set S'}
+  {B = λ fun → {s s' : set S} → eq S s s' → eq S' (fun s) (fun s')}
+  {C = SetoidFun S S'} 
   p 
   (iext λ s → iext λ s' → q s s')
   (λ x y → record {fun = x; feq = y}) 

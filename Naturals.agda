@@ -7,7 +7,8 @@ open import Functors
 
 open Fun
 
-record NatT {a b}{C D : Cat {a}{b}}(F G : Fun C D) : Set (a ⊔ b) where
+record NatT {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(F G : Fun C D) : 
+  Set (a ⊔ b ⊔ c ⊔ d) where
   open Cat
   field cmp : ∀ {X} → Hom D (OMap F X) (OMap G X)
         nat : ∀{X Y}{f : Hom C X Y} → 
@@ -15,12 +16,13 @@ record NatT {a b}{C D : Cat {a}{b}}(F G : Fun C D) : Set (a ⊔ b) where
 
 open NatT
 
-NatTEq : {C D : Cat}{F G : Fun C D}{α β : NatT F G} → 
+NatTEq : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
+         {α β : NatT F G} → 
          (λ {X : Cat.Obj C} → cmp α {X}) ≅ (λ {X : Cat.Obj C} → cmp β {X}) → 
          α ≅ β
-NatTEq {C}{D}{F}{G} {α} {β} p = let open Cat in funnycong
-  {∀ {X} → Hom D (OMap F X) (OMap G X)}
-  {λ cmp → ∀{X Y}{f : Hom C X Y} → 
+NatTEq {C = C}{D = D}{F = F}{G = G}{α = α}{β = β} p = let open Cat in funnycong
+  {A = ∀ {X} → Hom D (OMap F X) (OMap G X)}
+  {B = λ cmp → ∀{X Y}{f : Hom C X Y} → 
     comp D (HMap G f) cmp ≅ comp D cmp (HMap F f)}
   (proof 
    (λ {X} → cmp α {X}) 
@@ -37,7 +39,7 @@ NatTEq {C}{D}{F}{G} {α} {β} p = let open Cat in funnycong
       comp D (HMap G f) (cmp β {X}) ∎))
   λ x y → record{cmp = x;nat = y}
 
-idNat : ∀{a b}{C D : Cat {a}{b}}{F : Fun C D} → NatT F F
+idNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F : Fun C D} → NatT F F
 idNat {C = C}{D = D}{F = F} = let open Cat D in record {
   cmp = iden;
   nat = λ{X}{Y}{f} → 
@@ -48,7 +50,7 @@ idNat {C = C}{D = D}{F = F} = let open Cat D in record {
     ≅⟨ sym idl ⟩ 
     comp iden (HMap F f) ∎} 
 
-compNat : ∀{a b}{C D : Cat {a}{b}}{F G H : Fun C D} → 
+compNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G H : Fun C D} → 
           NatT G H → NatT F G → NatT F H
 compNat {C = C}{D = D}{F = F}{G = G}{H = H} α β = let open Cat D in record {
   cmp = comp (cmp α) (cmp β);
@@ -67,12 +69,15 @@ compNat {C = C}{D = D}{F = F}{G = G}{H = H} α β = let open Cat D in record {
     comp (comp (cmp α) (cmp β)) (HMap F f) 
     ∎}
 
-idlNat : ∀{C D}{F G : Fun C D}{α : NatT F G} → compNat idNat α ≅ α
-idlNat {C}{D} = NatTEq (iext λ _ → Cat.idl D)
+idlNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
+         {α : NatT F G} → compNat idNat α ≅ α
+idlNat {C = C}{D = D} = NatTEq (iext λ _ → Cat.idl D)
 
-idrNat : ∀{C D}{F G : Fun C D}{α : NatT F G} → compNat α idNat ≅ α
-idrNat {C}{D} = NatTEq (iext λ _ → Cat.idr D)
+idrNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
+         {α : NatT F G} → compNat α idNat ≅ α
+idrNat {C = C}{D = D} = NatTEq (iext λ _ → Cat.idr D)
  
-assNat : ∀{C D}{E F G H : Fun C D}{α : NatT G H}{β : NatT F G}{η : NatT E F} → 
+assNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{E F G H : Fun C D}
+         {α : NatT G H}{β : NatT F G}{η : NatT E F} → 
          compNat (compNat α β) η ≅ compNat α (compNat β η)
-assNat {C}{D} = NatTEq (iext λ _ → Cat.ass D)
+assNat {C = C}{D = D} = NatTEq (iext λ _ → Cat.ass D)

@@ -1,13 +1,11 @@
-{-# OPTIONS --type-in-type #-}
 module Monads.Kleisli where
 
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Categories
 open import Monads
 
-Kl : ∀{C} → Monad C → Cat
-Kl {C} M = record{
+Kl : ∀{a b}{C : Cat {a}{b}} → Monad C → Cat
+Kl {C = C} M = record{
   Obj  = Obj;
   Hom  = λ X Y → Hom X (T Y);
   iden = η;

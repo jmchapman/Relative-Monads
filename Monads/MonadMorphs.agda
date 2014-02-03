@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Monads.MonadMorphs where
 
 open import Relation.Binary.HeterogeneousEquality

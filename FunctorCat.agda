@@ -4,7 +4,7 @@ open import Categories
 open import Functors
 open import Naturals
 
-FunctorCat : Cat → Cat → Cat
+FunctorCat : ∀{a b c d} → Cat {a}{b} → Cat {c}{d} → Cat
 FunctorCat C D = record{
   Obj  = Fun C D;
   Hom  = NatT;
@@ -12,4 +12,4 @@ FunctorCat C D = record{
   comp = compNat;
   idl  = idlNat;
   idr  = idrNat;
-  ass  = λ{_}{_}{_}{_}{α}{β}{η} → assNat {_}{_}{_}{_}{_}{_}{α}{β}{η}}
+  ass  = λ{_}{_}{_}{_}{α}{β}{η} → assNat {α = α}{β = β}{η = η}}
