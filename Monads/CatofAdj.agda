@@ -12,8 +12,7 @@ open Monad
 open Adj
 open Cat
 
-
-record ObjAdj {c d} : Set (lsuc (a ⊔ b ⊔ c ⊔ d)) where
+record ObjAdj {c d} : Set (a ⊔ b ⊔ lsuc c ⊔ lsuc d) where
   field D   : Cat {c}{d}
         adj : Adj C D
         law : R adj ○ L adj ≅ TFun M
@@ -76,8 +75,7 @@ HomAdjEq {A = A}{B = B} f g p = funnycong4
     ≅⟨ cong (λ F → HMap F (right (adj A) h)) p ⟩
     HMap (K g) (right (adj A) h) ∎))
 
-rightlawlem : ∀{c d e f}{C : Cat {c}{d}}{D : Cat {e}{f}}
-  (R : Fun D C)(L : Fun C D)
+rightlawlem : ∀{c d}{D : Cat {c}{d}}(R : Fun D C)(L : Fun C D)
   (p : OMap R ≅ OMap (R ○ (IdF D))) → 
   (right : {X : Obj C}{Y : Obj D} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) →
            {Z : Obj C}{Y : Obj D}{f : Hom C Z (OMap R Y)} →
@@ -93,7 +91,7 @@ idHomAdj {X = X} = record {
                            (L (adj X)) 
                            (cong OMap (FunctorEq _ _ refl (λ _ → refl))) 
                            (right (adj X))}
-HMaplem : ∀{c d e f}{C : Cat {c}{d}}{D : Cat {e}{f}}{X X' Y Y' : Obj C} → 
+HMaplem : ∀{c d}{D : Cat {c}{d}}{X X' Y Y' : Obj C} → 
           X ≅ X' → Y ≅ Y' → 
           {f : Hom C X Y}{f' : Hom C X' Y'} → f ≅ f' → (F : Fun C D) → 
           HMap F {X}{Y} f ≅ HMap F {X'}{Y'} f'
@@ -277,9 +275,9 @@ assHomAdj : ∀{c d}{W X Y Z : ObjAdj {c}{d}}
 assHomAdj {W = W}{X = X}{Y = Y}{Z = Z}{f = f}{g = g}{h = h} = 
   HomAdjEq _ _ (FunctorEq _ _ refl (λ h → refl))
 
-CatofAdj : ∀{c d} → Cat {lsuc (a ⊔ b ⊔ c ⊔ d)}{a ⊔ b ⊔ c ⊔ d}
+CatofAdj : ∀{c d} → Cat {a ⊔ b ⊔ lsuc c ⊔ lsuc d}{a ⊔ b ⊔ c ⊔ d}
 CatofAdj {c}{d} = record {
-  Obj  = ObjAdj {c}{d};
+         Obj  = ObjAdj {c}{d};
   Hom  = HomAdj;
   iden = idHomAdj;
   comp = compHomAdj;

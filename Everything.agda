@@ -54,7 +54,7 @@ open import RMonads.RKleisli.Functors
 open import RMonads.RKleisli.Adjunction
 open import RMonads.Restriction
 open import RMonads.SpecialCase
--- open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj
 -- open import RMonads.CatofRAdj.InitRAdj
 -- open import RMonads.CatofRAdj.TermRAdjObj
 -- open import RMonads.CatofRAdj.TermRAdjHom

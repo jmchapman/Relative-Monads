@@ -20,7 +20,8 @@ record RMonad {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) :
 
 open import Functors
 
-TFun : ∀{a b}{C D : Cat {a}{b}}{J : Fun C D} → RMonad J → Fun C D
+TFun : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D} → 
+       RMonad J → Fun C D
 TFun {C = C}{D = D}{J = J} M = let open RMonad M; open Cat in record { 
   OMap  = T; 
   HMap  = bind ∘ comp D η ∘ HMap J; 
