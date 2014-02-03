@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module FunctorCat where
 
 open import Categories

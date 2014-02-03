@@ -1,10 +1,9 @@
-{-# OPTIONS --type-in-type #-}
 module Monoids where
 
 open import Library
 
-record Monoid : Set where
-  field S   : Set
+record Monoid {a} : Set (lsuc a) where
+  field S   : Set a
         ε   : S
         _•_ : S → S → S
         lid : ∀{m} → ε • m ≅ m
