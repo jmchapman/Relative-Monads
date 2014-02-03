@@ -1,13 +1,13 @@
-{-# OPTIONS --type-in-type #-}
+open import Categories
+open import Functors
+open import RMonads
 
-module RMonads.CatofRAdj.TermRAdjObj where
+module RMonads.CatofRAdj.TermRAdjObj {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+                                     {J : Fun C D}(M : RMonad J) where
 
 open import Library
-open import RMonads
-open import Functors
 open import Naturals
 open import RAdjunctions
-open import Categories
 open import RMonads.CatofRAdj
 open import Categories.Terminal
 open import RMonads.REM
@@ -19,17 +19,17 @@ open Fun
 open NatT
 open RAdj
 
-lemX : ∀{C D}{J : Fun C D}(M : RMonad J) → R (REMAdj M) ○ L (REMAdj M) ≅ TFun M
-lemX M = FunctorEq _ _ refl (λ f → refl) 
+lemX : R (REMAdj M) ○ L (REMAdj M) ≅ TFun M
+lemX = FunctorEq _ _ refl (λ f → refl) 
 
-EMObj : {C D : Cat}{J : Fun C D}(M : RMonad J) → Obj (CatofAdj M)
-EMObj {C}{D}{J} M = record { 
+EMObj : Obj (CatofAdj M)
+EMObj  = record { 
   E       = EM M;
   adj     = REMAdj M;
-  law     = lemX M;
+  law     = lemX;
   ηlaw    = idl D;
   bindlaw = λ{X}{Y}{f} → 
     cong bind 
          (stripsubst (Hom D (OMap J X)) 
                      f 
-                     (fcong Y (cong OMap (sym (lemX M)))))} where open RMonad M
+                     (fcong Y (cong OMap (sym lemX))))} where open RMonad M
