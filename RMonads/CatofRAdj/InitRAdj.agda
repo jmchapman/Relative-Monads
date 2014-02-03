@@ -1,11 +1,13 @@
-module RMonads.CatofRAdj.InitRAdj where
+open import Categories
+open import Functors
+open import RMonads
+
+module RMonads.CatofRAdj.InitRAdj {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+                                  {J : Fun C D}(M : RMonad J)where
 
 open import Library
-open import RMonads
-open import Functors
 open import Naturals
 open import RAdjunctions
-open import Categories
 open import RMonads.CatofRAdj
 open import Categories.Initial
 open import RMonads.RKleisli
@@ -18,20 +20,19 @@ open Fun
 open NatT
 open RAdj
 
-lemX : ∀{C D}{J : Fun C D}(M : RMonad J) → R (KlAdj M) ○ L (KlAdj M) ≅ TFun M
-lemX M = FunctorEq _ _ refl (λ f → refl) 
+lemX : R (KlAdj M) ○ L (KlAdj M) ≅ TFun M
+lemX = FunctorEq _ _ refl (λ f → refl) 
 
-KlObj : {C D : Cat}{J : Fun C D}(M : RMonad J) → 
-        Obj (CatofAdj M)
-KlObj {C}{D}{J} M = record { 
+KlObj : Obj (CatofAdj M)
+KlObj = record { 
   E   = Kl M; 
   adj = KlAdj M; 
-  law = lemX M;
+  law = lemX;
   ηlaw = refl;
   bindlaw = λ{X}{Y}{f} → 
     cong bind (stripsubst (Hom D (OMap J X)) 
                           f
-                          (fcong Y (cong OMap (sym (lemX M)))))}
+                          (fcong Y (cong OMap (sym lemX))))}
   where open RMonad M 
         open Cat
 
@@ -39,18 +40,20 @@ open ObjAdj
 open import Isomorphism
 open Iso
 
-lemZ : ∀{C}{D}{F G G' : Fun C D} → G ≅ G' → {α : NatT F G}{β : NatT F G'} → 
+lemZ : {F G G' : Fun C D} → G ≅ G' → {α : NatT F G}{β : NatT F G'} → 
        α ≅ β → 
        ∀{X} → cmp α {X} ≅ cmp β {X}
 lemZ refl refl = refl
 
-lemZ' : ∀{C}{D}{F F' G G' : Fun C D} → F ≅ F' → G ≅ G' → 
+lemZ' : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F F' G G' : Fun C D} → 
+        F ≅ F' → G ≅ G' → 
         {α : NatT F G}{β : NatT F' G'} → α ≅ β → 
         ∀{X} → cmp α {X} ≅ cmp β {X}
 lemZ' refl refl refl = refl
 
 
-lemfid : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D) 
+lemfid : ∀{e f}{E : Cat {e}{f}}(L : Fun C E)(R : Fun E D)
+  (T : Fun C D) 
   (p : T ≅ R ○ L) 
   (η : ∀ {X} → Hom D (OMap J X) (OMap T X))
   (right : {X : Obj C}{Y : Obj E} → 
@@ -63,10 +66,10 @@ lemfid : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
   right (subst (Hom D (OMap J X)) (fcong X (cong OMap p)) η) 
   ≅ 
   iden E {OMap L X}
-lemfid {C}{D}{E} J L R .(R ○ L) refl η right left q r {X} = 
+lemfid {E = E} L R .(R ○ L) refl η right left q r {X} = 
   trans (cong right (sym r)) (q (iden E))
 
-lemfcomp : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D) 
+lemfcomp : ∀{e f}{E : Cat {e}{f}}(L : Fun C E)(R : Fun E D)(T : Fun C D) 
   (p : T ≅ R ○ L)
   (bind : ∀{X Y} → Hom D (OMap J X) (OMap T Y) → Hom D (OMap T X) (OMap T Y)) →
   (right : {X : Obj C} {Y : Obj E} → 
@@ -88,7 +91,7 @@ lemfcomp : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
   ≅
   comp E (right (subst (Hom D (OMap J Y)) (fcong Z (cong OMap p)) f))
          (right (subst (Hom D (OMap J X)) (fcong Y (cong OMap p)) g))
-lemfcomp {C}{D}{E} J L R .(R ○ L) refl bind right q r {X}{Y}{Z}{f}{g} = 
+lemfcomp {E = E} L R .(R ○ L) refl bind right q r {X}{Y}{Z}{f}{g} = 
   trans (cong₂ (λ f g → right (comp D f g)) (sym (q {f = f})) (sym (idr D)))
         (trans (cong (λ h → right (comp D (HMap R (right f)) (comp D g h)))
                      (sym (fid J))) 
@@ -97,7 +100,7 @@ lemfcomp {C}{D}{E} J L R .(R ○ L) refl bind right q r {X}{Y}{Z}{f}{g} =
                             (trans (cong (comp E (right g)) (fid L)) 
                                    (idr E)))))
 
-lemLlaw : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
+lemLlaw : ∀{e f}{E : Cat {e}{f}}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
           (p : T ≅ R ○ L)
           (η : ∀ {X} → Hom D (OMap J X) (OMap T X)) → 
           (right : {X : Obj C} {Y : Obj E} → 
@@ -119,7 +122,7 @@ lemLlaw : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
                        (comp D η (HMap J f)))
           ≅
           HMap L f
-lemLlaw {C}{D}{E} J L R .(R ○ L) refl η right left q r t {X}{Y} f = 
+lemLlaw {E = E} J L R .(R ○ L) refl η right left q r t {X}{Y} f = 
   trans (cong (λ g → right (comp D g (HMap J f))) (sym r)) 
         (trans (cong right 
                      (trans (sym (idl D)) 
@@ -130,16 +133,17 @@ lemLlaw {C}{D}{E} J L R .(R ○ L) refl η right left q r t {X}{Y} f =
                                     (idl E))
                              (cong (λ g → comp E g (HMap L f)) (q (iden E))))
                       (idl E)))
-KlHom : ∀{C D}{J : Fun C D}(M : RMonad J){A : Obj (CatofAdj M)} → 
-        Hom (CatofAdj M) (KlObj M) A
-KlHom {C}{D}{J} M {A} = record { 
+
+KlHom : {A : Obj (CatofAdj M)} → 
+        Hom (CatofAdj M) KlObj A
+KlHom {A = A} = record { 
     K = record { 
     OMap  = OMap (L (adj A)); 
     HMap  = λ{X}{Y} f → 
       right (adj A) (subst (Hom D (OMap J X)) 
                            (fcong Y (cong OMap (sym (ObjAdj.law A)))) 
                            f); 
-    fid   = lemfid J
+    fid   = lemfid
                    (L (adj A)) 
                    (R (adj A)) 
                    (TFun M) 
@@ -149,7 +153,7 @@ KlHom {C}{D}{J} M {A} = record {
                    (left (adj A))
                    (lawa (adj A))
                    (ObjAdj.ηlaw A); 
-    fcomp = lemfcomp J 
+    fcomp = lemfcomp 
                      (L (adj A))
                      (R (adj A))
                      (TFun M) 
@@ -180,23 +184,26 @@ KlHom {C}{D}{J} M {A} = record {
    (λ f → sym (bindlaw A));
 
   rightlaw = λ {X} {Y} {f} → cong (right (adj A)) (trans
-                                                     (stripsubst (Hom D (OMap J X)) f
-                                                      (fcong Y (cong OMap (sym (law A)))))
-                                                     (sym
-                                                      (stripsubst (Hom D (OMap J X)) f
-                                                       (fcong Y
-                                                        (cong OMap
-                                                         (FunctorEq _ _ (cong OMap (sym (law A)))
-                                                          (λ f₁ → sym (bindlaw A)))))))) }
+    (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A)))))
+    (sym (stripsubst (Hom D (OMap J X)) 
+                     f 
+                     (fcong Y 
+                            (cong OMap 
+                                  (FunctorEq _ 
+                                             _ 
+                                             (cong OMap (sym (law A)))
+                                             (λ f₁ → sym (bindlaw A)))))))) }
   where open RMonad M
 
-KlIsInit : ∀{C D}{J : Fun C D}(M : RMonad J) → Init (CatofAdj M)
-KlIsInit {C}{D}{J} M = record { 
-  I   = KlObj M;
-  i   = KlHom M;
-  law = λ {X} {V} →
-            HomAdjEq _ _
-            (FunctorEq _ _ (cong OMap (sym (HomAdj.Llaw V)))
+KlIsInit : Init (CatofAdj M)
+KlIsInit = record { 
+  I   = KlObj;
+  i   = KlHom;
+  law = λ {X} {V} → HomAdjEq 
+    _ 
+    _ 
+    _ 
+    ((FunctorEq _ _ (cong OMap (sym (HomAdj.Llaw V)))
              (λ {A} {B} f →
                 trans
                 (cong₂ (λ B₁ → right (adj X) {A} {B₁})
@@ -207,4 +214,4 @@ KlIsInit {C}{D}{J} M = record {
                     (sym
                      (stripsubst (Hom D (OMap J A)) f
                       (fcong B (cong OMap (HomAdj.Rlaw V)))))))
-                (sym (HomAdj.rightlaw V))))}
+                (sym (HomAdj.rightlaw V)))))}
