@@ -1,12 +1,11 @@
-{-# OPTIONS --type-in-type #-}
 module Categories.Setoids where
 
 open import Library
 open import Categories
 
-record Setoid : Set where
-  field set : Set
-        eq  : set → set → Set
+record Setoid {a b} : Set (lsuc (a ⊔ b)) where
+  field set : Set a
+        eq  : set → set → Set b
         ref : {s : set} → eq s s
         sym' : {s s' : set} → eq s s' → eq s' s
         trn : {s s' s'' : set} → 

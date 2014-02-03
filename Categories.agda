@@ -1,11 +1,11 @@
-{-# OPTIONS --type-in-type #-}
+
 module Categories where
 
 open import Library
 
-record Cat : Set where
-  field Obj  : Set
-        Hom  : Obj → Obj → Set
+record Cat {a b} : Set (lsuc (a ⊔ b)) where
+  field Obj  : Set a
+        Hom  : Obj → Obj → Set b
         iden : ∀{X} → Hom X X
         comp : ∀{X Y Z} → Hom Y Z → Hom X Y → Hom X Z
         idl  : ∀{X Y}{f : Hom X Y} → comp iden f ≅ f
@@ -25,7 +25,7 @@ _!_•_ : ∀ C {X Y Z : ! C !} → C < Y , Z > → C < X , Y > → C < X , Z >
 C ! f • g = comp C f g
 -}
 
-_Op : Cat → Cat
+_Op : ∀{a b} →  Cat {a}{b} → Cat
 C Op = record{
   Obj  = Obj C; 
   Hom  = λ X Y → Hom C Y X;

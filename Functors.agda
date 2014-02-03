@@ -1,11 +1,10 @@
-{-# OPTIONS --type-in-type #-}
 module Functors where
 
 open import Library
 open import Categories
 open Cat
 
-record Fun (C D : Cat) : Set where
+record Fun {a b c d} (C : Cat {a}{b})(D : Cat {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d) where
   field OMap  : Obj C → Obj D
         HMap  : ∀{X Y} → Hom C X Y → Hom D (OMap X) (OMap Y)
         fid   : ∀{X} → HMap (iden C {X}) ≅ iden D {OMap X}
@@ -13,14 +12,11 @@ record Fun (C D : Cat) : Set where
                 HMap (comp C f g) ≅ comp D (HMap f) (HMap g)
 open Fun
 
-_`_ : ∀{C D}(F : Fun C D) → Obj C → Obj D
-F ` X = OMap F X
-
-IdF : ∀ C → Fun C C
+IdF : ∀{a b}(C : Cat {a}{b}) → Fun C C
 IdF C = record{OMap = id;HMap = id;fid = refl;fcomp = refl}
 
-_○_ : ∀{C D E} → Fun D E → Fun C D → Fun C E
-_○_ {C}{D}{E} F G = record{
+_○_ : ∀{a b}{C D E : Cat {a}{b}} → Fun D E → Fun C D → Fun C E
+_○_ {C = C}{D = D}{E = E} F G = record{
   OMap  = λ X → OMap F (OMap G X);
   HMap   = λ f → HMap F (HMap G f);
   fid    = 

@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Functors.Fin where
 
 open import Library
@@ -15,7 +14,7 @@ open Iso
 open import Data.Fin
 open import Data.Nat
 
-Nats : Cat
+Nats : Cat {lzero}{lzero}
 Nats = record{
   Obj  = ℕ; 
   Hom  = λ m n → Fin m → Fin n;
@@ -27,7 +26,7 @@ Nats = record{
 
 FinF : Fun Nats Sets
 FinF = record {
-  OMap  = Fin; 
+  OMap  = Fin;
   HMap  = id;
   fid   = refl;
   fcomp = refl}
@@ -52,4 +51,3 @@ FinFF X Y = record {
   inv  = id;
   law1 = λ _ → refl;
   law2 = λ _ → refl}
-

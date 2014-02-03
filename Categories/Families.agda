@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Categories.Families where
 
 open import Relation.Binary.HeterogeneousEquality

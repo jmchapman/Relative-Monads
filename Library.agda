@@ -1,5 +1,3 @@
-{-# OPTIONS --type-in-type #-}
-
 module Library where
 
 open import Function using (id; _∘_) public
@@ -9,36 +7,37 @@ open import Data.Empty public using (⊥)
 open import Data.Unit public using (⊤)
 open import Data.Nat public using (ℕ; zero; suc; _+_; module ℕ)
 open import Data.Fin public using (Fin; zero; suc)
+open import Level public renaming (suc to lsuc; zero to lzero)
 
-congid : ∀{A}{a a' : A}(p : a ≅ a') → cong id p ≅ p
+congid : {A : Set}{a a' : A}(p : a ≅ a') → cong id p ≅ p
 congid refl = refl
 
-congcomp : ∀{A B C}{a a' : A}(f : B → C)(g : A → B)(p : a ≅ a') →
+congcomp : {A B C : Set}{a a' : A}(f : B → C)(g : A → B)(p : a ≅ a') →
             cong (f ∘ g) p ≅ cong f (cong g p)
 congcomp f g refl = refl
 
-icong : ∀{A}{B : A → Set}(f : ∀ {a} → B a){a a' : A} → 
+icong : {A : Set}{B : A → Set}(f : ∀ {a} → B a){a a' : A} → 
         a ≅ a' → f {a} ≅ f {a'}
 icong f refl = refl
 
 -- should be replaced by dcong
-cong' : ∀{A A'} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
+cong' : {A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
         {f : ∀ a → B a}{f' : ∀ a → B' a} → f ≅ f' → 
         {a : A}{a' : A'} → a ≅ a' → f a ≅ f' a'
 cong' refl refl refl refl = refl
 
 -- should be replaced by dicong
-icong' : ∀{A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
+icong' : {A A' : Set} → A ≅ A' → {B : A → Set}{B' : A' → Set} → B ≅ B' → 
         {f : ∀ {a} → B a}{f' : ∀ {a} → B' a} → 
         (λ {a} → f {a}) ≅ (λ {a} → f' {a}) → 
         {a : A}{a' : A'} → a ≅ a' → f {a} ≅ f' {a'}
 icong' refl refl refl refl = refl
 
-fcong : ∀{A}{B : A → Set}{f f' : (x : A) → B x}
+fcong : {A : Set}{B : A → Set}{f f' : (x : A) → B x}
         (a : A) → f ≅ f' → f a ≅ f' a
 fcong a refl = refl
 
-dcong : ∀{A A'}{B : A → Set}{B' : A' → Set}
+dcong : {A A' : Set}{B : A → Set}{B' : A' → Set}
         {f : (a : A) → B a}{f' : (a : A') → B' a}{a : A}{a' : A'} → 
         a ≅ a' → B ≅ B' → f ≅ f' → f a ≅ f' a'
 dcong refl refl refl = refl
@@ -50,11 +49,11 @@ dicong : ∀{A A' : Set}{B : A → Set}{B' : A' → Set}
          f {a} ≅ f' {a'}
 dicong refl refl refl = refl
 
-ifcong : ∀{A}{B : A → Set}{f f' : {x : A} → B x}(a : A) → 
+ifcong : {A : Set}{B : A → Set}{f f' : {x : A} → B x}(a : A) → 
          _≅_ {_}{ {x : A} → B x} f { {x : A} → B x} f' → f {a} ≅ f' {a}
 ifcong a refl = refl
 
-cong₃ : ∀{A}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C x y → Set}
+cong₃ : {A : Set}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C x y → Set}
         (f : ∀ x y z → D x y z)
         {a a' : A} → a ≅ a' → 
         {b : B a}{b' : B a'} → b ≅ b' → 
@@ -62,7 +61,7 @@ cong₃ : ∀{A}{B : A → Set}{C : ∀ x → B x → Set}{D : ∀ x y → C x y
         f a b c ≅ f a' b' c'
 cong₃ f refl refl refl = refl
 
-funnycong : ∀{A}{B : A → Set}{C : Set}{a a' : A} → 
+funnycong : {A : Set}{B : A → Set}{C : Set}{a a' : A} → 
             a ≅ a' → {b : B a}{b' : B a'} → b ≅ b' → 
             (f : (a : A) → B a → C) → f a b ≅ f a' b'
 funnycong refl refl f = refl

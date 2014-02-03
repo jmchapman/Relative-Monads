@@ -1,5 +1,3 @@
-{-# OPTIONS --type-in-type #-}
-
 module Functors.FullyFaithful where
 
 open import Library
@@ -11,5 +9,7 @@ open import Isomorphism
 open Cat
 open Fun
 
-FullyFaithful : {C D : Cat}(F : Fun C D) → Set
-FullyFaithful {C}{D} F = ∀ X Y → Iso (Hom D (OMap F X) (OMap F Y)) (Hom C X Y)
+FullyFaithful : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+                (F : Fun C D) → Set (a ⊔ b ⊔ d)
+FullyFaithful {C = C}{D = D} F = 
+  ∀ (X Y : Obj C) → Iso (Hom D (OMap F X) (OMap F Y)) (Hom C X Y)

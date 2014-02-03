@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Naturals where
 
 open import Library
@@ -8,7 +7,7 @@ open import Functors
 
 open Fun
 
-record NatT {C D}(F G : Fun C D) : Set where
+record NatT {a b}{C D : Cat {a}{b}}(F G : Fun C D) : Set (a ⊔ b) where
   open Cat
   field cmp : ∀ {X} → Hom D (OMap F X) (OMap G X)
         nat : ∀{X Y}{f : Hom C X Y} → 
@@ -38,8 +37,8 @@ NatTEq {C}{D}{F}{G} {α} {β} p = let open Cat in funnycong
       comp D (HMap G f) (cmp β {X}) ∎))
   λ x y → record{cmp = x;nat = y}
 
-idNat : ∀{C D}{F : Fun C D} → NatT F F
-idNat {C}{D}{F} = let open Cat D in record {
+idNat : ∀{a b}{C D : Cat {a}{b}}{F : Fun C D} → NatT F F
+idNat {C = C}{D = D}{F = F} = let open Cat D in record {
   cmp = iden;
   nat = λ{X}{Y}{f} → 
     proof
@@ -49,8 +48,9 @@ idNat {C}{D}{F} = let open Cat D in record {
     ≅⟨ sym idl ⟩ 
     comp iden (HMap F f) ∎} 
 
-compNat : ∀{C D}{F G H : Fun C D} → NatT G H → NatT F G → NatT F H
-compNat {C}{D}{F}{G}{H} α β = let open Cat D in record {
+compNat : ∀{a b}{C D : Cat {a}{b}}{F G H : Fun C D} → 
+          NatT G H → NatT F G → NatT F H
+compNat {C = C}{D = D}{F = F}{G = G}{H = H} α β = let open Cat D in record {
   cmp = comp (cmp α) (cmp β);
   nat = λ{X}{Y}{f} → 
     proof

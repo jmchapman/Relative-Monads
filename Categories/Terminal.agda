@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Categories.Terminal where
 
 open import Library
@@ -6,7 +5,7 @@ open import Categories
 open import Categories.Sets
 open Cat
 
-record Term (C : Cat) : Set where
+record Term {a b} (C : Cat {a}{b}) : Set (lsuc (a ⊔ b)) where
   field T : Obj C
         t : ∀{X} → Hom C X T
         law : ∀{X}{f : Hom C X T} → t {X} ≅ f

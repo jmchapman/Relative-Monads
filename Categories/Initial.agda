@@ -1,4 +1,3 @@
-{-# OPTIONS --type-in-type #-}
 module Categories.Initial where
 
 open import Library
@@ -6,7 +5,7 @@ open import Categories
 open import Categories.Sets
 open Cat
 
-record Init (C : Cat) : Set where
+record Init {a b} (C : Cat {a}{b}) : Set (lsuc (a ⊔ b)) where
   field I : Obj C
         i : ∀{X} → Hom C I X
         law : ∀{X}{f : Hom C I X} → i {X} ≅ f 
