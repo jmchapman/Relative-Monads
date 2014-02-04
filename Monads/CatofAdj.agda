@@ -91,7 +91,7 @@ idHomAdj {X = X} = record {
                            (L (adj X)) 
                            (cong OMap (FunctorEq _ _ refl (λ _ → refl))) 
                            (right (adj X))}
-HMaplem : ∀{c d}{D : Cat {c}{d}}{X X' Y Y' : Obj C} → 
+HMaplem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{X X' Y Y' : Obj C} → 
           X ≅ X' → Y ≅ Y' → 
           {f : Hom C X Y}{f' : Hom C X' Y'} → f ≅ f' → (F : Fun C D) → 
           HMap F {X}{Y} f ≅ HMap F {X'}{Y'} f'
@@ -167,6 +167,7 @@ compLlaw {X = X}{Y = Y}{Z = Z} f g =
       ≅⟨ cong (λ F → HMap F h) (Llaw f) ⟩
       HMap (L (adj Z)) h 
       ∎)
+
 
 -- ground to a halt here as later proofs expect a particular proof of this.
 -- this could be fixed I expect.

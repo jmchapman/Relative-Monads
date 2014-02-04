@@ -1,16 +1,11 @@
-{-# OPTIONS --type-in-type #-}
 module WellTypedTermsNBEModel where
 
+open import Library
 open import Naturals
 open import WellTypedTerms
 open import RMonads.REM
 open import FunctorCat
 open import Categories.Sets
-open import Equality
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Data.Product renaming (proj₁ to fst; proj₂ to snd)
-open import Function
 open NatT
 open Σ
 

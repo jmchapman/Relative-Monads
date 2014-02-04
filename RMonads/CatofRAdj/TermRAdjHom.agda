@@ -48,7 +48,7 @@ alaw1lem {E = E} .(R ○ L) L R refl η right left ηlaw {X}{Z}{f} nat lawb =
                                    (idr D))))) 
         (cong (comp D (HMap R (right f))) ηlaw)
 
-alaw2lem : ∀{C D E}(J : Fun C D)(T : Fun C D)(L : Fun C E)(R : Fun E D)
+alaw2lem : ∀{e f}{E : Cat {e}{f}}(T : Fun C D)(L : Fun C E)(R : Fun E D)
   (p : R ○ L ≅ T) → 
   (right : ∀ {X Y} → Hom D (OMap J X) (OMap R Y) → Hom E (OMap L X) Y) → 
   (bind : ∀{X Y} → 
@@ -79,7 +79,7 @@ alaw2lem : ∀{C D E}(J : Fun C D)(T : Fun C D)(L : Fun C E)(R : Fun E D)
   (subst (λ Z → Hom D Z (OMap R X))
    (fcong W (cong OMap p)) (HMap R (right f)))
   (bind k)
-alaw2lem {C}{D}{E} J .(R ○ L) L R refl right bind natright {k = k}{f = f} bl = 
+alaw2lem {E = E} .(R ○ L) L R refl right bind natright {k = k}{f = f} bl = 
   trans (trans (cong (HMap R) 
                      (trans (cong (λ k → right (comp D (HMap R (right f)) k))
                                   (trans (sym (idr D)) (cong (comp D k) 
@@ -95,7 +95,8 @@ alaw2lem {C}{D}{E} J .(R ○ L) L R refl right bind natright {k = k}{f = f} bl =
                (fcomp R)) 
         (cong (comp D (HMap R (right f))) bl)
 
-ahomlem : ∀{C D E}(J : Fun C D)(T : Fun C D)(L : Fun C E)(R : Fun E D)
+
+ahomlem : ∀{e f}{E : Cat {e}{f}}(T : Fun C D)(L : Fun C E)(R : Fun E D)
   (p : R ○ L ≅ T) → 
   (right : ∀ {X Y} → Hom D (OMap J X) (OMap R Y) → Hom E (OMap L X) Y) →
   (natright : {X X' : Obj C} {Y Y' : Obj E} (f : Hom C X' X)
@@ -113,7 +114,7 @@ ahomlem : ∀{C D E}(J : Fun C D)(T : Fun C D)(L : Fun C E)(R : Fun E D)
   subst (λ Z → Hom D Z (OMap R Y))
   (fcong Z (cong OMap p))
   (HMap R (right (comp D (HMap R f) g)))
-ahomlem {C}{D}{E} J .(R ○ L) L R refl right natright {X}{Y}{f}{Z}{g} = 
+ahomlem {E = E} .(R ○ L) L R refl right natright {X}{Y}{f}{Z}{g} = 
   trans (sym (fcomp R)) 
         (cong (HMap R) 
               (trans (trans (sym (idr E))
@@ -125,7 +126,8 @@ ahomlem {C}{D}{E} J .(R ○ L) L R refl right natright {X}{Y}{f}{Z}{g} =
                            (trans (cong (comp D g) (fid J)) (idr D)))))
 open ObjAdj
 
-Llawlem : ∀{C D E}(J : Fun C D)(T : Fun C D)(L : Fun C E)(R : Fun E D)
+
+Llawlem : ∀{e f}{E : Cat {e}{f}}(T : Fun C D)(L : Fun C E)(R : Fun E D)
   (p : R ○ L ≅ T) → 
   (right : ∀{X Y} → Hom D (OMap J X) (OMap R Y) → Hom E (OMap L X) Y) → 
   (bind : ∀{X Y} → 
@@ -141,9 +143,9 @@ Llawlem : ∀{C D E}(J : Fun C D)(T : Fun C D)(L : Fun C E)(R : Fun E D)
   subst (λ Z → Hom D Z (OMap R (OMap L X)))
   (fcong Z (cong OMap p)) (HMap R (right f))
   ≅ bind f'
-Llawlem J .(R ○ L) L R refl right bind bindlaw {X}{Z}{f}{.f} refl = bindlaw
+Llawlem .(R ○ L) L R refl right bind bindlaw {X}{Z}{f}{.f} refl = bindlaw
 
-K : (A : Obj (CatofAdj M)) → 
+K : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
     Fun (E A) (E (EMObj M))
 K A = record {
   OMap = λ X → record {
@@ -165,7 +167,7 @@ K A = record {
                (natleft (adj A) (iden C) (right (adj A) f) (iden (E A)))
                (lawb (adj A) f);
     alaw2 = λ {Z} {W} {k} {f} →
-      alaw2lem J 
+      alaw2lem  
                (TFun M) 
                (L (adj A)) 
                (R (adj A))
@@ -177,7 +179,7 @@ K A = record {
   HMap = λ {X} {Y} f → record {
     amor = HMap (R (adj A)) f;
     ahom = λ {Z} {g} →
-      ahomlem J 
+      ahomlem  
               (TFun M) 
               (L (adj A)) 
               (R (adj A)) 
@@ -188,7 +190,8 @@ K A = record {
     fcomp = RAlgMorphEq M (fcomp (R (adj A)))}
   where open RMonad M
 
-Llaw' : (A : Obj (CatofAdj M)) → 
+
+Llaw' : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
         K A ○ L (adj A) ≅ L (adj (EMObj M))
 Llaw' A = 
  FunctorEq _ _
@@ -198,19 +201,19 @@ Llaw' A =
        (λ Z →
           dext
           (λ {f} {f'} p →
-             Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
+             Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
              bind (bindlaw A) p))))
    (λ {X} {Y} f →
       lemZ M
       (AlgEq M (fcong X (cong OMap (law A)))
        (λ Z →
           dext
-          (Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
+          (Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
            bind (bindlaw A))))
       (AlgEq M (fcong Y (cong OMap (law A)))
        (λ Z →
           dext
-          (Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
+          (Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
            bind (bindlaw A))))
       (cong' refl
        (ext
@@ -234,23 +237,25 @@ Llaw' A =
        (refl {x = f})))
   where open RMonad M
 
-Rlaw' : ∀{C D}{J : Fun C D}(M : RMonad J)(A : Obj (CatofAdj M)) → 
-       R (adj A) ≅ R (adj (EMObj M)) ○ K M A
-Rlaw' {C}{D}{J} M A = FunctorEq _ _ refl (λ f → refl)
 
-rightlaw' : ∀{C D}{J : Fun C D}(M : RMonad J)(A : Obj (CatofAdj M)) → 
+Rlaw' : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
+        R (adj A) ≅ R (adj (EMObj M)) ○ K A
+Rlaw' A = FunctorEq _ _ refl (λ f → refl)
+
+
+rightlaw' : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
            {X : Obj C}{Y : Obj (E A)} →
            {f : Hom D (OMap J X) (OMap (R (adj A)) Y)} →
-           HMap (K M A) (right (adj A) f) 
+           HMap (K A) (right (adj A) f) 
            ≅
-           right (adj (EMObj M)) {X} {OMap (K M A) Y}
-                 (subst (Hom D (OMap J X)) (fcong Y (cong OMap (Rlaw' M A))) f)
-rightlaw' {C}{D}{J} M A {X}{Y}{f} = lemZ M
+           right (adj (EMObj M)) {X} {OMap (K A) Y}
+                 (subst (Hom D (OMap J X)) (fcong Y (cong OMap (Rlaw' A))) f)
+rightlaw' A {X}{Y}{f} = lemZ M
   (AlgEq M (fcong X (cong OMap (law A)))
    (λ Z →
       dext
       (λ {g} {g'} p →
-         Llawlem J (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
+         Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
          bind (bindlaw A) p)))
   refl
   (trans
@@ -259,17 +264,17 @@ rightlaw' {C}{D}{J} M A {X}{Y}{f} = lemZ M
        HMap (R (adj A)) (right (adj A) f₁))
     (sym
        (stripsubst (Hom D (OMap J X)) f
-        (fcong Y (cong OMap (Rlaw' M A))))))
+        (fcong Y (cong OMap (Rlaw' A))))))
    (sym
     (stripsubst (λ (Z : Obj D) → Hom D Z (OMap (R (adj A)) Y)) _
      (fcong X (cong OMap (law A))))))
   where open RMonad M
 
-EMHom : ∀{C D}{J : Fun C D}(M : RMonad J){A : Obj (CatofAdj M)} → 
+EMHom : {A : Obj (CatofAdj M)} → 
         Hom (CatofAdj M) A (EMObj M)
-EMHom {C}{D}{J} M {A} = record { 
-  K    = K M A; 
-  Llaw = Llaw' M A; 
-  Rlaw = Rlaw' M A; 
-  rightlaw = rightlaw' M A }
+EMHom {A} = record { 
+  K    = K A; 
+  Llaw = Llaw' A; 
+  Rlaw = Rlaw' A; 
+  rightlaw = rightlaw' A }
 

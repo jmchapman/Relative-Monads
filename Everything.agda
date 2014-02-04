@@ -41,7 +41,7 @@ open import Monads.CatofAdj.TermAdjHom
 open import Monads.CatofAdj.TermAdjUniq
 open import Monads.CatofAdj.TermAdj
 
--- -- relative monads
+-- relative monads
 open import RMonads
 open import RMonads.RMonadMorphs
 open import RAdjunctions
