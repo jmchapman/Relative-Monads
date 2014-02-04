@@ -41,7 +41,6 @@ record HomAdj (A B : ObjAdj) : Set
                          (subst (Hom D (OMap J X)) 
                                 (fcong Y (cong OMap Rlaw)) 
                                 f)
-
 open HomAdj
 
 HomAdjEq : {A B : ObjAdj}
