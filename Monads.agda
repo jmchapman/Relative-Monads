@@ -1,9 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Monads where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Categories
 
 record Monad (C : Cat) : Set where

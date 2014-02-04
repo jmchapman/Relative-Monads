@@ -1,7 +1,7 @@
 {-# OPTIONS --type-in-type #-}
 module Isomorphism where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 
 record Iso (A B : Set) : Set where
   field fun : A → B

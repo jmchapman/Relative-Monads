@@ -2,7 +2,7 @@
 
 module Adjunctions where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 open import Categories
 open import Functors
 
