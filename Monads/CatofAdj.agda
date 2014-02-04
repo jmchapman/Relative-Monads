@@ -77,7 +77,7 @@ HomAdjEq {A}{B} f g p = funnycong4
     ≅⟨ cong (λ F → HMap F (right (adj A) h)) p ⟩
     HMap (K g) (right (adj A) h) ∎))
 
-rightlawlem : ∀{C D}(R : Fun D C)(L : Fun C D)
+rightlawlem : ∀{D}(R : Fun D C)(L : Fun C D)
   (p : OMap R ≅ OMap (R ○ (IdF D))) → 
   (right : {X : Obj C}{Y : Obj D} → Hom C X (OMap R Y) → Hom D (OMap L X) Y) →
            {Z : Obj C}{Y : Obj D}{f : Hom C Z (OMap R Y)} →
@@ -169,9 +169,6 @@ compLlaw {X}{Y}{Z} f g =
       HMap (L (adj Z)) h 
       ∎)
 
-
--- ground to a halt here as later proofs expect a particular proof of this.
--- this could be fixed I expect.
 compRlaw : {X Y Z : ObjAdj}(f :  HomAdj Y Z)(g : HomAdj X Y) →
            R (adj X) ≅ R (adj Z) ○ (K f ○ K g)
 compRlaw {X}{Y}{Z} f g = 
@@ -258,7 +255,7 @@ compHomAdj {X}{Y}{Z} f g = record {
     Rlaw     = compRlaw f g;
     rightlaw = comprightlaw f g}
 
-idlHomAdj : {X : ObjAdj}{Y : ObjAdj}{f : HomAdj X Y} → 
+idlHomAdj : {X Y : ObjAdj}{f : HomAdj X Y} → 
             compHomAdj idHomAdj f ≅ f
 idlHomAdj{X}{Y}{f} = 
   HomAdjEq _ _ (FunctorEq _ _ refl (λ {X}{Y} h → refl))
@@ -268,7 +265,7 @@ idrHomAdj : {X : ObjAdj}{Y : ObjAdj}{f : HomAdj X Y} →
 idrHomAdj {X}{Y}{f} = 
   HomAdjEq _ _ (FunctorEq _ _ refl (λ {X}{Y} h → refl))
 
-assHomAdj : {W : ObjAdj}{X : ObjAdj}{Y : ObjAdj}{Z : ObjAdj}
+assHomAdj : {W X Y Z : ObjAdj}
             {f : HomAdj Y Z} {g : HomAdj X Y} {h : HomAdj W X} →
             compHomAdj (compHomAdj f g) h ≅ compHomAdj f (compHomAdj g h)
 assHomAdj {W}{X}{Y}{Z}{f}{g}{h} = 
