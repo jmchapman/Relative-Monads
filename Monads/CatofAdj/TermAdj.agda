@@ -1,20 +1,21 @@
 {-# OPTIONS --type-in-type #-}
-module Monads.CatofAdj.TermAdj where
-
 open import Monads
+
+module Monads.CatofAdj.TermAdj {C}(M : Monad C) where
+
 open import Functors
 open import Categories
-open import Monads.CatofAdj
+open import Monads.CatofAdj M
 open import Categories.Terminal
-open import Monads.CatofAdj.TermAdjObj
-open import Monads.CatofAdj.TermAdjHom
+open import Monads.CatofAdj.TermAdjObj M
+open import Monads.CatofAdj.TermAdjHom M
 open import Monads.CatofAdj.TermAdjUniq
 
-EMIsTerm : {C : Cat}(M : Monad C) → Term (CatofAdj M)
-EMIsTerm {C} M = record { 
-  T = EMObj M;
-  t = EMHom M;
-  law = λ {A} {V} → HomAdjEq M
+EMIsTerm : Term CatofAdj
+EMIsTerm = record { 
+  T = EMObj;
+  t = EMHom;
+  law = λ {A} {V} → HomAdjEq
     _ 
     _ 
     (FunctorEq _ 

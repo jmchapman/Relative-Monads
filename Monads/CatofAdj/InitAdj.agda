@@ -7,30 +7,30 @@ open import Functors
 open import Naturals
 open import Adjunctions
 open import Categories
-open import Monads.CatofAdj
+open import Monads.CatofAdj M
 open import Categories.Initial
 open import Monads.Kleisli
-open import Monads.Kleisli.Functors
-open import Monads.Kleisli.Adjunction
+open import Monads.Kleisli.Functors M
+open import Monads.Kleisli.Adjunction M
 open import Adjunctions.Adj2Mon
 
 open Cat
 open Fun
-open Monad
+open Monad M
 open NatT
 open Adj
 
-lemX : R (KlAdj M) ○ L (KlAdj M) ≅ TFun M
+lemX : R KlAdj ○ L KlAdj ≅ TFun M
 lemX = FunctorEq _ _ refl (λ f → refl) 
 
-KlObj : Obj (CatofAdj M)
+KlObj : Obj CatofAdj
 KlObj = record { 
   D   = Kl M; 
-  adj = KlAdj M; 
+  adj = KlAdj; 
   law = lemX;
   ηlaw = refl;
   bindlaw = λ{X}{Y}{f} → 
-    cong (bind M) (stripsubst (Hom C X) f (fcong Y (cong OMap (sym lemX))))}
+    cong bind (stripsubst (Hom C X) f (fcong Y (cong OMap (sym lemX))))}
 
 open ObjAdj
 open import Isomorphism
@@ -110,7 +110,7 @@ lemLlaw {D} L R .(R ○ L) refl η right left q r t {X}{Y} f = trans
          (trans (cong (λ g → comp D g (HMap L f)) (q (iden D))) (idl D))))
      (idl D))
 
-K' : (A : Obj (CatofAdj M)) → Fun (D KlObj) (D A)
+K' : (A : Obj CatofAdj) → Fun (D KlObj) (D A)
 K' A = record {
   OMap = OMap (L (adj A));
   HMap = λ {X} {Y} f →
@@ -121,7 +121,7 @@ K' A = record {
       (R (adj A)) 
       (TFun M) 
       (sym (law A)) 
-      (η M)
+      η
       (right (adj A)) 
       (left (adj A)) 
       (lawa (adj A)) (ηlaw A);
@@ -130,12 +130,12 @@ K' A = record {
       (R (adj A)) 
       (TFun M) 
       (sym (law A))
-      (bind M)
+      bind
       (right (adj A)) 
       (bindlaw A) 
       (natright (adj A)) }
 
-Llaw' : (A : Obj (CatofAdj M)) → K' A ○ L (adj KlObj) ≅ L (adj A)
+Llaw' : (A : Obj CatofAdj) → K' A ○ L (adj KlObj) ≅ L (adj A)
 Llaw' A = FunctorEq 
  _ 
  _ 
@@ -144,17 +144,17 @@ Llaw' A = FunctorEq
           (R (adj A)) 
           (TFun M) 
           (sym (law A)) 
-          (η M)
+          η
           (right (adj A)) 
           (left (adj A))
           (lawa (adj A)) 
           (ηlaw A)
           (natright (adj A)))
 
-Rlaw' : (A : Obj (CatofAdj M)) → R (adj KlObj) ≅ R (adj A) ○ K' A
+Rlaw' : (A : Obj CatofAdj) → R (adj KlObj) ≅ R (adj A) ○ K' A
 Rlaw' A = FunctorEq _ _ (cong OMap (sym (law A))) (λ f → sym (bindlaw A))
 
-rightlaw' : (A : Obj (CatofAdj M)) → 
+rightlaw' : (A : Obj CatofAdj) → 
             {X : Obj C} {Y : Obj (D KlObj)}
             {f : Hom C X (OMap (R (adj KlObj)) Y)} →
             HMap (K' A) (right (adj KlObj) f) ≅
@@ -172,16 +172,15 @@ rightlaw' A {X}{Y}{f} =
             OMap
             (FunctorEq _ _ (cong OMap (sym (law A))) λ _ → sym (bindlaw A)))))))
 
-KlHom : {A : Obj (CatofAdj M)} → Hom (CatofAdj M) KlObj A
+KlHom : {A : Obj CatofAdj} → Hom CatofAdj KlObj A
 KlHom {A} = record { 
   K        = K' A; 
   Llaw     = Llaw' A; 
   Rlaw     = Rlaw' A; 
   rightlaw = rightlaw' A }
 
-uniq : {X : Obj (CatofAdj M)}{f : Hom (CatofAdj M) KlObj X} → KlHom ≅ f
+uniq : {X : Obj CatofAdj}{f : Hom CatofAdj KlObj X} → KlHom ≅ f
 uniq {X}{V} = HomAdjEq 
-  M 
   _ 
   _
   (FunctorEq 
@@ -197,7 +196,7 @@ uniq {X}{V} = HomAdjEq
           (sym (stripsubst (Hom C A) f (fcong B (cong OMap (HomAdj.Rlaw V)))))))
       (sym (HomAdj.rightlaw V))))
   
-KlIsInit : Init (CatofAdj M)
+KlIsInit : Init CatofAdj
 KlIsInit = record { 
   I   = KlObj;
   i   = KlHom;
