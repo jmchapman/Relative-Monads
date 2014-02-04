@@ -2,20 +2,18 @@
 open import Functors
 open import RMonads
 
-module RMonads.RKleisli.Functors {C D}(J : Fun C D)(M : RMonad J) where
+module RMonads.RKleisli.Functors {C D}{J : Fun C D}(M : RMonad J) where
 
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Function
+open import Library
 open import Categories
-open import RMonads.RKleisli
+open import RMonads.RKleisli M
 open import RAdjunctions
 
 open Cat
 open Fun
 open RMonad M
 
-RKlL : Fun C (Kl M)
+RKlL : Fun C Kl
 RKlL = record{
   OMap  = id;
   HMap  = λ f → comp D η (HMap J f);
@@ -39,7 +37,7 @@ RKlL = record{
     comp D (bind (comp D η (HMap J f))) (comp D η (HMap J g)) 
     ∎}
 
-RKlR : Fun (Kl M) D
+RKlR : Fun Kl D
 RKlR = record{
   OMap  = T;
   HMap  = bind;

@@ -1,17 +1,18 @@
 {-# OPTIONS --type-in-type #-}
-module RMonads.RKleisli where
-
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
-open import Categories
 open import Functors
 open import RMonads
 
+module RMonads.RKleisli {C D}{J : Fun C D}(M : RMonad J) where
+
+open import Library
+open import Categories
+
 open Cat
 open Fun
+open RMonad M
 
-Kl : ∀{C D}{J : Fun C D}  → RMonad J → Cat
-Kl {C}{D}{J} M = let open RMonad M in record{
+Kl : Cat
+Kl = record{
   Obj  = Obj C; 
   Hom  = λ X Y → Hom D (OMap J X) (T Y);
   iden = η;
@@ -25,7 +26,7 @@ Kl {C}{D}{J} M = let open RMonad M in record{
     f 
     ∎; 
   idr  = law2;
-  ass  =  λ{W}{X}{Y}{Z}{f}{g}{h} → 
+  ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → 
     proof
     comp D (bind (comp D (bind f) g)) h 
     ≅⟨ cong (λ f₁ → comp D f₁ h) law3 ⟩
