@@ -1,5 +1,5 @@
 {-# OPTIONS --type-in-type #-}
-module WellTypedTermsNBEModel where
+module WellTypedTermsNBEModelExperimental where
 
 open import Library
 open import Naturals
