@@ -47,8 +47,7 @@ lemZ' : ∀{C}{D}{F F' G G' : Fun C D} → F ≅ F' → G ≅ G' →
         ∀{X} → cmp α {X} ≅ cmp β {X}
 lemZ' refl refl refl = refl
 
-
-lemfid : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D) 
+lemfid : ∀{E}(L : Fun C E)(R : Fun E D)(T : Fun C D) 
   (p : T ≅ R ○ L) 
   (η : ∀ {X} → Hom D (OMap J X) (OMap T X))
   (right : {X : Obj C}{Y : Obj E} → 
@@ -61,10 +60,10 @@ lemfid : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
   right (subst (Hom D (OMap J X)) (fcong X (cong OMap p)) η) 
   ≅ 
   iden E {OMap L X}
-lemfid {C}{D}{E} J L R .(R ○ L) refl η right left q r {X} = 
+lemfid {E} L R .(R ○ L) refl η right left q r {X} = 
   trans (cong right (sym r)) (q (iden E))
 
-lemfcomp : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D) 
+lemfcomp : ∀{E}(L : Fun C E)(R : Fun E D)(T : Fun C D) 
   (p : T ≅ R ○ L)
   (bind : ∀{X Y} → Hom D (OMap J X) (OMap T Y) → Hom D (OMap T X) (OMap T Y)) →
   (right : {X : Obj C} {Y : Obj E} → 
@@ -86,7 +85,7 @@ lemfcomp : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
   ≅
   comp E (right (subst (Hom D (OMap J Y)) (fcong Z (cong OMap p)) f))
          (right (subst (Hom D (OMap J X)) (fcong Y (cong OMap p)) g))
-lemfcomp {C}{D}{E} J L R .(R ○ L) refl bind right q r {X}{Y}{Z}{f}{g} = 
+lemfcomp {E} L R .(R ○ L) refl bind right q r {X}{Y}{Z}{f}{g} = 
   trans (cong₂ (λ f g → right (comp D f g)) (sym (q {f = f})) (sym (idr D)))
         (trans (cong (λ h → right (comp D (HMap R (right f)) (comp D g h)))
                      (sym (fid J))) 
@@ -95,7 +94,7 @@ lemfcomp {C}{D}{E} J L R .(R ○ L) refl bind right q r {X}{Y}{Z}{f}{g} =
                             (trans (cong (comp E (right g)) (fid L)) 
                                    (idr E)))))
 
-lemLlaw : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
+lemLlaw : ∀{E}(L : Fun C E)(R : Fun E D)(T : Fun C D)
           (p : T ≅ R ○ L)
           (η : ∀ {X} → Hom D (OMap J X) (OMap T X)) → 
           (right : {X : Obj C} {Y : Obj E} → 
@@ -117,7 +116,7 @@ lemLlaw : ∀{C D E}(J : Fun C D)(L : Fun C E)(R : Fun E D)(T : Fun C D)
                        (comp D η (HMap J f)))
           ≅
           HMap L f
-lemLlaw {C}{D}{E} J L R .(R ○ L) refl η right left q r t {X}{Y} f = 
+lemLlaw {E} L R .(R ○ L) refl η right left q r t {X}{Y} f = 
   trans (cong (λ g → right (comp D g (HMap J f))) (sym r)) 
         (trans (cong right 
                      (trans (sym (idl D)) 
@@ -128,6 +127,7 @@ lemLlaw {C}{D}{E} J L R .(R ○ L) refl η right left q r t {X}{Y} f =
                                     (idl E))
                              (cong (λ g → comp E g (HMap L f)) (q (iden E))))
                       (idl E)))
+
 KlHom : {A : Obj CatofAdj} → Hom CatofAdj KlObj A
 KlHom {A} = record { 
     K = record { 
@@ -136,7 +136,7 @@ KlHom {A} = record {
       right (adj A) (subst (Hom D (OMap J X)) 
                            (fcong Y (cong OMap (sym (ObjAdj.law A)))) 
                            f); 
-    fid   = lemfid J
+    fid   = lemfid 
                    (L (adj A)) 
                    (R (adj A)) 
                    (TFun M) 
@@ -146,7 +146,7 @@ KlHom {A} = record {
                    (left (adj A))
                    (lawa (adj A))
                    (ObjAdj.ηlaw A); 
-    fcomp = lemfcomp J 
+    fcomp = lemfcomp  
                      (L (adj A))
                      (R (adj A))
                      (TFun M) 
@@ -159,7 +159,7 @@ KlHom {A} = record {
    _ 
    _ 
    refl 
-   (lemLlaw J 
+   (lemLlaw  
             (L (adj A))
             (R (adj A)) 
             (TFun M) 
