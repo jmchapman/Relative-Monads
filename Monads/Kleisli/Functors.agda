@@ -5,17 +5,15 @@ open import Monads
 
 module Monads.Kleisli.Functors {C}(M : Monad C) where
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Functors
-open import Monads.Kleisli
+open import Monads.Kleisli M
 
 open Cat C
 open Fun
 open Monad M
 
-KlL : Fun C (Kl M)
+KlL : Fun C Kl
 KlL = record{
   OMap  = id;
   HMap  = comp η;
@@ -31,7 +29,7 @@ KlL = record{
     comp (bind (comp η f)) (comp η g)
     ∎}
 
-KlR : Fun (Kl M) C
+KlR : Fun Kl C
 KlR = record{
   OMap  = T;
   HMap  = bind;

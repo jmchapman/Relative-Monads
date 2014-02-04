@@ -3,8 +3,7 @@ open import Monads
 
 module Monads.EM.Functors {C}(M : Monad C) where
 
-open import Relation.Binary.HeterogeneousEquality
-open ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Categories
 open import Functors
 open import Monads.EM M

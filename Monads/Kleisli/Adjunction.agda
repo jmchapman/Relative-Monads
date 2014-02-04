@@ -7,16 +7,14 @@ module Monads.Kleisli.Adjunction {C}(M : Monad C) where
 open Cat C
 open Monad M
 
-open import Function
-open import Relation.Binary.HeterogeneousEquality
-open  ≅-Reasoning renaming (begin_ to proof_)
+open import Library
 open import Functors
-open import Monads.Kleisli
+open import Monads.Kleisli M
 open import Adjunctions
 open import Monads.Kleisli.Functors M
 open Fun
 
-KlAdj : Adj C (Kl M)
+KlAdj : Adj C Kl
 KlAdj = record {
   L        = KlL;
   R        = KlR;

@@ -9,7 +9,7 @@ open import Adjunctions
 open import Categories
 open import Monads.CatofAdj M
 open import Categories.Initial
-open import Monads.Kleisli
+open import Monads.Kleisli M
 open import Monads.Kleisli.Functors M
 open import Monads.Kleisli.Adjunction M
 open import Adjunctions.Adj2Mon
@@ -25,7 +25,7 @@ lemX = FunctorEq _ _ refl (λ f → refl)
 
 KlObj : Obj CatofAdj
 KlObj = record { 
-  D   = Kl M; 
+  D   = Kl; 
   adj = KlAdj; 
   law = lemX;
   ηlaw = refl;
