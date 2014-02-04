@@ -66,3 +66,4 @@ open import WellScopedTerms
 open import WellScopedTermsModel
 open import WellTypedTerms
 open import WellTypedTermsModel
+open import WellTypedTermsNBEModel

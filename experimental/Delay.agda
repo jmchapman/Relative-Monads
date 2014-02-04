@@ -1,7 +1,7 @@
 {-# OPTIONS --copatterns --sized-types #-}
 -- {-# OPTIONS --show-implicit #-}
 -- {-# OPTIONS -v tc.conv:10 -v tc.conv.size:15 #-}
-module Delay where
+module experimental.Delay where
 
 --open import Library
 open import Size
