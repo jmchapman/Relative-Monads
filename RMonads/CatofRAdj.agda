@@ -10,10 +10,9 @@ open import RAdjunctions
 
 open Fun
 open Cat
-
+open RMonad M
 
 record ObjAdj : Set where
-  open RMonad M
   field E   : Cat
         adj : RAdj J E
   open RAdj adj
@@ -90,9 +89,12 @@ idrightlaw : (X : ObjAdj) →
              HMap (IdF (E X)) (RAdj.right (adj X) f) ≅
              RAdj.right (adj X)
              (subst (Hom D (OMap J X₁)) (fcong Y (cong OMap (idRlaw X))) f)
-idrightlaw X {X₁}{Y}{f} = rightlawlem (R (adj X)) (L (adj X))
-                                        (cong OMap (FunctorEq _ _ refl (λ _ → refl))) (right (adj X))
-  where open RAdj
+idrightlaw X {X₁}{Y}{f} = rightlawlem 
+  R
+  L
+  (cong OMap (FunctorEq _ _ refl (λ _ → refl))) 
+  right
+  where open RAdj (adj X)
 
 idHomAdj : {X : ObjAdj} → HomAdj X X
 idHomAdj {X} = record { 
