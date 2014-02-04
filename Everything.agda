@@ -41,7 +41,7 @@ open import Monads.CatofAdj.TermAdjHom
 open import Monads.CatofAdj.TermAdjUniq
 open import Monads.CatofAdj.TermAdj
 
--- -- relative monads
+-- relative monads
 open import RMonads
 open import RMonads.RMonadMorphs
 open import RAdjunctions
@@ -56,11 +56,11 @@ open import RMonads.Restriction
 open import RMonads.SpecialCase
 open import RMonads.CatofRAdj
 open import RMonads.CatofRAdj.InitRAdj
--- open import RMonads.CatofRAdj.TermRAdjObj
--- open import RMonads.CatofRAdj.TermRAdjHom
--- open import RMonads.CatofRAdj.TermRAdj
--- 
--- -- rmonad examples
+open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.CatofRAdj.TermRAdjHom
+open import RMonads.CatofRAdj.TermRAdj
+ 
+-- rmonad examples
 open import WellScopedTerms
 open import WellScopedTermsModel
 open import WellTypedTerms
