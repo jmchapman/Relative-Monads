@@ -15,128 +15,126 @@ open import Monads.EM M
 open Monads.CatofAdj M
 open import Monads.CatofAdj.TermAdjObj M
 
-
 open Cat
 open Fun
-open ObjAdj
-open Adj 
-open Monad
+open ObjAdj A
+open Adj adj
+open Monad M
 
-
-K' : Fun (D A) (D EMObj)
+K' : Fun D EM
 K' = record { 
     OMap  = λ X → record { 
-      acar  = OMap (R (adj A)) X; 
-      astr  = λ Z f → subst (λ Z → Hom C Z (OMap (R (adj A)) X)) 
-                            (fcong Z (cong OMap (law A))) 
-                            (HMap (R (adj A)) (right (adj A) f)); 
+      acar  = OMap R X; 
+      astr  = λ Z f → subst (λ Z → Hom C Z (OMap R X)) 
+                            (fcong Z (cong OMap law)) 
+                            (HMap R (right f)); 
       alaw1 = λ {Z} {f} → alaw1lem
          (TFun M) 
-         (L (adj A))
-         (R (adj A))
-         (law A)
-         (η M)
-         (right (adj A)) 
-         (left (adj A))
-         (ηlaw A) 
-         (natleft (adj A) (iden C) (right (adj A) f) (iden (D A)))
-         (lawb (adj A) f);
+         L
+         R
+         law
+         η
+         right 
+         left
+         ηlaw
+         (natleft (iden C) (right f) (iden D))
+         (lawb f);
       alaw2 = λ {Z} {W} {k} {f} → alaw2lem
          (TFun M) 
-         (L (adj A))
-         (R (adj A))
-         (law A)
-         (right (adj A))
-         (bind M)
-         (natright (adj A)) 
-         (bindlaw A {_}{_}{k})}; 
+         L
+         R
+         law
+         right
+         bind
+         natright
+         (bindlaw {_}{_}{k})}; 
     HMap  = λ {X} {Y} f → record { 
-      amor = HMap (R (adj A)) f; 
+      amor = HMap R f; 
       ahom = λ {Z} {g} → ahomlem 
          (TFun M) 
-         (L (adj A))
-         (R (adj A)) 
-         (law A) 
-         (right (adj A))
-         (natright (adj A))}; 
-    fid   = AlgMorphEq (fid (R (adj A))); 
-    fcomp = AlgMorphEq (fcomp (R (adj A)))}
+         L
+         R 
+         law 
+         right
+         natright}; 
+    fid   = AlgMorphEq (fid R); 
+    fcomp = AlgMorphEq (fcomp R)}
 
-Llaw' : K' ○ L (adj A) ≅ L (adj EMObj)
+Llaw' : K' ○ L ≅ Adj.L (ObjAdj.adj EMObj)
 Llaw' = FunctorEq 
  _ 
  _
  (ext
   (λ X →
-     AlgEq (fcong X (cong OMap (law A)))
+     AlgEq (fcong X (cong OMap law))
      (
       (λ Z →
          dext
          (λ {f} {f'} p →
-            Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
-            (bind M) (bindlaw A) p)))))
+            Llawlem (TFun M) L R law right
+            bind bindlaw p)))))
  (λ {X} {Y} f →
     AlgMorphEq' 
-    (AlgEq (fcong X (cong OMap (law A)))
+    (AlgEq (fcong X (cong OMap law))
      (
       (λ Z →
          dext
          (λ {f₁} {f'} p →
-            Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
-            (bind M) (bindlaw A) p))))
-    (AlgEq (fcong Y (cong OMap (law A)))
+            Llawlem (TFun M) L R law right
+            bind bindlaw p))))
+    (AlgEq (fcong Y (cong OMap law))
      (
       (λ Z →
          dext
          (λ {f₁} {f'} p →
-            Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
-            (bind M) (bindlaw A) p))))
+            Llawlem (TFun M) L R law right
+            bind bindlaw p))))
        (dcong (refl {x = f}) 
-              (ext (λ _ → cong₂ (Hom C) (fcong X (cong OMap (law A)))
-                                        (fcong Y (cong OMap (law A)))))
+              (ext (λ _ → cong₂ (Hom C) (fcong X (cong OMap law))
+                                        (fcong Y (cong OMap law))))
               (dicong (refl {x = Y}) 
                       (ext (λ z →
                         cong (λ F → Hom C X z → Hom C (F X) (F z)) 
-                             (cong OMap (law A))))
+                             (cong OMap law)))
                       (dicong (refl {x = X}) 
                               (ext (λ z →
                                 cong (λ F → ∀ {y} → 
                                         Hom C z y → Hom C (F z) (F y))
-                                     (cong OMap (law A))))
-                              (cong HMap (law A))))))
+                                     (cong OMap law)))
+                              (cong HMap law)))))
 
 
-Rlaw' : R (adj A) ≅ R (adj EMObj) ○ K'
+Rlaw' : R ≅ Adj.R (ObjAdj.adj EMObj) ○ K'
 Rlaw'  = FunctorEq _ _ refl (λ f → refl)
 
-rightlaw' : {X : Obj C} {Y : Obj (D A)} {f : Hom C X (OMap (R (adj A)) Y)} →
-            HMap K' (right (adj A) f) 
+rightlaw' : {X : Obj C} {Y : Obj D} {f : Hom C X (OMap R Y)} →
+            HMap K' (right f) 
             ≅
-            right (adj EMObj) 
+            Adj.right (ObjAdj.adj EMObj) 
                   {X}
                   {OMap K' Y}
                   (subst (Hom C X) (fcong Y (cong OMap Rlaw')) f)
 rightlaw' {X}{Y}{f} = AlgMorphEq'
-  (AlgEq (fcong X (cong OMap (law A)))
+  (AlgEq (fcong X (cong OMap law))
    (
     (λ Z →
        dext
        (λ {g} {g'} p →
-          Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
-          (bind M) (bindlaw A) p))))
+          Llawlem (TFun M) L R law right
+          bind bindlaw p))))
   refl
   (trans
    (cong
-    (λ (f₁ : Hom C X (OMap (R (adj A)) Y)) →
-       HMap (R (adj A)) (right (adj A) f₁))
+    (λ (f₁ : Hom C X (OMap R Y)) →
+       HMap R (right f₁))
     (sym
      (stripsubst (Hom C X) f
       (fcong Y
        (cong OMap
-        (FunctorEq (R (adj A)) _ refl (λ {_} {_} f₁ → refl)))))))
+        (FunctorEq R _ refl (λ {_} {_} f₁ → refl)))))))
    (sym
-    (stripsubst (λ (Z : Obj C) → Hom C Z (OMap (R (adj A)) Y)) _
-     (fcong X (cong OMap (law A))))))
+    (stripsubst (λ (Z : Obj C) → Hom C Z (OMap R Y)) _
+     (fcong X (cong OMap law)))))
 
 EMHom : Hom CatofAdj A EMObj
 EMHom = record { 

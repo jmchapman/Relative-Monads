@@ -15,10 +15,4 @@ EMIsTerm : Term CatofAdj
 EMIsTerm = record { 
   T = EMObj;
   t = λ{A} → EMHom A;
-  law = λ {A} {V} → HomAdjEq
-    _ 
-    _ 
-    (FunctorEq _ 
-               _ 
-               (omaplem A V)
-               (hmaplem A V))}
+  law = λ{A}{V} → HomAdjEq _ _ (FunctorEq _ _ (omaplem A V) (hmaplem A V))}
