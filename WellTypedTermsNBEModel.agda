@@ -55,7 +55,8 @@ mutual
              renNf (ρ' ∘ ρ) v ≅ renNf ρ' (renNf ρ v)
   renNfcomp ρ ρ' (σ ⇒ τ) (lam v) = cong 
     Nf.lam 
-    (trans (cong (λ (ρ₁ : Ren _ _) → renNf ρ₁ v) (iext (λ σ₁ → ext (λ a → wkcomp ρ' ρ a)))) 
+    (trans (cong (λ (ρ₁ : Ren _ _) → renNf ρ₁ v) 
+                 (iext (λ σ₁ → ext (λ a → wkcomp ρ' ρ a)))) 
            (renNfcomp (wk ρ) (wk ρ') τ v))
   renNfcomp ρ ρ' ι       (ne x)  = cong ne (renNcomp ρ ρ' ι x)
 -- interpretation of types
@@ -101,14 +102,17 @@ mutual
   eval : ∀{Γ Δ σ} → Env Δ Γ → Tm Δ σ → Val Γ σ
   eval γ (var i)   = γ i
   eval γ (lam t)   = (λ ρ v → eval ((renV ρ ∘ γ) << v) t) , 
-   (λ ρ ρ' a → trans (lem ρ' ((renV ρ ∘ γ) << a) t) 
-                     (cong (λ (γ₁ : Env _ _) → eval γ₁ t) 
-                           (iext (λ _ → ext (λ x → trans (sym (renV<< ρ' (renV ρ ∘ γ) a x)) 
-                                                         (cong (λ (γ₁ : Env _ _) → (γ₁ << renV ρ' a) x) 
-                                                               (iext (λ _ → ext (λ a' → sym (renVcomp ρ ρ' _ (γ a')))))))))))
+   (λ ρ ρ' a → trans 
+     (lem ρ' ((renV ρ ∘ γ) << a) t) 
+     (cong (λ (γ₁ : Env _ _) → eval γ₁ t) 
+           (iext (λ _ → ext (λ x → trans 
+             (sym (renV<< ρ' (renV ρ ∘ γ) a x))
+             (cong (λ (γ₁ : Env _ _) → (γ₁ << renV ρ' a) x)
+                   (iext λ _ → ext λ a' → sym (renVcomp ρ ρ' _ (γ a')))))))))
   eval γ (app t u) = fst (eval γ t) id (eval γ u)
 
-  lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
+  lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → 
+        renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
   lem ρ γ (var x)   = refl
   lem ρ γ (app t u) = trans (snd (eval γ t) id ρ (eval γ u)) 
                             (cong₂ (λ f x → f x)
@@ -117,9 +121,9 @@ mutual
                                                   (cong fst (lem ρ γ t)))) 
                                    (lem ρ γ u))
   lem ρ γ (lam t)   = 
-    funeq (λ {B} → ext (λ (ρ' : Ren _ _) → ext (λ v → cong (λ (β : Env _ _) → eval (β << v) t) 
-                                               (iext (λ σ → ext (λ a → renVcomp ρ ρ' σ (γ a)))))))
-
+    funeq (λ {B} → ext (λ (ρ' : Ren _ _) → ext (λ v → 
+      cong (λ (β : Env _ _) → eval (β << v) t) 
+           (iext (λ σ → ext (λ a → renVcomp ρ ρ' σ (γ a)))))))
 
   renVid : ∀{Γ} σ (v : Val Γ σ) → renV id v ≅ v
   renVid ι       v = renNid ι v
@@ -177,15 +181,17 @@ lifteval α β v (vs x) = reneval vs (β << v) (α x)
 subeval : ∀{B Γ Δ σ}(α : Sub Γ Δ)(β : Env Δ B)(t : Tm Γ σ) → 
           eval (eval β ∘ α) t ≅ (eval β ∘ sub α) t
 subeval α β (var x)   = refl
-subeval α β (app t u) = cong₂ (λ f x → (fst f) id x) (subeval α β t) (subeval α β u) 
-subeval {B} α β (lam t) = funeq (λ {B'} → ext (λ (ρ : Ren B B') → ext (λ (v : Val B' _) →
-  trans (cong (λ (γ : Env _ B') → eval γ t)
-              (iext (λ σ' → ext (λ x → trans
-                (cong (λ (γ : Env _ B') → (γ << v) x)
-                      (iext (λ σ'' → ext (λ a → lem ρ β (α a)))))
-                (lifteval α (renV ρ ∘ β) v x)))))
-        (subeval (lift α) ((renV ρ ∘ β) << v) t))))
-
+subeval α β (app t u) = 
+  cong₂ (λ f x → (fst f) id x) (subeval α β t) (subeval α β u) 
+subeval {B} α β (lam t) = 
+  funeq (λ {B'} → ext (λ (ρ : Ren B B') → ext (λ (v : Val B' _) →
+    trans (cong (λ (γ : Env _ B') → eval γ t)
+                (iext (λ σ' → ext (λ x → trans
+                  (cong (λ (γ : Env _ B') → (γ << v) x)
+                        (iext (λ σ'' → ext (λ a → lem ρ β (α a)))))
+                  (lifteval α (renV ρ ∘ β) v x)))))
+          (subeval (lift α) ((renV ρ ∘ β) << v) t))))
+  
 modelRAlg : Con → RAlg TmRMonad
 modelRAlg Γ = record {
   acar  = Val Γ;
