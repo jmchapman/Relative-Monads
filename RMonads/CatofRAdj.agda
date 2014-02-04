@@ -137,34 +137,39 @@ rightlawlem2 : ∀{E F G}
   (subst (Hom D (OMap J A)) 
          (fcong B (cong OMap (trans q (cong (λ F₁ → F₁ ○ KA) p)))) 
          h)
-rightlawlem2 .((RZ ○ KB) ○ KA) LX .(RZ ○ KB) .(KA ○ LX) RZ LZ KA KB rightX rightY rightZ refl refl refl r s h = trans (cong (HMap KB) s) r
+rightlawlem2 ._ _ ._ ._ _ _ _ KB _ _ _ refl refl refl r s _ = 
+  trans (cong (HMap KB) s) r
 
 compLlaw : {X Y Z : ObjAdj} → 
            (f : HomAdj Y Z)(g : HomAdj X Y) →
            (K f ○ K g) ○ RAdj.L (adj X) ≅ RAdj.L (adj Z)
-compLlaw {X}{Y}{Z} f g = FunctorEq _ _
-                                        (ext
-                                         (λ A →
-                                            trans (cong (OMap (K f)) (cong (λ F → OMap F A) (Llaw g)))
-                                            (cong (λ F → OMap F A) (Llaw f))))
-                                        (λ {A} {B} h →
-                                           trans
-                                           (HMaplem (cong (λ F → OMap F A) (Llaw g))
-                                            (cong (λ F → OMap F B) (Llaw g)) (cong (λ F → HMap F h) (Llaw g))
-                                            (K f))
-                                           (cong (λ F → HMap F h) (Llaw f)))
-
+compLlaw {X}{Y}{Z} f g = FunctorEq 
+  _ 
+  _
+  (ext
+   (λ A →
+      trans (cong (OMap (K f)) (cong (λ F → OMap F A) (Llaw g)))
+      (cong (λ F → OMap F A) (Llaw f))))
+  (λ {A} {B} h →
+     trans
+     (HMaplem (cong (λ F → OMap F A) (Llaw g))
+      (cong (λ F → OMap F B) (Llaw g)) (cong (λ F → HMap F h) (Llaw g))
+      (K f))
+     (cong (λ F → HMap F h) (Llaw f)))
+ 
 compRlaw : {X Y Z : ObjAdj} → 
             (f : HomAdj Y Z)(g : HomAdj X Y) →
             RAdj.R (adj X) ≅ RAdj.R (adj Z) ○ (K f ○ K g)
-compRlaw {X}{Y}{Z} f g = FunctorEq _ _
-                                        (ext
-                                         (λ A →
-                                            trans (cong (λ F → OMap F A) (Rlaw g))
-                                            (cong (λ F → OMap F (OMap (K g) A)) (Rlaw f))))
-                                        (λ {A} {B} h →
-                                           trans (cong (λ F → HMap F h) (Rlaw g))
-                                           (cong (λ F → HMap F (HMap (K g) h)) (Rlaw f)))
+compRlaw {X}{Y}{Z} f g = FunctorEq 
+  _ 
+  _
+  (ext
+   (λ A →
+      trans (cong (λ F → OMap F A) (Rlaw g))
+      (cong (λ F → OMap F (OMap (K g) A)) (Rlaw f))))
+  (λ {A} {B} h →
+     trans (cong (λ F → HMap F h) (Rlaw g))
+     (cong (λ F → HMap F (HMap (K g) h)) (Rlaw f)))
 
 comprightlaw : {X Y Z : ObjAdj} → 
             (f : HomAdj Y Z)(g : HomAdj X Y) →
@@ -177,27 +182,27 @@ comprightlaw : {X Y Z : ObjAdj} →
                               (fcong B (cong OMap (compRlaw f g)))
                               h)
 comprightlaw {X}{Y}{Z} f g {A}{B}{h} = trans
-                                                     (rightlawlem2 (R (adj X)) (L (adj X)) (R (adj Y)) (L (adj Y))
-                                                      (R (adj Z)) (L (adj Z)) (K g) (K f) (right (adj X)) (right (adj Y))
-                                                      (right (adj Z)) (Rlaw f) (Rlaw g) (Llaw g) (rightlaw f)
-                                                      (rightlaw g) h)
-                                                     (cong (right (adj Z))
-                                                      (trans
-                                                       (stripsubst (Hom D (OMap J A)) h
-                                                        (fcong B
-                                                         (cong OMap (trans (Rlaw g) (cong (λ F → F ○ K g) (Rlaw f))))))
-                                                       (sym
-                                                        (stripsubst (Hom D (OMap J A)) h
-                                                         (fcong B
-                                                          (cong OMap
-                                                           (FunctorEq (R (adj X)) _
-                                                            (ext
-                                                             (λ A₁ →
-                                                                trans (cong (λ F → OMap F A₁) (Rlaw g))
-                                                                (cong (λ F → OMap F (OMap (K g) A₁)) (Rlaw f))))
-                                                            (λ {A₁} {B₁} h₁ →
-                                                               trans (cong (λ F → HMap F h₁) (Rlaw g))
-                                                               (cong (λ F → HMap F (HMap (K g) h₁)) (Rlaw f))))))))))
+  (rightlawlem2 (R (adj X)) (L (adj X)) (R (adj Y)) (L (adj Y))
+   (R (adj Z)) (L (adj Z)) (K g) (K f) (right (adj X)) (right (adj Y))
+   (right (adj Z)) (Rlaw f) (Rlaw g) (Llaw g) (rightlaw f)
+   (rightlaw g) h)
+  (cong (right (adj Z))
+   (trans
+    (stripsubst (Hom D (OMap J A)) h
+     (fcong B
+      (cong OMap (trans (Rlaw g) (cong (λ F → F ○ K g) (Rlaw f))))))
+    (sym
+     (stripsubst (Hom D (OMap J A)) h
+      (fcong B
+       (cong OMap
+        (FunctorEq (R (adj X)) _
+         (ext
+          (λ A₁ →
+             trans (cong (λ F → OMap F A₁) (Rlaw g))
+             (cong (λ F → OMap F (OMap (K g) A₁)) (Rlaw f))))
+         (λ {A₁} {B₁} h₁ →
+            trans (cong (λ F → HMap F h₁) (Rlaw g))
+            (cong (λ F → HMap F (HMap (K g) h₁)) (Rlaw f))))))))))
   where open RAdj
 
 compHomAdj : {X Y Z : ObjAdj} → 
