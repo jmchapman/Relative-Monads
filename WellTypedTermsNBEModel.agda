@@ -65,32 +65,28 @@ mutual
   Val Γ ι       = Ne Γ ι
   Val Γ (σ ⇒ τ) = 
     Σ (∀{B} →  Ren Γ B → Val B σ → Val B τ) 
-      (λ f → ∀{B B'}(ρ : Ren Γ B)(ρ' : Ren B B')(a : Val B σ) → renV ρ' (f ρ a) ≅ f (ρ' ∘ ρ) (renV ρ' a))
+      (λ f → ∀{B B'}(ρ : Ren Γ B)(ρ' : Ren B B')(a : Val B σ) → 
+        renV ρ' (f ρ a) ≅ f (ρ' ∘ ρ) (renV ρ' a))
 
   renV : ∀{Γ Δ} → Ren Δ Γ → ∀{σ} → Val Δ σ → Val Γ σ
   renV ρ {ι}     n = renN ρ n
-  renV {Γ}{Δ} ρ {σ ⇒ τ} f = (λ ρ' → proj₁ f (ρ' ∘ ρ)) , (λ ρ' → proj₂ f (ρ' ∘ ρ))
+  renV {Γ}{Δ} ρ {σ ⇒ τ} f = 
+    (λ ρ' → proj₁ f (ρ' ∘ ρ)) , (λ ρ' → proj₂ f (ρ' ∘ ρ))
 
 
 funeq : ∀{Γ σ τ} {f g : Σ (∀{B} →  Ren Γ B → Val B σ → Val B τ)
-                      (λ f → ∀{B B'}(ρ : Ren Γ B)(ρ' : Ren B B')(a : Val B σ) → renV ρ' (f ρ a) ≅ f (ρ' ∘ ρ) (renV ρ' a))} →
-                 (∀{B} → proj₁ f {B} ≅ proj₁ g {B}) → f ≅ g
+  (λ f → ∀{B B'}(ρ : Ren Γ B)(ρ' : Ren B B')(a : Val B σ) → 
+    renV ρ' (f ρ a) ≅ f (ρ' ∘ ρ) (renV ρ' a))} →
+  (∀{B} → proj₁ f {B} ≅ proj₁ g {B}) → f ≅ g
 funeq {Γ}{σ}{τ}{f}{g} p = funnycong
   (iext (λ B → p {B})) 
-  (iext (λ B → iext (λ B' → ext (λ (ρ : Ren _ _) → ext (λ (ρ' : Ren _ _) → ext (λ a → fixtypes'
-    (cong (renV ρ') (fcong a (fcong (λ {B₁} → ρ {B₁}) (p {B}))))))))))
+  (iext (λ B → iext (λ B' → ext (λ (ρ : Ren _ _) → 
+    ext (λ (ρ' : Ren _ _) → ext (λ a → fixtypes'
+      (cong (renV ρ') (fcong a (fcong (λ {B₁} → ρ {B₁}) (p {B}))))))))))
   _,_
 
 
 
-{-
-Ren Γ B → Val B σ → Val B τ 
-|                       |
-\/                      \/
-Ren Γ B' → Val B' σ → Val B' τ
-
-
--}
 -- interpretation of contexts
 
 Env : Con → Con → Set
