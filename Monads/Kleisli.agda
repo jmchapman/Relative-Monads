@@ -1,11 +1,14 @@
-module Monads.Kleisli where
-
-open import Library
 open import Categories
 open import Monads
 
-Kl : ∀{a b}{C : Cat {a}{b}} → Monad C → Cat
-Kl {C = C} M = record{
+module Monads.Kleisli {a b}{C : Cat {a}{b}}(M : Monad C) where
+
+open import Library
+open Cat C
+open Monad M
+
+Kl : Cat
+Kl = record{
   Obj  = Obj;
   Hom  = λ X Y → Hom X (T Y);
   iden = η;
@@ -27,4 +30,3 @@ Kl {C = C} M = record{
     ≅⟨ ass ⟩
     comp (bind f) (comp (bind g) h) 
     ∎}
-  where open Cat C; open Monad M

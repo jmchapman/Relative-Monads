@@ -8,12 +8,12 @@ open Monad M
 
 open import Library
 open import Functors
-open import Monads.Kleisli
+open import Monads.Kleisli M
 open import Adjunctions
 open import Monads.Kleisli.Functors M
 open Fun
 
-KlAdj : Adj C (Kl M)
+KlAdj : Adj C Kl
 KlAdj = record {
   L        = KlL;
   R        = KlR;

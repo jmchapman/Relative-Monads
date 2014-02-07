@@ -5,13 +5,13 @@ module Monads.Kleisli.Functors {a b}{C : Cat {a}{b}}(M : Monad C) where
 
 open import Library
 open import Functors
-open import Monads.Kleisli
+open import Monads.Kleisli M
 
 open Cat C
 open Fun
 open Monad M
 
-KlL : Fun C (Kl M)
+KlL : Fun C Kl
 KlL = record{
   OMap  = id;
   HMap  = comp η;
@@ -27,7 +27,7 @@ KlL = record{
     comp (bind (comp η f)) (comp η g)
     ∎}
 
-KlR : Fun (Kl M) C
+KlR : Fun Kl C
 KlR = record{
   OMap  = T;
   HMap  = bind;
