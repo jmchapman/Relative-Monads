@@ -6,14 +6,14 @@ module RMonads.RKleisli.Functors {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
                                  (J : Fun C D)(M : RMonad J) where
 
 open import Library
-open import RMonads.RKleisli
+open import RMonads.RKleisli M
 open import RAdjunctions
 
 open Cat
 open Fun
 open RMonad M
 
-RKlL : Fun C (Kl M)
+RKlL : Fun C Kl
 RKlL = record{
   OMap  = id;
   HMap  = λ f → comp D η (HMap J f);
@@ -37,7 +37,7 @@ RKlL = record{
     comp D (bind (comp D η (HMap J f))) (comp D η (HMap J g)) 
     ∎}
 
-RKlR : Fun (Kl M) D
+RKlR : Fun Kl D
 RKlR = record{
   OMap  = T;
   HMap  = bind;

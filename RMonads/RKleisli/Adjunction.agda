@@ -6,14 +6,14 @@ module RMonads.RKleisli.Adjunction {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
                                    {J : Fun C D}(M : RMonad J) where
 
 open import Library
-open import RMonads.RKleisli
+open import RMonads.RKleisli M
 open import RAdjunctions
 open import RMonads.RKleisli.Functors J M
 open Cat
 open Fun
 open RMonad M
 
-KlAdj : RAdj J (Kl M)
+KlAdj : RAdj J Kl
 KlAdj = record{
   L = RKlL;
   R = RKlR;

@@ -26,7 +26,7 @@ record ObjAdj {e f} : Set ((a ⊔ b ⊔ c ⊔ d ⊔ lsuc e ⊔ lsuc f)) where
           ≅ bind f 
 open ObjAdj
 
-record HomAdj {e f}(A B : ObjAdj {e}{f}) : Set (a ⊔ b ⊔ c ⊔ d ⊔ lsuc e ⊔ lsuc f)
+record HomAdj {e f}(A B : ObjAdj {e}{f}) : Set (a ⊔ b ⊔ c ⊔ d ⊔ lsuc (e ⊔ f))
   where
   open RAdj
   field K : Fun (E A) (E B)
@@ -110,7 +110,8 @@ idHomAdj {X = X} = record {
   Rlaw     = idRlaw X; 
   rightlaw = idrightlaw X }
 
-HMaplem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{X X' Y Y' : Obj C} → X ≅ X' → Y ≅ Y' → 
+HMaplem : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{X X' Y Y' : Obj C} → 
+          X ≅ X' → Y ≅ Y' → 
           {f : Hom C X Y}{f' : Hom C X' Y'} → f ≅ f' → (F : Fun C D) → 
           HMap F {X}{Y} f ≅ HMap F {X'}{Y'} f'
 HMaplem refl refl refl F = refl
@@ -147,7 +148,8 @@ rightlawlem2 : ∀{e f g h i j}{E : Cat {e}{f}}{F : Cat {g}{h}}{G : Cat {i}{j}}
   (subst (Hom D (OMap J A)) 
          (fcong B (cong OMap (trans q (cong (λ F₁ → F₁ ○ KA) p)))) 
          h)
-rightlawlem2 J .((RZ ○ KB) ○ KA) LX .(RZ ○ KB) .(KA ○ LX) RZ LZ KA KB rightX rightY rightZ refl refl refl r s h = trans (cong (HMap KB) s) r
+rightlawlem2 J .((RZ ○ KB) ○ KA) LX .(RZ ○ KB) .(KA ○ LX) RZ LZ KA KB 
+  rightX rightY rightZ refl refl refl r s h = trans (cong (HMap KB) s) r
 
 compLlaw : ∀{e f}{X Y Z : ObjAdj {e}{f}} → 
             (f : HomAdj Y Z)(g : HomAdj X Y) →
@@ -230,8 +232,7 @@ idrHomAdj : ∀{e f}{X Y : ObjAdj {e}{f}}
             {f : HomAdj X Y} → compHomAdj f idHomAdj ≅ f
 idrHomAdj  = HomAdjEq _ _ (FunctorEq _ _ refl (λ {X}{Y} h → refl))
 
-assHomAdj : ∀{e f}
-            {W X Y Z : ObjAdj {e}{f}}
+assHomAdj : ∀{e f}{W X Y Z : ObjAdj {e}{f}}
             {f : HomAdj Y Z} {g : HomAdj X Y} {h : HomAdj W X} →
             compHomAdj (compHomAdj f g) h ≅ compHomAdj f (compHomAdj g h)
 assHomAdj = HomAdjEq _ _ (FunctorEq _ _ refl (λ h → refl))
