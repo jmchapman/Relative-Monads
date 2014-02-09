@@ -1,22 +1,18 @@
-module Monads.CatofAdj.TermAdj where
-
-open import Monads
-open import Functors
 open import Categories
-open import Monads.CatofAdj
-open import Categories.Terminal
-open import Monads.CatofAdj.TermAdjObj
-open import Monads.CatofAdj.TermAdjHom
-open import Monads.CatofAdj.TermAdjUniq
+open import Monads
 
-EMIsTerm : ∀{a b}{C : Cat {a}{b}}(M : Monad C) → Term (CatofAdj M)
-EMIsTerm {C = C} M = record { 
-  T = EMObj M;
-  t = EMHom M;
-  law = λ {A} {V} → HomAdjEq M
-    _ 
-    _ 
-    (FunctorEq _ 
-               _ 
-               (omaplem M A V)
-               (hmaplem M A V))}
+module Monads.CatofAdj.TermAdj {a b}{C : Cat {a}{b}}(M : Monad C) where
+
+
+open import Functors
+open import Monads.CatofAdj M
+open import Categories.Terminal
+open import Monads.CatofAdj.TermAdjObj M
+open import Monads.CatofAdj.TermAdjHom M
+open import Monads.CatofAdj.TermAdjUniq M
+
+EMIsTerm : Term CatofAdj
+EMIsTerm = record { 
+  T   = EMObj;
+  t   = λ {A} → EMHom A;
+  law = λ {A} {V} → HomAdjEq _ _  (FunctorEq _ _ (omaplem A V) (hmaplem A V))}

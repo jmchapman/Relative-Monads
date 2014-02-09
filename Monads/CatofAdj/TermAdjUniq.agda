@@ -1,24 +1,32 @@
-module Monads.CatofAdj.TermAdjUniq where
+open import Categories
+open import Monads
+import Monads.CatofAdj
+import Monads.CatofAdj.TermAdjObj
+
+
+module Monads.CatofAdj.TermAdjUniq 
+  {a b}
+  {C : Cat {a}{b}}
+  (M : Monad C)
+  (A : Monads.CatofAdj.ObjAdj M)
+  (V : Monads.CatofAdj.HomAdj M A (Monads.CatofAdj.TermAdjObj.EMObj M))
+  where
 
 open import Library
-open import Categories
 open import Functors
 open import Adjunctions
-open import Monads
-import Monads.EM
-open import Monads.CatofAdj
-open import Monads.CatofAdj.TermAdjObj
-open import Monads.CatofAdj.TermAdjHom
+open Monads.CatofAdj M
+open import Monads.EM M
+open Monads.CatofAdj.TermAdjObj M
+open import Monads.CatofAdj.TermAdjHom M A
 open import Categories.Terminal
 open Fun
 open Adj
 open ObjAdj
 open Cat
 
-omaplem : ∀{a b}{C : Cat {a}{b}}
-          (M : Monad C)(A : ObjAdj M)(V : HomAdj M A (EMObj M)) → 
-          OMap (HomAdj.K (EMHom M {A})) ≅ OMap (HomAdj.K V)
-omaplem {C = C} M A V = let open Monads.EM M in ext
+omaplem : OMap (HomAdj.K EMHom ) ≅ OMap (HomAdj.K V)
+omaplem = ext
   λ X → AlgEq (fcong X (cong OMap (HomAdj.Rlaw V)))
     ((λ Y →
         dext
@@ -59,13 +67,11 @@ omaplem {C = C} M A V = let open Monads.EM M in ext
              (stripsubst (Hom C Y) f (fcong X (cong OMap (HomAdj.Rlaw V))))
              p)))))
 
-hmaplem : ∀{c d}{C : Cat {c}{d}}
-          (M : Monad C)(A : ObjAdj M)(V : HomAdj M A (EMObj M))
-          {X Y : Obj (D A)} (f : Hom (D A) X Y) →
-          HMap (HomAdj.K (EMHom M {A})) f ≅ HMap (HomAdj.K V) f 
-hmaplem {C = C} M A V {X}{Y} f = let open Monads.EM M in AlgMorphEq' 
-  (fcong X (omaplem M A V)) 
-  (fcong Y (omaplem M A V)) 
+hmaplem : {X Y : Obj (D A)} (f : Hom (D A) X Y) →
+          HMap (HomAdj.K EMHom) f ≅ HMap (HomAdj.K V) f 
+hmaplem {X}{Y} f = AlgMorphEq' 
+  (fcong X omaplem)
+  (fcong Y omaplem)
   (cong' 
     refl 
     (cong
