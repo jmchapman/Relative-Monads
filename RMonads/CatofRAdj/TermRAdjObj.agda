@@ -8,10 +8,10 @@ module RMonads.CatofRAdj.TermRAdjObj {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
 open import Library
 open import Naturals
 open import RAdjunctions
-open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj M
 open import Categories.Terminal
-open import RMonads.REM
-open import RMonads.REM.Adjunction
+open import RMonads.REM M
+open import RMonads.REM.Adjunction M
 open import RAdjunctions.RAdj2RMon
 
 open Cat
@@ -19,13 +19,13 @@ open Fun
 open NatT
 open RAdj
 
-lemX : R (REMAdj M) ○ L (REMAdj M) ≅ TFun M
+lemX : R REMAdj ○ L REMAdj ≅ TFun M
 lemX = FunctorEq _ _ refl (λ f → refl) 
 
-EMObj : Obj (CatofAdj M)
+EMObj : Obj CatofAdj
 EMObj  = record { 
-  E       = EM M;
-  adj     = REMAdj M;
+  E       = EM;
+  adj     = REMAdj;
   law     = lemX;
   ηlaw    = idl D;
   bindlaw = λ{X}{Y}{f} → 

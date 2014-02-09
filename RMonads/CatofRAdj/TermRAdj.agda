@@ -7,21 +7,21 @@ module RMonads.CatofRAdj.TermRAdj {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
 
 open import Library
 open import RAdjunctions
-open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj M
 open import Categories.Terminal
-open import RMonads.REM
-open import RMonads.REM.Adjunction
+open import RMonads.REM M
+open import RMonads.REM.Adjunction M
 open import RAdjunctions.RAdj2RMon
-open import RMonads.CatofRAdj.TermRAdjObj
-open import RMonads.CatofRAdj.TermRAdjHom
+open import RMonads.CatofRAdj.TermRAdjObj M
+open import RMonads.CatofRAdj.TermRAdjHom M
 
 open Cat
 open Fun
 open RAdj
 
-omaplem : {X : Obj (CatofAdj M)} {f : Hom (CatofAdj M) X (EMObj M)} → 
-          OMap (HomAdj.K (EMHom M {X})) ≅ OMap (HomAdj.K f)
-omaplem {A}{f} = ext (λ X → AlgEq M
+omaplem : {X : Obj CatofAdj} {f : Hom CatofAdj X EMObj} → 
+          OMap (HomAdj.K (EMHom {X})) ≅ OMap (HomAdj.K f)
+omaplem {A}{f} = ext (λ X → AlgEq
   (fcong X (cong OMap (HomAdj.Rlaw f))) 
   (λ Y →
        dext
@@ -54,7 +54,7 @@ omaplem {A}{f} = ext (λ X → AlgEq M
              (refl {x = X}))
             (refl {x = right (ObjAdj.adj A) g})))
           (trans
-           (cong₃ (λ A1 A2 → RAlgMorph.amor {_}{_}{_}{_}{C}{D}{J}{M}{A1}{A2})
+           (cong₃ (λ A1 A2 → RAlgMorph.amor {A1}{A2})
             (fcong Y (cong OMap (HomAdj.Llaw f))) refl
             (HomAdj.rightlaw f {Y} {X} {g}))
            (cong (RAlg.astr (OMap (HomAdj.K f) X))
@@ -64,10 +64,10 @@ omaplem {A}{f} = ext (λ X → AlgEq M
              p))))))
 
 
-hmaplem : {X : Obj (CatofAdj M)} {f : Hom (CatofAdj M) X (EMObj M)} → 
+hmaplem : {X : Obj CatofAdj} {f : Hom CatofAdj X EMObj} → 
           {X₁ Y : Obj (ObjAdj.E X)} (f₁ : Hom (ObjAdj.E X) X₁ Y) →
-            HMap (HomAdj.K (EMHom M {X})) f₁ ≅ HMap (HomAdj.K f) f₁
-hmaplem {A}{V}{X}{Y} f = lemZ M
+            HMap (HomAdj.K (EMHom {X})) f₁ ≅ HMap (HomAdj.K f) f₁
+hmaplem {A}{V}{X}{Y} f = lemZ
   (fcong X (omaplem {A} {V})) 
   (fcong Y (omaplem {A} {V})) 
   (cong' 
@@ -94,14 +94,14 @@ hmaplem {A}{V}{X}{Y} f = lemZ M
      (refl {x = f}))
 
 
-uniq : {X : Obj (CatofAdj M)} {f : Hom (CatofAdj M) X (EMObj M)} →
-       EMHom M {X} ≅ f
-uniq {X} {f} = HomAdjEq _ _ _ (FunctorEq _ _ 
+uniq : {X : Obj CatofAdj} {f : Hom CatofAdj X EMObj} →
+       EMHom {X} ≅ f
+uniq {X} {f} = HomAdjEq _ _ (FunctorEq _ _ 
   (omaplem {X} {f}) 
   (hmaplem {X} {f}))
 
-EMIsTerm : Term (CatofAdj M)
+EMIsTerm : Term CatofAdj
 EMIsTerm = record { 
-  T   = EMObj M; 
-  t   = EMHom M; 
+  T   = EMObj; 
+  t   = EMHom; 
   law = uniq}

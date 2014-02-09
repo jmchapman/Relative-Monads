@@ -7,12 +7,12 @@ module RMonads.CatofRAdj.TermRAdjHom {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
 
 open import Library
 open import RAdjunctions
-open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj M
 open import Categories.Terminal
-open import RMonads.REM
-open import RMonads.REM.Adjunction
+open import RMonads.REM M
+open import RMonads.REM.Adjunction M
 open import RAdjunctions.RAdj2RMon
-open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.CatofRAdj.TermRAdjObj M
 
 open Cat
 open Fun
@@ -145,8 +145,7 @@ Llawlem : ∀{e f}{E : Cat {e}{f}}(T : Fun C D)(L : Fun C E)(R : Fun E D)
   ≅ bind f'
 Llawlem .(R ○ L) L R refl right bind bindlaw {X}{Z}{f}{.f} refl = bindlaw
 
-K : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
-    Fun (E A) (E (EMObj M))
+K : ∀{e f}(A : Obj (CatofAdj {e}{f})) → Fun (E A) (E EMObj)
 K A = record {
   OMap = λ X → record {
     acar = OMap (R (adj A)) X;
@@ -186,31 +185,31 @@ K A = record {
               (law A) 
               (right (adj A))
               (natright (adj A)) };
-    fid = RAlgMorphEq M (fid (R (adj A)));
-    fcomp = RAlgMorphEq M (fcomp (R (adj A)))}
+    fid = RAlgMorphEq (fid (R (adj A)));
+    fcomp = RAlgMorphEq (fcomp (R (adj A)))}
   where open RMonad M
 
 
-Llaw' : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
-        K A ○ L (adj A) ≅ L (adj (EMObj M))
+Llaw' : ∀{e f}(A : Obj (CatofAdj {e}{f})) → 
+        K A ○ L (adj A) ≅ L (adj EMObj)
 Llaw' A = 
  FunctorEq _ _
    (ext
     (λ X →
-       AlgEq M (fcong X (cong OMap (law A)))
+       AlgEq (fcong X (cong OMap (law A)))
        (λ Z →
           dext
           (λ {f} {f'} p →
              Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
              bind (bindlaw A) p))))
    (λ {X} {Y} f →
-      lemZ M
-      (AlgEq M (fcong X (cong OMap (law A)))
+      lemZ
+      (AlgEq (fcong X (cong OMap (law A)))
        (λ Z →
           dext
           (Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
            bind (bindlaw A))))
-      (AlgEq M (fcong Y (cong OMap (law A)))
+      (AlgEq (fcong Y (cong OMap (law A)))
        (λ Z →
           dext
           (Llawlem (TFun M) (L (adj A)) (R (adj A)) (law A) (right (adj A))
@@ -238,20 +237,20 @@ Llaw' A =
   where open RMonad M
 
 
-Rlaw' : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
-        R (adj A) ≅ R (adj (EMObj M)) ○ K A
+Rlaw' : ∀{e f}(A : Obj (CatofAdj {e}{f})) → 
+        R (adj A) ≅ R (adj EMObj) ○ K A
 Rlaw' A = FunctorEq _ _ refl (λ f → refl)
 
 
-rightlaw' : ∀{e f}(A : Obj (CatofAdj M {e}{f})) → 
+rightlaw' : ∀{e f}(A : Obj (CatofAdj {e}{f})) → 
            {X : Obj C}{Y : Obj (E A)} →
            {f : Hom D (OMap J X) (OMap (R (adj A)) Y)} →
            HMap (K A) (right (adj A) f) 
            ≅
-           right (adj (EMObj M)) {X} {OMap (K A) Y}
+           right (adj EMObj) {X} {OMap (K A) Y}
                  (subst (Hom D (OMap J X)) (fcong Y (cong OMap (Rlaw' A))) f)
-rightlaw' A {X}{Y}{f} = lemZ M
-  (AlgEq M (fcong X (cong OMap (law A)))
+rightlaw' A {X}{Y}{f} = lemZ
+  (AlgEq (fcong X (cong OMap (law A)))
    (λ Z →
       dext
       (λ {g} {g'} p →
@@ -270,8 +269,7 @@ rightlaw' A {X}{Y}{f} = lemZ M
      (fcong X (cong OMap (law A))))))
   where open RMonad M
 
-EMHom : {A : Obj (CatofAdj M)} → 
-        Hom (CatofAdj M) A (EMObj M)
+EMHom : {A : Obj CatofAdj} → Hom CatofAdj A EMObj
 EMHom {A} = record { 
   K    = K A; 
   Llaw = Llaw' A; 

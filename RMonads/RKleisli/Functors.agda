@@ -3,7 +3,7 @@ open import Functors
 open import RMonads
 
 module RMonads.RKleisli.Functors {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
-                                 (J : Fun C D)(M : RMonad J) where
+                                 {J : Fun C D}(M : RMonad J) where
 
 open import Library
 open import RMonads.RKleisli M

@@ -8,7 +8,7 @@ module RMonads.RKleisli.Adjunction {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
 open import Library
 open import RMonads.RKleisli M
 open import RAdjunctions
-open import RMonads.RKleisli.Functors J M
+open import RMonads.RKleisli.Functors M
 open Cat
 open Fun
 open RMonad M

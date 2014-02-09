@@ -8,11 +8,11 @@ module RMonads.CatofRAdj.InitRAdj {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
 open import Library
 open import Naturals
 open import RAdjunctions
-open import RMonads.CatofRAdj
+open import RMonads.CatofRAdj M
 open import Categories.Initial
-open import RMonads.RKleisli
-open import RMonads.RKleisli.Functors
-open import RMonads.RKleisli.Adjunction
+open import RMonads.RKleisli M
+open import RMonads.RKleisli.Functors M
+open import RMonads.RKleisli.Adjunction M
 open import RAdjunctions.RAdj2RMon
 
 open Cat
@@ -20,13 +20,13 @@ open Fun
 open NatT
 open RAdj
 
-lemX : R (KlAdj M) ○ L (KlAdj M) ≅ TFun M
+lemX : R KlAdj ○ L KlAdj ≅ TFun M
 lemX = FunctorEq _ _ refl (λ f → refl) 
 
-KlObj : Obj (CatofAdj M)
+KlObj : Obj CatofAdj
 KlObj = record { 
-  E   = Kl M; 
-  adj = KlAdj M; 
+  E   = Kl; 
+  adj = KlAdj; 
   law = lemX;
   ηlaw = refl;
   bindlaw = λ{X}{Y}{f} → 
@@ -134,8 +134,8 @@ lemLlaw {E = E} J L R .(R ○ L) refl η right left q r t {X}{Y} f =
                              (cong (λ g → comp E g (HMap L f)) (q (iden E))))
                       (idl E)))
 
-KlHom : {A : Obj (CatofAdj M)} → 
-        Hom (CatofAdj M) KlObj A
+KlHom : {A : Obj CatofAdj} → 
+        Hom CatofAdj KlObj A
 KlHom {A = A} = record { 
     K = record { 
     OMap  = OMap (L (adj A)); 
@@ -195,12 +195,11 @@ KlHom {A = A} = record {
                                              (λ f₁ → sym (bindlaw A)))))))) }
   where open RMonad M
 
-KlIsInit : Init (CatofAdj M)
+KlIsInit : Init CatofAdj
 KlIsInit = record { 
   I   = KlObj;
   i   = KlHom;
   law = λ {X} {V} → HomAdjEq 
-    _ 
     _ 
     _ 
     ((FunctorEq _ _ (cong OMap (sym (HomAdj.Llaw V)))
