@@ -27,27 +27,11 @@ AlgEq {X}{Y} p q = funnycong4
   (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
   p 
   (ext q)
-  (iext λ Z → diext λ {f f'} r → fixtypes (
-    proof 
-    comp (astr X Z f) η 
-    ≅⟨ sym (alaw1 X) ⟩ 
-    f 
-    ≅⟨ r ⟩ 
-    f' 
-    ∎))
+  (iext λ Z → diext fixtypes)
   (iext λ Z → iext λ Z' → iext λ f → diext λ {g} {g'} r → 
-    fixtypes (
-      proof
-      comp (astr X Z' g) (bind f) 
-      ≅⟨ cong₂ (λ X₁ h → comp {T Z} {T Z'} {X₁} h (bind f)) 
-               p 
-               (dcong r 
-                      (dext (λ _ → cong (Hom (T Z')) p)) 
-                      (q Z')) ⟩
-      comp (astr Y Z' g') (bind f)
-      ≅⟨ sym (alaw2 Y) ⟩
-      astr Y Z (comp (astr Y Z' g') f) 
-      ∎))
+    fixtypes' (cong₂ (λ X₁ h → comp {T Z} {T Z'} {X₁} h (bind f)) 
+                     p 
+                     (dcong r (dext (λ _ → cong (Hom (T Z')) p)) (q Z'))))
 
 record AlgMorph (A B : Alg) : Set (a ⊔ b) where
   field amor : Hom (acar A) (acar B)
@@ -62,14 +46,7 @@ AlgMorphEq {X}{Y}{f}{g} p = funnycong
   {B = λ amor → ∀{Z}{f : Hom Z (acar X)} → 
     comp amor (astr X Z f) ≅ astr Y Z (comp amor f)}
   p
-  (iext λ Z → iext λ h → fixtypes (
-    proof
-    astr Y Z (comp (amor f) h) 
-    ≅⟨ sym (ahom f) ⟩ 
-    comp (amor f) (astr X Z h) 
-    ≅⟨ cong (λ f → comp f (astr X Z h)) p ⟩ 
-    comp (amor g) (astr X Z h) 
-    ∎))
+  (iext λ Z → iext λ h → fixtypes (cong (λ f → comp f (astr X Z h)) p))
   λ x y → record{amor = x;ahom = y} 
 
 AlgMorphEq' : {X X' Y Y' : Alg}

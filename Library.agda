@@ -183,8 +183,12 @@ postulate diext : ∀{a b}{A A' : Set a}{B : A → Set b}{B' : A' → Set b}
 --ir {p = refl}{q = refl} = refl
 
 fixtypes : ∀{a}{A A' A'' A''' : Set a}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
-           {p : a ≅ a'}{q : a'' ≅ a'''} → a' ≅ a'' → p ≅ q
+           {p : a ≅ a'}{q : a'' ≅ a'''} → a ≅ a'' → p ≅ q
 fixtypes {p = refl} {q = refl} refl = refl
+
+fixtypes' : ∀{a}{A A' A'' A''' : Set a}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
+           {p : a ≅ a'}{q : a'' ≅ a'''} → a' ≅ a''' → p ≅ q
+fixtypes' {p = refl} {q = refl} refl = refl
 
 {-
 infix  4 _IsRelatedTo_
