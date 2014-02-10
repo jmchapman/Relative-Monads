@@ -61,21 +61,8 @@ FunctorEq {C}{D} F G p q = funnycong4'
     HMap F f 
     ≅⟨ q f ⟩ 
     HMap G f ∎)
-  (iext λ X → fixtypes (
-    proof 
-    iden D {OMap F X} 
-    ≅⟨ sym (fid F) ⟩ 
-    HMap F (iden C) 
-    ≅⟨ q (iden C) ⟩ 
-    HMap G (iden C) 
-    ∎))
-  (iext λ X → iext λ Y → iext λ Z → iext λ f → iext λ g → fixtypes (
-    proof 
-    comp D (HMap F f) (HMap F g) 
-    ≅⟨ sym (fcomp F) ⟩ 
-    HMap F (comp C f g)
-    ≅⟨ q (comp C f g) ⟩ 
-    HMap G (comp C f g)
-    ∎))
+  (iext λ X → fixtypes (q (iden C)))
+  (iext λ X → iext λ Y → iext λ Z → iext λ f → iext λ g → 
+    fixtypes (q (comp C f g)))
   λ w x y z → record{OMap = w;HMap = x;fid = y; fcomp = z} 
 

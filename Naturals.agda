@@ -29,13 +29,7 @@ NatTEq {C}{D}{F}{G} {α} {β} p = let open Cat in funnycong
    (λ {X} → cmp β {X}) 
    ∎)
   (iext λ X → iext λ Y → iext λ f → 
-    fixtypes (
-      proof
-      comp D (cmp α) (HMap F f) 
-      ≅⟨ sym (nat α) ⟩ 
-      comp D (HMap G f) (cmp α {X})
-      ≅⟨ cong (comp D (HMap G f)) (ifcong X p) ⟩ 
-      comp D (HMap G f) (cmp β {X}) ∎))
+    fixtypes (cong (comp D (HMap G f)) (ifcong X p)))
   λ x y → record{cmp = x;nat = y}
 
 idNat : ∀{C D}{F : Fun C D} → NatT F F

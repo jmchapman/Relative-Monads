@@ -80,13 +80,11 @@ funeq : ∀{Γ σ τ} {f g : Σ (∀{B} →  Ren Γ B → Val B σ → Val B τ)
     renV ρ' (f ρ a) ≅ f (ρ' ∘ ρ) (renV ρ' a))} →
   (∀{B} → proj₁ f {B} ≅ proj₁ g {B}) → f ≅ g
 funeq {Γ}{σ}{τ}{f}{g} p = funnycong
-  (iext (λ B → p {B})) 
-  (iext (λ B → iext (λ B' → ext (λ (ρ : Ren _ _) → 
-    ext (λ (ρ' : Ren _ _) → ext (λ a → fixtypes'
-      (cong (renV ρ') (fcong a (fcong (λ {B₁} → ρ {B₁}) (p {B}))))))))))
+  (iext λ B → p {B})
+  (iext λ B → iext λ B' → ext λ (ρ : Ren _ _) → 
+    ext λ (ρ' : Ren _ _) → ext λ a → fixtypes
+      (cong (renV ρ') (fcong a (fcong (λ {B₁} → ρ {B₁}) (p {B})))))
   _,_
-
-
 
 -- interpretation of contexts
 

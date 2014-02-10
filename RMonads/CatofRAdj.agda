@@ -60,11 +60,10 @@ HomAdjEq {A}{B} f g p = funnycong4
   {HomAdj A B}
   (λ x y z z' → record{K = x;Llaw = y;Rlaw = z; rightlaw = z'})
   p 
-  (fixtypes (sym (Llaw g)))
-  (fixtypes (sym (Rlaw f))) 
-  (iext λ X → iext λ Y → iext λ h → fixtypes 
-    (trans (sym (rightlaw f)) 
-           (cong (λ F → HMap F (right (adj A) h)) p)))
+  (fixtypes' refl)
+  (fixtypes refl)
+  (iext λ X → iext λ Y → iext λ h → 
+    fixtypes (cong (λ F → HMap F (right (adj A) h)) p))
   where open RAdj
 
 rightlawlem : ∀{E}(R : Fun E D)(L : Fun C E) → 

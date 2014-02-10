@@ -32,26 +32,11 @@ AlgEq {X}{Y} p q = let open Cat; open RAlg in funnycong4
   (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
   p 
   (iext q)
-  (iext λ Z → diext λ {a}{a'} r → fixtypes (
-    proof 
-    comp D (astr X a) η 
-    ≅⟨ sym (alaw1 X) ⟩
-    a
-    ≅⟨ r ⟩ 
-    a' 
-    ∎))
-  (iext λ Z → iext λ W → iext λ k → diext λ {a}{a'} r → fixtypes (
-    proof
-    comp D (astr X a) (bind k) 
-    ≅⟨ cong₂ (λ Ran f → comp D {T Z} {T W} {Ran} f (bind k)) 
-             p 
-             (dcong r 
-                    (dext (λ _ → cong (Hom D (T W)) p)) 
-                    (q W)) ⟩
-    comp D (astr Y a') (bind k)
-    ≅⟨ sym (alaw2 Y) ⟩
-    astr Y (comp D (astr Y a') k) 
-    ∎)) 
+  (iext λ Z → diext fixtypes)
+  (iext λ Z → iext λ W → iext λ k → diext λ {a}{a'} r → 
+    fixtypes' (cong₂ (λ Ran f → comp D {T Z} {T W} {Ran} f (bind k)) 
+              p
+              (dcong r (dext (λ _ → cong (Hom D (T W)) p)) (q W))))
 
 astrnat : ∀(alg : RAlg){X Y}
           (f : Cat.Hom C X Y) → 
@@ -90,14 +75,7 @@ RAlgMorphEq {X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
   {λ amor → ∀{Z}{f : Hom (OMap J Z) (acar X)} → 
               comp amor (astr X f) ≅ astr Y (comp amor f)}
   p
-  (iext λ Z → iext λ h → fixtypes (
-    proof
-    astr Y (comp (amor f) h) 
-    ≅⟨ sym (ahom f) ⟩ 
-    comp (amor f) (astr X h) 
-    ≅⟨ cong (λ f₁ → comp f₁ (astr X h)) p ⟩ 
-    comp (amor g) (astr X h) 
-    ∎))
+  (iext λ Z → iext λ h → fixtypes (cong (λ f → comp f (astr X h)) p))
   λ x y → record{amor = x;ahom = y} 
 
 lemZ : ∀{X X' Y Y' : RAlg}

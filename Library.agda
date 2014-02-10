@@ -177,11 +177,11 @@ ir : ∀ {A A' : Set}{a : A}{a' : A'}{p q : a ≅ a'} → p ≅ q
 ir {p = refl}{q = refl} = refl
 
 fixtypes : ∀{A A' A'' A''' : Set}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
-           {p : a ≅ a'}{q : a'' ≅ a'''} → a' ≅ a'' → p ≅ q
+           {p : a ≅ a'}{q : a'' ≅ a'''} → a ≅ a'' → p ≅ q
 fixtypes {p = refl} {q = refl} refl = refl
 
 fixtypes' : ∀{A A' A'' A''' : Set}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
-           {p : a ≅ a'}{q : a'' ≅ a'''} → a ≅ a'' → p ≅ q
+           {p : a ≅ a'}{q : a'' ≅ a'''} → a' ≅ a''' → p ≅ q
 fixtypes' {p = refl} {q = refl} refl = refl
 
 {-

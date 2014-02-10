@@ -57,25 +57,10 @@ HomAdjEq {A}{B} f g p = funnycong4
                          (subst (Hom C X) (fcong Y (cong OMap Rlaw)) f)}
   (λ x y z z' → record{K = x;Llaw = y;Rlaw = z; rightlaw = z'})
   p 
-  (fixtypes (
-    proof 
-    L (adj B) 
-    ≅⟨ sym (Llaw g) ⟩ 
-    K g ○ L (adj A) 
-    ∎)) 
-  (fixtypes (
-    proof 
-    R (adj B) ○ K f 
-    ≅⟨ sym (Rlaw f) ⟩ 
-    R (adj A) 
-    ∎))
-  (iext λ X → iext λ Y → iext λ h → fixtypes 
-    (proof
-    right (adj B) (subst (Hom C X) (fcong Y (cong (λ r → OMap r) (Rlaw f))) h)
-    ≅⟨ sym (rightlaw f) ⟩ 
-    HMap (K f) (right (adj A) h)
-    ≅⟨ cong (λ F → HMap F (right (adj A) h)) p ⟩
-    HMap (K g) (right (adj A) h) ∎))
+  (fixtypes' refl)
+  (fixtypes refl)
+  (iext λ X → iext λ Y → iext λ h → 
+    fixtypes (cong (λ F → HMap F (right (adj A) h)) p))
 
 rightlawlem : ∀{D}(R : Fun D C)(L : Fun C D)
   (p : OMap R ≅ OMap (R ○ (IdF D))) → 
