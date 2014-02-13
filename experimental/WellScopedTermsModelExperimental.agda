@@ -12,53 +12,68 @@ open import Categories.Sets
 open import experimental.Delay
 open import Size
 
+module EnvVal where
+  mutual
+    Env : ℕ → Set
+    Env n = Fin n → Val
+  
+    data Val : Set where
+      clo : ∀{n} → Env n → Tm (suc n) → Val
+  
+  _<<_ : ∀{n} → Env n → Val → Env (suc n)
+  (γ << v) zero    = v
+  (γ << v) (suc n) = γ n
+  
+  {-
+  mutual
+    _$$_ : Val → Val → Val
+    clo γ t $$ v = ev (γ << v) t
+  
+    ev : ∀{n} → Env n → Tm n → Val
+    ev γ (var x) = γ x
+    ev γ (lam t) = clo γ t
+    ev γ (app t u) = ev γ t $$ ev γ u
+  -}
+  
+  -- the RAlg is expecting a env containing 'values' here the values
+  -- evaluator takes an env of undelayed values and makes a delayed
+  -- values.
+  
+  mutual
+    ev : ∀{i n} → Env n → Tm n → Delay i Val
+    ev γ (var x) = now (γ x)
+    ev γ (lam t) = now (clo γ t)
+    ev γ (app t u) = ev γ t >>= λ f → ev γ u >>= λ v → f $$ v
+  
+    _∞$$_ : ∀{i} → Val → Val → ∞Delay i Val
+    force (clo γ t ∞$$ v) = ev (γ << v) t 
+  
+    _$$_ : ∀{i} → Val → Val → Delay i Val
+    f $$ v = later (f ∞$$ v)
+  
+
+module EnvDelayVal where
 mutual
   Env : ℕ → Set
-  Env n = Fin n → Val
+  Env n = ∀ {i} → Fin n → Delay i Val
 
-  data Val : Set where
+  data Val :  Set where
     clo : ∀{n} → Env n → Tm (suc n) → Val
 
-{-
+  _<<_ : ∀{n} → Env n → Val → Env (suc n)
+  (γ << v) zero    = now v
+  (γ << v) (suc n) = γ n
+
+
 mutual
-  _$$_ : Val → Val → Val
-  clo γ t $$ v = ev (γ << v) t
+  ev : ∀{i n} → Env n → Tm n → Delay i Val
+  ev γ (var x)   = γ x
+  ev γ (lam t)   = now (clo γ t)
+  ev γ (app t u) = ev γ t >>= (λ f → ev γ u >>= (λ v → f $$ v))
 
-  ev : ∀{n} → Env n → Tm n → Val
-  ev γ (var x) = γ x
-  ev γ (lam t) = clo γ t
-  ev γ (app t u) = ev γ t $$ ev γ u
--}
+  _∞$$_ : ∀ {i} → Val → Val → ∞Delay i Val
+  force (clo γ t ∞$$ v) = ev (γ << v) t
 
--- the RAlg is expecting a env containing 'values' here the values
--- evaluator takes an env of undelayed values and makes a delayed
--- values.
-mutual
-  ev : ∀{i n} → Env n → Tm n → Delay Val i
-  ev γ (var x) = now (γ x)
-  ev γ (lam t) = now (clo γ t)
-  ev γ (app t u) = ev γ t >>= λ f → ev γ u >>= λ v → f $$ v
-
-  _∞$$_ : ∀{i} → Val → Val → ∞Delay Val i
-  force (clo γ t ∞$$ v) = ev (γ << v) t 
-
-  _$$_ : ∀{i} → Val → Val → Delay Val i
+  _$$_ : ∀{i} → Val → Val → Delay i Val
   f $$ v = later (f ∞$$ v)
 
-{-
-mutual
-  Env' : ∀ i → ℕ → Set
-  Env' i n = Fin n → Delay (Val' i) i
-
-  data Val' (i : Size) :  Set where
-    clo : ∀{n} → Env' i n → Tm (suc n) → Val' i
-
-mutual
-  ev' : ∀{i n} → Env' i n → Tm n → Delay (Val' i) i
-  ev' γ (var x)   = γ x
-  ev' γ (lam t)   = now (clo γ t)
-  ev' γ (app t u) = {!!}
-
-  _∞$$'_ : ∀{i} → Val' i → Delay (Val' i) i → ∞Delay (Val' i) i
-  force (clo γ t ∞$$' v) = ev' (γ << v) t 
--}
