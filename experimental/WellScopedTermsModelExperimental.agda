@@ -55,7 +55,7 @@ module EnvVal where
 module EnvDelayVal where
 mutual
   Env : ℕ → Set
-  Env n = ∀ {i} → Fin n → Delay i Val
+  Env n = Fin n → ∀{i} → Delay i Val
 
   data Val :  Set where
     clo : ∀{n} → Env n → Tm (suc n) → Val
@@ -77,3 +77,11 @@ mutual
   _$$_ : ∀{i} → Val → Val → Delay i Val
   f $$ v = later (f ∞$$ v)
 
+
+
+TmRAlg : RAlg TmRMonad
+TmRAlg  = record{
+  acar  = ∀ {i} → Delay i Val; --S;
+  astr  = λ γ t → ev γ t;
+  alaw1 = refl; --ext λ _ → sym lawvar;
+  alaw2 = {!!}} -- ext λ t → subeval t _ _}       
