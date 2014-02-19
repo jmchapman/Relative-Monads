@@ -159,9 +159,9 @@ mutual
   lem' ρ γ p (lam t)   = iext λ B' → ext λ (ρ' : Ren _ _) → ext (λ v → cong (λ (γ₁ : Env _ _) → eval γ₁ t) (iext (λ _ → ext (λ x → cong (λ (γ₁ : Env _ _) → (γ₁ << v) x) (iext (λ _ → ext λ x → renVcomp _ _ _ (γ x)))))))
 
 
-lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → 
-       renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
-lem ρ γ t = {!lem' ρ γ ? t!}
+-- not provable I don't think
+--lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → 
+--       renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
 
 substeval : ∀{σ τ}(p : σ ≅ τ){Γ B : Con}{γ : Env Γ B}(t : Tm Γ σ) → 
       (subst (Val B) p  ∘ eval γ) t ≅ (eval γ ∘ subst (Tm Γ) p) t
@@ -202,6 +202,7 @@ lifteval α β v vz     = refl
 lifteval α β v (vs x) = reneval vs (β << v) (α x)
 
 
+{-
 subeval : ∀{B Γ Δ σ}(α : Sub Γ Δ)(β : Env Δ B)(t : Tm Γ σ) → 
           eval (eval β ∘ α) t ≅ (eval β ∘ sub α) t
 subeval α β (var x)   = refl
@@ -218,11 +219,46 @@ subeval {B} α β (lam t) = iext λ B' → ext λ (ρ : Ren B B') → ext λ v �
   ≅⟨ subeval (lift α) ((renV ρ ∘ β) << v) t ⟩
   eval ((λ {σ} x → renV ρ (β x)) << v) (sub (lift α) t) 
   ∎
+-}
 
+PVal : Con → Ty → Set
+PVal Γ σ = Σ (Val Γ σ) (P σ)
+
+PEnv : Con → Con → Set
+PEnv Δ Γ = ∀{σ}(x : Var Δ σ) → PVal Γ σ
+
+peval : ∀{Δ Γ σ} → PEnv Δ Γ → Tm Δ σ → PVal Γ σ
+peval γ t = eval (fst ∘ γ) t , fund t (fst ∘ γ) (snd ∘ γ)
+
+PValEq : ∀{Γ σ}{p p' : PVal Γ σ} → fst p ≅ fst p' → p ≅ p'
+PValEq {σ = ι}     {p = v , p} {.v , p'} refl = refl
+PValEq {σ = σ ⇒ τ} {p = v , p} {.v , p'} refl = Σeq refl (iext λ B → ext λ ρ → ext λ v' → ext λ q → Σeq (cong proj₂ (PValEq {σ = τ} refl)) (iext λ B' → ext λ ρ' → fixtypes refl))
+
+subpeval : ∀{B Γ Δ σ}(α : Sub Γ Δ)(β : PEnv Δ B)(t : Tm Γ σ) → 
+          peval (peval β ∘ α) t ≅ (peval β ∘ sub α) t
+subpeval α β (var x)   = refl
+subpeval α β (app t u) = PValEq (cong₂ (λ f x → f id x) 
+                                       (cong fst (subpeval α β t))
+                                       (cong fst (subpeval α β u)))
+subpeval α β (lam t)   = PValEq {!subpeval (lift α) ? t!} 
+{-
+PValEq (iext λ B' → ext λ (ρ : Ren _ B') → ext λ v →
+  proof
+  eval ((renV ρ ∘ eval (fst ∘ β) ∘ α) << v) t 
+  ≅⟨ cong (λ (γ : Env _ B') → eval (γ << v) t) 
+          (iext λ _ → ext λ x → {!!}) ⟩
+  eval ((eval (renV ρ ∘ fst ∘ β) ∘ α) << v) t 
+  ≅⟨ cong (λ (γ : Env _ B') → eval γ t) 
+          (iext λ _ → ext λ x → lifteval α (renV ρ ∘ fst ∘ β) v x) ⟩
+                                                                                  eval (eval ((renV ρ ∘ fst ∘ β) << v) ∘ lift α) t 
+  ≅⟨ {!subpeval (lift α) ((renV ρ ∘ β) << v) t!} ⟩
+  eval ((λ {σ} x → renV ρ (fst (β x))) << v) (sub (lift α) t) 
+  ∎)
+-}
 modelRAlg : Con → RAlg TmRMonad
 modelRAlg Γ = record {
-  acar  = Val Γ;
-  astr  = λ γ → eval γ;
+  acar  = PVal Γ;
+  astr  = λ γ → peval γ;
   alaw1 = refl;
-  alaw2 = λ {B} {Δ} {α} {γ} → iext (λ σ → ext (subeval α γ))} 
+  alaw2 = λ {B} {Δ} {α} {γ} → iext (λ σ → ext (subpeval α γ))} 
 
