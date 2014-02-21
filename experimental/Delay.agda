@@ -72,6 +72,8 @@ mutual
     ~now   : ∀ a → now a ~ now a
     ~later : ∀ {a∞ b∞} (eq : _∞~_ {i} a∞ b∞) → later a∞ ~ later b∞
 
+  _~⟨_⟩~_ = λ {A} a? i b? → _~_ {i}{A} a? b?
+
   record _∞~_ {i : Size} {A : Set} (a∞ b∞ : ∞Delay ∞ A) : Set where
     constructor ~delay
     field
