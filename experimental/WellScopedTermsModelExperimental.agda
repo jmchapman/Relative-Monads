@@ -159,9 +159,11 @@ subeval k f (app t u) =
   ∎ 
   where open ~-Reasoning
 
+
+
 TmRAlg : RAlg TmRMonad
 TmRAlg  = record{
   acar  = ∀ {i} → Delay i Val; --S;
   astr  = λ γ t → ev γ t;
-  alaw1 = refl; --ext λ _ → sym lawvar;
+  alaw1 = refl;
   alaw2 = {!!}} -- ext λ t → subeval t _ _}       
