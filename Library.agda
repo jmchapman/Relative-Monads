@@ -184,6 +184,9 @@ fixtypes' : ∀{A A' A'' A''' : Set}{a : A}{a' : A'}{a'' : A''}{a''' : A'''}
            {p : a ≅ a'}{q : a'' ≅ a'''} → a' ≅ a''' → p ≅ q
 fixtypes' {p = refl} {q = refl} refl = refl
 
+Σeq : ∀{A B}{p p' : Σ A B} → fst p ≅ fst p' → snd p ≅ snd p' → p ≅ p'
+Σeq refl refl = refl
+
 {-
 infix  4 _IsRelatedTo_
 infix  2 _∎
