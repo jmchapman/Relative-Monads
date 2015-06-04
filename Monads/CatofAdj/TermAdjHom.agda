@@ -130,34 +130,20 @@ rightlaw' : {X : Obj C} {Y : Obj (D A)} {f : Hom C X (OMap (R (adj A)) Y)} →
                   {X}
                   {OMap K' Y}
                   (subst (Hom C X) (fcong Y (cong OMap Rlaw')) f)
-rightlaw' {X = X}{Y = Y}{f = f} = 
-  AlgMorphEq'
-    (AlgEq 
-      (fcong X (cong OMap (law A)))
-      ((λ Z → dext (λ {g} {g'} p → Llawlem 
-        (TFun M) 
-        (L (adj A)) 
-        (R (adj A)) 
-        (law A) 
-        (right (adj A))
-        (bind M) 
-        (bindlaw A) 
-        p))))
-    refl
-    (trans 
-      (cong
-        (λ (f₁ : Hom C X (OMap (R (adj A)) Y)) →
-           HMap (R (adj A)) (right (adj A) f₁))
-        (sym (stripsubst 
-          (Hom C X) 
-          f
-          (fcong 
-            Y 
-            (cong OMap (FunctorEq (R (adj A)) _ refl (λ {_} {_} f₁ → refl)))))))
-      (sym (stripsubst 
-        (λ (Z : Obj C) → Hom C Z (OMap (R (adj A)) Y)) 
-        _
-        (fcong X (cong OMap (law A))))))
+rightlaw' {X = X}{Y = Y}{f = f} = AlgMorphEq'
+  (AlgEq (fcong X (cong OMap (law A)))
+         (λ Z → dext (λ p → Llawlem (TFun M) 
+           (L (adj A)) 
+           (R (adj A)) 
+           (law A) 
+           (right (adj A))
+           (bind M) 
+           (bindlaw A) p )))
+  refl
+  (trans (cong  (λ (f₁ : Hom C X (OMap (R (adj A)) Y)) →
+           HMap (R (adj A)) (right (adj A) f₁)) (sym (stripsubst (Hom C X) f (fcong Y (cong OMap Rlaw')))) ) (sym (stripsubst (λ Z → Hom C Z (OMap (R (adj A)) Y)) ( ((HMap (R (adj A))
+ (right (adj A)
+   (subst (Hom C X) (fcong Y (cong (λ r → OMap r) Rlaw')) f))))) (fcong X (cong OMap (law A))))))
 
 EMHom : Hom CatofAdj A EMObj
 EMHom = record { 

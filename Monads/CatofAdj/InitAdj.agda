@@ -165,18 +165,10 @@ rightlaw' : (A : Obj CatofAdj) →
             {f : Hom C X (OMap (R (adj KlObj)) Y)} →
             HMap (K' A) (right (adj KlObj) f) ≅
             right (adj A) (subst (Hom C X) (fcong Y (cong OMap (Rlaw' A))) f)
-rightlaw' A {X}{Y}{f} = 
+rightlaw' A {X}{Y}{f} =
   cong (right (adj A))
        (trans (stripsubst (Hom C X) f (fcong Y (cong OMap (sym (law A)))))
-              (sym (stripsubst (Hom C X) 
-                               f
-                               (fcong Y
-                                      (cong OMap
-                                            (FunctorEq 
-                                              _ 
-                                              _ 
-                                              (cong OMap (sym (law A)))
-                                              (λ _ → sym (bindlaw A))))))))
+              (sym (stripsubst (Hom C X) f (fcong Y (cong OMap (Rlaw' A))))))
 
 KlHom : {A : Obj CatofAdj} → Hom CatofAdj KlObj A
 KlHom {A} = record { 

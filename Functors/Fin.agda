@@ -41,9 +41,9 @@ FinFoid = record {
     trn  = trans};
   HMap  = λ f → record {
     fun = f; feq = cong f};
-  fid   = SetoidFunEq refl λ s s' → ext congid;
+  fid   = SetoidFunEq refl congid;
   fcomp = λ{_ _ _ f g} → 
-    SetoidFunEq refl λ s s' → ext (congcomp f g)}
+    SetoidFunEq refl (congcomp f g)}
 
 FinFF : FullyFaithful FinF
 FinFF X Y = record {

@@ -10,6 +10,7 @@ open Cat C
 open Monad M
 
 record Alg : Set (a ⊔ b) where
+  constructor alg
   field acar  : Obj
         astr  : ∀ Z → Hom Z acar → Hom (T Z) acar
         alaw1 : ∀ {Z}{f : Hom Z acar} → f ≅ comp (astr Z f) η
@@ -18,22 +19,14 @@ record Alg : Set (a ⊔ b) where
 open Alg
 
 AlgEq : {X Y : Alg} → acar X ≅ acar Y → (∀ Z → astr X Z ≅ astr Y Z) → X ≅ Y
-AlgEq {X}{Y} p q = funnycong4 
-  {A = Obj}
-  {B = λ acar → ∀ Z → Hom Z acar → Hom (T Z) acar}
-  {C = λ acar astr → ∀{Z}{f : Hom Z acar} → f ≅ comp (astr Z f) η}
-  {D = λ acar astr _ → ∀{Z W}{k : Hom Z (T W)} {f : Hom W acar} →
-     astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)}
-  (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
-  p 
-  (ext q)
-  (iext λ Z → diext fixtypes)
-  (iext λ Z → iext λ Z' → iext λ f → diext λ {g} {g'} r → 
-    fixtypes' (cong₂ (λ X₁ h → comp {T Z} {T Z'} {X₁} h (bind f)) 
-                     p 
-                     (dcong r (dext (λ _ → cong (Hom (T Z')) p)) (q Z'))))
+AlgEq {alg acar astr alaw1 alaw2}{alg .acar astr' alaw1' alaw2'} refl q =
+  cong₃ (alg acar)
+        (ext q)
+        (iext (λ _ → iext (λ _ → fixtypes refl)))
+        (iext (λ Z → iext (λ Z' → iext (λ k → iext (λ l → fixtypes' (cong (λ f → comp f (bind k)) (cong (λ f → f l) (q Z') )))))))
 
 record AlgMorph (A B : Alg) : Set (a ⊔ b) where
+  constructor algmorph
   field amor : Hom (acar A) (acar B)
         ahom : ∀{Z}{f : Hom Z (acar A)} → 
                comp amor (astr A Z f) ≅ astr B Z (comp amor f)
@@ -41,13 +34,9 @@ open AlgMorph
 
 AlgMorphEq : {X Y : Alg}{f g : AlgMorph X Y} → 
              amor f ≅ amor g → f ≅ g
-AlgMorphEq {X}{Y}{f}{g} p = funnycong
-  {A = Hom (acar X) (acar Y)}
-  {B = λ amor → ∀{Z}{f : Hom Z (acar X)} → 
-    comp amor (astr X Z f) ≅ astr Y Z (comp amor f)}
-  p
-  (iext λ Z → iext λ h → fixtypes (cong (λ f → comp f (astr X Z h)) p))
-  λ x y → record{amor = x;ahom = y} 
+AlgMorphEq {X}{Y}{algmorph amor ahom}{algmorph .amor ahom'} refl =
+  cong (algmorph amor)
+       (iext λ Z → iext λ h → proof-irr _ _)
 
 AlgMorphEq' : {X X' Y Y' : Alg}
        {f : AlgMorph X Y}{g : AlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 

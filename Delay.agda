@@ -73,6 +73,7 @@ mutual
     ~later : ∀ {a∞ b∞} (eq : _∞~_ {i} a∞ b∞) → later a∞ ~ later b∞
 
   record _∞~_ {i : Size} {A : Set} (a∞ b∞ : ∞Delay A ∞) : Set where
+    coinductive
     constructor ~delay
     field
       ~force : {j : Size< i} → _~_ {j} (force a∞) (force b∞)

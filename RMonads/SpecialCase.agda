@@ -30,7 +30,7 @@ open import Relation.Binary.HeterogeneousEquality
 open import Isomorphism
 
 isoM : ∀{a b}{C : Cat {a}{b}} → Iso (RMonad (IdF C)) (Monad C)
-isoM = record {fun = rightM; inv = leftM; law1 = λ _ → refl; law2 = λ _ → refl}
+isoM = record {fun = rightM; inv = leftM; law1 = λ {(monad _ _ _ _ _ _) → refl}; law2 = λ {(rmonad _ _ _ _ _ _) → refl}}
 
 open import Monads.MonadMorphs
 open import RMonads.RMonadMorphs
@@ -48,6 +48,7 @@ rightMM MM = record {
   morph   = morph; 
   lawη    = lawη; 
   lawbind = lawbind} where open RMonadMorph MM
+
 
 isoMM : ∀{a b}{C : Cat {a}{b}}{M M' : Monad C} → 
         Iso (RMonadMorph (leftM M) (leftM M')) (MonadMorph M M')
@@ -87,5 +88,6 @@ isoA : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}} →
 isoA = record {
   fun = rightA;
   inv = leftA;
-  law1 = λ _ → refl; 
-  law2 = λ _ → refl}
+  law1 = λ {(adjunction _ _ _ _ _ _ _ _) → refl};
+  law2 = λ {(radjunction _ _ _ _ _ _ _ _) → refl}}
+

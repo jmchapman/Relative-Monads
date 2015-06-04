@@ -7,8 +7,9 @@ open import Functors
 open Cat
 open Fun
 
-record Adj {a b c d}(C : Cat {a}{b})(D : Cat {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d) 
+record Adj {a b c d}(C : Cat {a}{b})(D : Cat {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d)
   where
+  constructor adjunction
   field L : Fun C D
         R : Fun D C
         left : {X : Obj C}{Y : Obj D} → 

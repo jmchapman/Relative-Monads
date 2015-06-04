@@ -4,6 +4,7 @@ open import Library
 open import Categories
 
 record Monad {a}{b}(C : Cat {a}{b}) : Set (a ⊔ b) where
+  constructor monad
   open Cat C
   field T    : Obj → Obj
         η    : ∀ {X} → Hom X (T X)

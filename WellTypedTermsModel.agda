@@ -52,7 +52,7 @@ reneval α β (lam t)   = ext λ v →
   proof 
   eval ((β ∘ α) << v) t
   ≅⟨ cong (λ (γ : Env _) → eval γ t) (iext λ _ → ext (wk<< α β v)) ⟩ 
-  eval (β << v ∘ wk α) t
+  eval ((β << v) ∘ wk α) t
   ≅⟨ reneval (wk α) (β << v) t ⟩ 
   eval (β << v) (ren (wk α) t)
   ∎

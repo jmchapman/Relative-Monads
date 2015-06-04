@@ -9,6 +9,7 @@ open RMonad M
 open Fun
 
 record RAlg : Set (a ⊔ c ⊔ d) where
+  constructor ralg
   open Cat D
   field acar  : Obj
         astr  : ∀ {Z} → Hom (OMap J Z) acar → Hom (T Z) acar
@@ -19,24 +20,12 @@ record RAlg : Set (a ⊔ c ⊔ d) where
                 astr (comp (astr f) k) ≅ comp (astr f) (bind k)
 
 AlgEq : {X Y : RAlg} → RAlg.acar X ≅ RAlg.acar Y → 
-  (∀ Z → RAlg.astr X {Z} ≅ RAlg.astr Y {Z}) → 
+  ((λ {Z} → RAlg.astr X {Z}) ≅ (λ {Z} → RAlg.astr Y {Z})) → 
         X ≅ Y
-AlgEq {X}{Y} p q = let open Cat; open RAlg in funnycong4 
-  {A = Obj D}
-  {B = λ acar → ∀{Z} → Hom D (OMap J Z) acar → Hom D (T Z) acar}
-  {C = λ acar astr → ∀{Z} {f : Hom D (OMap J Z) acar} → f ≅ comp D (astr f) η}
-  {D = λ acar astr _ → ∀{Z W}
-    {k : Hom D (OMap J Z) (T W)}{f : Hom D (OMap J W) acar} →
-    astr (comp D (astr f) k) ≅ comp D (astr f) (bind k)}
-  {E = RAlg}
-  (λ x y z z' → record { acar = x; astr = y; alaw1 = z; alaw2 = z' })
-  p 
-  (iext q)
-  (iext λ Z → diext fixtypes)
-  (iext λ Z → iext λ W → iext λ k → diext λ {a}{a'} r → 
-    fixtypes' (cong₂ (λ Ran f → comp D {T Z} {T W} {Ran} f (bind k)) 
-                    p 
-                    (dcong r (dext (λ _ → cong (Hom D (T W)) p)) (q W))))
+AlgEq {ralg acar astr alaw1 alaw2}{ralg .acar .astr alaw1' alaw2'} refl refl = let open Cat in
+  cong₂ (ralg acar astr)
+        (iext (λ a₁ → iext (λ a₂ → proof-irr _ _)))
+        (iext (λ a₁ → iext (λ a₂ → iext (λ a₃ → iext (λ a₄ → proof-irr _ _)))))
 
 astrnat : ∀(alg : RAlg){X Y}
           (f : Cat.Hom C X Y) → 
@@ -63,6 +52,7 @@ astrnat alg f g g' p = let
 
 record RAlgMorph (A B : RAlg) : Set (a ⊔ c ⊔ d) 
   where
+  constructor ralgmorph
   open Cat D
   open RAlg
   field amor : Hom (acar A) (acar B)
@@ -71,13 +61,8 @@ record RAlgMorph (A B : RAlg) : Set (a ⊔ c ⊔ d)
 open RAlgMorph
 
 RAlgMorphEq : ∀{X Y : RAlg}{f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
-RAlgMorphEq {X}{Y}{f}{g} p = let open Cat D; open RAlg in funnycong
-  {A = Cat.Hom D (RAlg.acar X) (RAlg.acar Y)}
-  {B = λ amor → ∀{Z}{f : Hom (OMap J Z) (acar X)} → 
-              comp amor (astr X f) ≅ astr Y (comp amor f)}
-  p
-  (iext λ Z → iext λ h → fixtypes (cong (λ f → comp f (astr X h)) p))
-  λ x y → record{amor = x;ahom = y} 
+RAlgMorphEq {X}{Y}{ralgmorph amor ahom}{ralgmorph .amor ahom'} refl = let open Cat D in
+  cong (ralgmorph amor) (iext λ _ → iext λ _ → proof-irr _ _)
 
 lemZ : ∀{X X' Y Y' : RAlg}
        {f : RAlgMorph X Y}{g : RAlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 

@@ -183,17 +183,14 @@ KlHom {A = A} = record {
    (cong OMap (sym (law A))) 
    (λ f → sym (bindlaw A));
 
-  rightlaw = λ {X} {Y} {f} → cong (right (adj A)) (trans
-    (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A)))))
-    (sym (stripsubst (Hom D (OMap J X)) 
-                     f 
-                     (fcong Y 
-                            (cong OMap 
-                                  (FunctorEq _ 
-                                             _ 
-                                             (cong OMap (sym (law A)))
-                                             (λ f₁ → sym (bindlaw A)))))))) }
+   rightlaw = λ {X} {Y} {f} →
+    cong (right (adj A)) (trans (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A)))))
+                                (sym (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (FunctorEq (R (adj KlObj)) (R (adj A) ○ (HomAdj.K KlHom)) (cong OMap (sym (law A))) (λ _ → sym (bindlaw A))))))))}
   where open RMonad M
+{- cong (right (adj A)) (trans
+    (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A)))))
+    (sym (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (FunctorEq _ _ (cong OMap (sym (law A))) (λ _ → sym (bindlaw A))))) )))} -}
+
 
 KlIsInit : Init CatofAdj
 KlIsInit = record { 

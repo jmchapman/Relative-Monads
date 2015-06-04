@@ -10,6 +10,8 @@ record Monoid {a} : Set (lsuc a) where
         rid : ∀{m} → m • ε ≅ m
         ass : ∀{m n o} → (m • n) • o ≅ m • (n • o)
 
+  infix 10 _•_
+
 rid+ : ∀{n} → n + zero ≅ n
 rid+ {zero}  = refl
 rid+ {suc n} = cong suc (rid+ {n})

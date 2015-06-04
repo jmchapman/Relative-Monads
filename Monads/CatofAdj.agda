@@ -23,11 +23,12 @@ record ObjAdj {c d} : Set (a ⊔ b ⊔ lsuc c ⊔ lsuc d) where
                (right (subst (Hom C X) (fcong Y (cong OMap (sym law))) f)) 
           ≅ 
           Monad.bind M f
+
 open ObjAdj
 
 record HomAdj {c d}(A B : ObjAdj {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d) where
+  constructor homadj
   open Adj
-
   field K : Fun (D A) (D B)
         Llaw : K ○ L (adj A) ≅ L (adj B)  
         Rlaw : R (adj A) ≅ R (adj B) ○ K
@@ -42,25 +43,11 @@ record HomAdj {c d}(A B : ObjAdj {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d) where
 open HomAdj
 
 HomAdjEq : ∀{c d}{A B : ObjAdj {c}{d}}(f g : HomAdj A B) → K f ≅ K g → f ≅ g
-HomAdjEq {A = A}{B = B} f g p = funnycong4
-  {A = Fun (D A) (D B)}
-  {B = λ K → K ○ L (adj A) ≅ L (adj B)}
-  {C = λ K Llaw → R (adj A) ≅ R (adj B) ○ K}
-  {D = λ K Llaw Rlaw → {X : Obj C}{Y : Obj (D A)}
-                   {f : Hom C X (OMap (R (adj A)) Y)} →  
-                   HMap K (right (adj A) {X}{Y} f) 
-                   ≅
-                   right (adj B) 
-                         {X}
-                         {OMap K Y} 
-                         (subst (Hom C X) (fcong Y (cong OMap Rlaw)) f)}
-  (λ x y z z' → record{K = x;Llaw = y;Rlaw = z; rightlaw = z'})
-  p 
-  (fixtypes' refl)
-  (fixtypes refl)
-  (iext λ X → iext λ Y → iext λ h → 
-    fixtypes (cong (λ F → HMap F (right (adj A) h)) p))
-  where open Adj
+HomAdjEq {A = A}{B = B} (homadj K Llaw Rlaw rightlaw) (homadj .K Llaw' Rlaw' rightlaw') refl =
+  cong₃ (homadj K)
+        (proof-irr _ _)
+        (proof-irr _ _)
+        (iext λ _ → iext λ _ → iext λ _ → fixtypes refl)
 
 rightlawlem : ∀{c d}{D : Cat {c}{d}}(R : Fun D C)(L : Fun C D)
   (p : OMap R ≅ OMap (R ○ (IdF D))) → 
@@ -76,7 +63,7 @@ idHomAdj {X = X} = record {
     Rlaw = FunctorEq _ _ refl λ _ → refl;
     rightlaw = rightlawlem R
                            L
-                           (cong OMap (FunctorEq _ _ refl (λ _ → refl))) 
+                           (cong OMap (FunctorEq R (R ○ IdF (D X)) refl (λ _ → refl))) 
                            right}
   where open Adj (adj X)
 
@@ -190,52 +177,13 @@ comprightlaw : ∀{c d}{X Y Z : ObjAdj {c}{d}}
                      (subst (Hom C X₁) 
                             (fcong Y₁ (cong OMap (compRlaw f g))) 
                             f₁)
-comprightlaw {X = X}{Y = Y}{Z = Z} f g {A}{B}{h} = 
-  trans
-    (rightlawlem2 (R (adj X)) 
-                  (L (adj X)) 
-                  (R (adj Y))
-                  (L (adj Y))
-                  (R (adj Z)) 
-                  (L (adj Z))
-                  (K g) 
-                  (K f) 
-                  (right (adj X)) 
-                  (right (adj Y))
-                  (right (adj Z)) 
-                  (Rlaw f)
-                  (Rlaw g) 
-                  (Llaw g)
-                  (rightlaw f)
-                  (rightlaw g) 
-                  h)
-    (cong 
-      (right (adj Z))
-      (trans
-        (stripsubst (Hom C A) 
-                    h
-                    (fcong B 
-                           (cong OMap 
-                                 (trans (Rlaw g) 
-                                        (cong (λ F₁ → F₁ ○ K g) 
-                                              (Rlaw f))))))
-        (sym
-          (stripsubst 
-            (Hom C A) 
-            h
-            (fcong B
-                   (cong OMap
-                         (FunctorEq (R (adj X)) 
-                                    _
-                                    (ext (λ A₁ →
-                                      trans (cong (λ F → OMap F A₁) (Rlaw g))
-                                            (cong (λ F → OMap F 
-                                                              (OMap (K g) A₁)) 
-                                                  (Rlaw f))))
-                                    (λ {A₁} {B₁} h₁ → trans 
-                                      (cong (λ F → HMap F h₁) (Rlaw g))
-                                      (cong (λ F → HMap F (HMap (K g) h₁)) 
-                                            (Rlaw f))))))))))
+comprightlaw {X = X}{Y = Y}{Z = Z} f g {A}{B}{h} = trans
+  (rightlawlem2 (R (adj X)) (L (adj X)) (R (adj Y)) (L (adj Y))
+                (R (adj Z)) (L (adj Z)) (K g) (K f) (right (adj X)) (right (adj Y))
+                (right (adj Z)) (Rlaw f) (Rlaw g) (Llaw g) (rightlaw f)
+                (rightlaw g) h)
+  (cong (right (adj Z))
+        (trans (stripsubst (Hom C A) h (fcong B (cong OMap (trans (Rlaw g) (cong (λ F → F ○ K g) (Rlaw f)))))) (sym (stripsubst (Hom C A) h (fcong B (cong OMap (compRlaw f g)))))))
   where open Adj
 
 compHomAdj : ∀{c d}{X Y Z : ObjAdj {c}{d}} → 

@@ -9,6 +9,7 @@ open Fun
 
 record NatT {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(F G : Fun C D) : 
   Set (a ⊔ b ⊔ c ⊔ d) where
+  constructor natural
   open Cat
   field cmp : ∀ {X} → Hom D (OMap F X) (OMap G X)
         nat : ∀{X Y}{f : Hom C X Y} → 
@@ -20,18 +21,8 @@ NatTEq : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
          {α β : NatT F G} → 
          (λ {X : Cat.Obj C} → cmp α {X}) ≅ (λ {X : Cat.Obj C} → cmp β {X}) → 
          α ≅ β
-NatTEq {C = C}{D = D}{F = F}{G = G}{α = α}{β = β} p = let open Cat in funnycong
-  {A = ∀ {X} → Hom D (OMap F X) (OMap G X)}
-  {B = λ cmp → ∀{X Y}{f : Hom C X Y} → 
-    comp D (HMap G f) cmp ≅ comp D cmp (HMap F f)}
-  (proof 
-   (λ {X} → cmp α {X}) 
-   ≅⟨ p ⟩ 
-   (λ {X} → cmp β {X}) 
-   ∎)
-  (iext λ X → iext λ Y → iext λ f → 
-    fixtypes (cong (comp D (HMap G f)) (ifcong X p)))
-  λ x y → record{cmp = x;nat = y}
+NatTEq {α = natural cmp nat} {natural .cmp nat'} refl =
+  cong (natural cmp) (iext (λ _ → iext (λ _ → iext (λ _ → proof-irr _ _))))
 
 idNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F : Fun C D} → NatT F F
 idNat {C = C}{D = D}{F = F} = let open Cat D in record {

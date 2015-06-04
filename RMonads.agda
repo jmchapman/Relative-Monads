@@ -8,6 +8,7 @@ open Fun
 
 record RMonad {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) : 
   Set (a ⊔ b ⊔ c ⊔ d) where
+  constructor rmonad
   open Cat
   field T    : Obj C → Obj D
         η    : ∀{X} → Hom D (OMap J  X) (T X)

@@ -71,6 +71,10 @@ funnycong : ∀{a b c}{A : Set a}{B : A → Set b}{C : Set c}{a a' : A} →
             (f : (a : A) → B a → C) → f a b ≅ f a' b'
 funnycong refl refl f = refl
 
+proof-irr : ∀{a}{A B : Set a}{x : A}{y : B}(p q : x ≅ y) → p ≅ q
+proof-irr refl refl = refl
+
+
 {-
 funnyresp3 : ∀{A}{B : A → Set}{C : A → Set}{D : Set}
         (f : (x : A)(y : B x)(z : C x) → D)

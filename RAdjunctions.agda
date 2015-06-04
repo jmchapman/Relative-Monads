@@ -9,6 +9,7 @@ open Fun
 
 record RAdj {a b c d e f}{C : Cat {a}{b}}{D : Cat {c}{d}}
             (J : Fun C D)(E : Cat {e}{f}) : Set (a ⊔ b ⊔ c ⊔ d ⊔ e ⊔ f) where
+  constructor radjunction
   field L : Fun C E
         R : Fun E D
         left : {X : Obj C}{Y : Obj E} → 

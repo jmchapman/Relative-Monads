@@ -6,6 +6,7 @@ open Cat
 
 record Fun {a b c d} (C : Cat {a}{b})(D : Cat {c}{d}) : Set (a ⊔ b ⊔ c ⊔ d) 
   where
+  constructor functor
   field OMap  : Obj C → Obj D
         HMap  : ∀{X Y} → Hom C X Y → Hom D (OMap X) (OMap Y)
         fid   : ∀{X} → HMap (iden C {X}) ≅ iden D {OMap X}
@@ -37,30 +38,14 @@ _○_ {C = C}{D = D}{E = E} F G = record{
     ≅⟨ fcomp F ⟩ 
     comp E (HMap F (HMap G f)) (HMap F (HMap G g)) 
     ∎}
-
+infix 10 _○_
 
 FunctorEq : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(F G : Fun C D) → 
             OMap F ≅ OMap G → 
             (∀{X Y}(f : Hom C X Y) → HMap F f ≅ HMap G f) → 
             F ≅ G
-FunctorEq {C = C}{D = D} F G p q = funnycong4'
-  {A = Obj C → Obj D}
-  {B = λ OMap → ∀{X Y} → Hom C X Y → Hom D (OMap X) (OMap Y)}
-  {C = λ OMap HMap → ∀{X} → HMap (iden C {X}) ≅ iden D {OMap X}}
-  {D = λ OMap HMap → ∀{X Y Z}{f : Hom C Y Z}{g : Hom C X Y} → 
-     HMap (comp C f g) ≅ comp D (HMap f) (HMap g)}
-  (proof 
-   OMap F 
-   ≅⟨ p ⟩ 
-   OMap G 
-   ∎)
-  (iext λ X → iext λ Y → ext λ f → 
-    proof 
-    HMap F f 
-    ≅⟨ q f ⟩ 
-    HMap G f ∎)
-  (iext λ X → fixtypes (q (iden C)))
-  (iext λ X → iext λ Y → iext λ Z → iext λ f → iext λ g → 
-    fixtypes (q (comp C f g)))
-  λ w x y z → record{OMap = w;HMap = x;fid = y; fcomp = z} 
-
+FunctorEq {D = D}(functor fo fh fp fp') (functor .fo gh gp gp') refl q =
+  cong₃ (functor fo)
+        (iext (λ _ → iext (λ _ → ext q)))
+        (iext (λ _ → fixtypes' refl))
+        (iext (λ _ → iext (λ _ → iext (λ _ → iext (λ k → iext (λ l → fixtypes' (cong₂ (comp D) (q k) (q l)))))))) 
