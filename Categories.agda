@@ -1,4 +1,3 @@
-
 module Categories where
 
 open import Library
@@ -13,17 +12,6 @@ record Cat {a b} : Set (lsuc (a ⊔ b)) where
         ass  : ∀{W X Y Z}{f : Hom Y Z}{g : Hom X Y}{h : Hom W X} → 
                comp (comp f g) h ≅ comp f (comp g h)
 open Cat
-
-{-
-!_! : Cat → Set
-! C !  = Obj C
-
-_<_,_> : (C : Cat) → Obj C → Obj C → Set
-C < X , Y > = Hom C X Y
-
-_!_•_ : ∀ C {X Y Z : ! C !} → C < Y , Z > → C < X , Y > → C < X , Z >
-C ! f • g = comp C f g
--}
 
 _Op : ∀{a b} →  Cat {a}{b} → Cat
 C Op = record{

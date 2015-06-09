@@ -21,7 +21,7 @@ open NatT
 open Adj
 
 lemX : R KlAdj ○ L KlAdj ≅ TFun M
-lemX = FunctorEq _ _ refl (λ f → refl) 
+lemX = FunctorEq _ _ refl refl
 
 KlObj : Obj CatofAdj
 KlObj = record { 
@@ -143,7 +143,7 @@ Llaw' A = FunctorEq
   _ 
   _ 
   refl
-  (lemLlaw (L (adj A)) 
+  (iext λ _ → iext λ _ → ext $ lemLlaw (L (adj A)) 
            (R (adj A)) 
            (TFun M) 
            (sym (law A)) 
@@ -158,7 +158,8 @@ Rlaw' : (A : Obj CatofAdj) → R (adj KlObj) ≅ R (adj A) ○ K' A
 Rlaw' A = FunctorEq 
   _ 
   _ 
-  (cong OMap (sym (law A))) (λ f → sym (bindlaw A))
+  (cong OMap (sym (law A)))
+             (iext λ _ → iext λ _ → ext λ _ → sym (bindlaw A))
 
 rightlaw' : (A : Obj CatofAdj) → 
             {X : Obj C} {Y : Obj (D KlObj)}
@@ -185,7 +186,8 @@ uniq {X}{V} = HomAdjEq
     _ 
     _ 
     (cong OMap (sym (HomAdj.Llaw V))) 
-    (λ {A} {B} f → trans (cong₂ (λ B₁ → right (adj X) {A} {B₁})
+    (iext λ A → iext λ B → ext λ f →
+                          trans (cong₂ (λ B₁ → right (adj X) {A} {B₁})
                                 (sym (fcong B (cong OMap (HomAdj.Llaw V))))
                                 (trans (stripsubst 
                                          (Hom C A) 
@@ -205,3 +207,4 @@ KlIsInit = record {
   I   = KlObj;
   i   = KlHom;
   law = uniq}
+-- -}

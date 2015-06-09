@@ -64,11 +64,11 @@ rightlawlem R L refl right {X}{Y}{f} = refl
 
 idLlaw : ∀{e f}(X : ObjAdj {e}{f}) → 
          IdF (E X) ○ RAdj.L (adj X) ≅ RAdj.L (adj X)
-idLlaw X = FunctorEq _ _ refl (λ _ → refl)
+idLlaw X = FunctorEq _ _ refl refl
 
 idRlaw : ∀{e f}(X : ObjAdj {e}{f}) → 
          RAdj.R (adj X) ≅ RAdj.R (adj X) ○ IdF (E X)
-idRlaw X  = FunctorEq _ _ refl (λ _ → refl)
+idRlaw X  = FunctorEq _ _ refl refl
 
 idrightlaw : ∀{e f}
              (X : ObjAdj {e}{f}) → 
@@ -87,7 +87,7 @@ idrightlaw X {X₁}{Y}{f} =
                     (FunctorEq (R (adj X))
                                (R (adj X) ○ IdF (E X))
                                refl
-                               (λ _ → refl)))
+                               refl))
               (right (adj X)) 
   where open RAdj
 
@@ -148,7 +148,7 @@ compLlaw {X = X}{Y = Y}{Z = Z} f g = FunctorEq
   (ext (λ A → trans 
     (cong (OMap (K f)) (cong (λ F → OMap F A) (Llaw g)))
     (cong (λ F → OMap F A) (Llaw f))))
-  (λ {A} {B} h → trans 
+  (iext λ A → iext λ B → ext λ h → trans 
     (HMaplem 
       (cong (λ F → OMap F A) (Llaw g)) 
       (cong (λ F → OMap F B) (Llaw g)) 
@@ -165,7 +165,7 @@ compRlaw {X = X}{Y = Y}{Z = Z} f g = FunctorEq
   (ext (λ A → trans 
     (cong (λ F → OMap F A) (Rlaw g))
     (cong (λ F → OMap F (OMap (K g) A)) (Rlaw f))))
-  (λ {A} {B} h → trans 
+  (iext λ A → iext λ B → ext λ h → trans 
     (cong (λ F → HMap F h) (Rlaw g))
     (cong (λ F → HMap F (HMap (K g) h)) (Rlaw f)))
 
@@ -196,16 +196,16 @@ compHomAdj {X = X}{Y = Y}{Z = Z} f g = record {
 
 idlHomAdj : ∀{e f}{X Y : ObjAdj {e}{f}}
             {f : HomAdj X Y} → compHomAdj idHomAdj f ≅ f
-idlHomAdj = HomAdjEq _ _ (FunctorEq _ _ refl (λ {X}{Y} h → refl))
+idlHomAdj = HomAdjEq _ _ (FunctorEq _ _ refl refl)
 
 idrHomAdj : ∀{e f}{X Y : ObjAdj {e}{f}}
             {f : HomAdj X Y} → compHomAdj f idHomAdj ≅ f
-idrHomAdj  = HomAdjEq _ _ (FunctorEq _ _ refl (λ {X}{Y} h → refl))
+idrHomAdj  = HomAdjEq _ _ (FunctorEq _ _ refl refl)
 
 assHomAdj : ∀{e f}{W X Y Z : ObjAdj {e}{f}}
             {f : HomAdj Y Z} {g : HomAdj X Y} {h : HomAdj W X} →
             compHomAdj (compHomAdj f g) h ≅ compHomAdj f (compHomAdj g h)
-assHomAdj = HomAdjEq _ _ (FunctorEq _ _ refl (λ h → refl))
+assHomAdj = HomAdjEq _ _ (FunctorEq _ _ refl refl)
 
 CatofAdj : ∀{e f} → Cat
 CatofAdj {e}{f} = record{
