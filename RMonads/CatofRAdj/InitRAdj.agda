@@ -17,11 +17,12 @@ open import RAdjunctions.RAdj2RMon
 
 open Cat
 open Fun
+open RMonad M
 open NatT
 open RAdj
 
 lemX : R KlAdj ○ L KlAdj ≅ TFun M
-lemX = FunctorEq _ _ refl (λ f → refl) 
+lemX = FunctorEq _ _ refl refl
 
 KlObj : Obj CatofAdj
 KlObj = record { 
@@ -33,7 +34,7 @@ KlObj = record {
     cong bind (stripsubst (Hom D (OMap J X)) 
                           f
                           (fcong Y (cong OMap (sym lemX))))}
-  where open RMonad M 
+  where 
         open Cat
 
 open ObjAdj
@@ -134,10 +135,8 @@ lemLlaw {E = E} J L R .(R ○ L) refl η right left q r t {X}{Y} f =
                              (cong (λ g → comp E g (HMap L f)) (q (iden E))))
                       (idl E)))
 
-KlHom : {A : Obj CatofAdj} → 
-        Hom CatofAdj KlObj A
-KlHom {A = A} = record { 
-    K = record { 
+K' : ∀{e}{f}(A : Obj (CatofAdj {e}{f})) → Fun (E KlObj) (E A)
+K' A = record { 
     OMap  = OMap (L (adj A)); 
     HMap  = λ{X}{Y} f → 
       right (adj A) (subst (Hom D (OMap J X)) 
@@ -158,39 +157,46 @@ KlHom {A = A} = record {
                      (R (adj A))
                      (TFun M) 
                      (sym (law A)) 
-                     bind 
+                     bind
                      (right (adj A)) 
                      (bindlaw A) 
-                     (natright (adj A))};
-  Llaw = FunctorEq 
+                     (natright (adj A))}
+
+Llaw' : ∀{e}{f}(A : Obj (CatofAdj {e}{f})) → K' A ○ L (adj KlObj) ≅ L (adj A)
+Llaw' A = FunctorEq 
    _ 
    _ 
    refl 
-   (lemLlaw J 
-            (L (adj A))
-            (R (adj A)) 
-            (TFun M) 
-            (sym (law A)) 
-            η
-            (right (adj A)) 
-            (left (adj A))
-            (lawa (adj A))
-            (ηlaw A) 
-            (natright (adj A)));
-  Rlaw = FunctorEq 
-    _
-    _ 
-   (cong OMap (sym (law A))) 
-   (λ f → sym (bindlaw A));
+   (iext λ _ → iext λ _ → ext $ lemLlaw J 
+     (L (adj A))
+     (R (adj A)) 
+     (TFun M) 
+     (sym (law A)) 
+     η
+     (right (adj A)) 
+     (left (adj A))
+     (lawa (adj A))
+     (ηlaw A) 
+     (natright (adj A)))
 
-   rightlaw = λ {X} {Y} {f} →
-    cong (right (adj A)) (trans (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A)))))
-                                (sym (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (FunctorEq (R (adj KlObj)) (R (adj A) ○ (HomAdj.K KlHom)) (cong OMap (sym (law A))) (λ _ → sym (bindlaw A))))))))}
-  where open RMonad M
-{- cong (right (adj A)) (trans
-    (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A)))))
-    (sym (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (FunctorEq _ _ (cong OMap (sym (law A))) (λ _ → sym (bindlaw A))))) )))} -}
 
+Rlaw' : ∀{e}{f}(A : Obj (CatofAdj {e}{f})) → R (adj KlObj) ≅ R (adj A) ○ K' A
+Rlaw' A = FunctorEq _ _ (cong OMap (sym (law A)))
+                        (iext λ _ → iext λ _ → ext λ _ → sym (bindlaw A))
+
+rightlaw' : ∀{e f}(A : Obj (CatofAdj {e}{f})) → 
+            {X : Obj C} {Y : Obj (E KlObj)}
+            {f : Hom D (OMap J X) (OMap (R (adj KlObj)) Y)} →
+            HMap (K' A) (right (adj KlObj) f) ≅ 
+            right (adj A) (subst (Hom D (OMap J X)) (fcong Y (cong OMap (Rlaw' A))) f)
+rightlaw' A {X}{Y}{f} = cong (right (adj A)) (trans (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (sym (law A))))) (sym (stripsubst (Hom D (OMap J X)) f (fcong Y (cong OMap (Rlaw' A))))) )
+
+KlHom : {A : Obj CatofAdj} → Hom CatofAdj KlObj A
+KlHom {A = A} = record {
+  K        = K' A;
+  Llaw     = Llaw' A;
+  Rlaw     = Rlaw' A;
+  rightlaw = rightlaw' A}
 
 KlIsInit : Init CatofAdj
 KlIsInit = record { 
@@ -200,7 +206,7 @@ KlIsInit = record {
     _ 
     _ 
     ((FunctorEq _ _ (cong OMap (sym (HomAdj.Llaw V)))
-             (λ {A} {B} f →
+             (iext λ A → iext λ B → ext λ f →
                 trans
                 (cong₂ (λ B₁ → right (adj X) {A} {B₁})
                  (sym (fcong B (cong OMap (HomAdj.Llaw V)))) 
@@ -211,3 +217,4 @@ KlIsInit = record {
                      (stripsubst (Hom D (OMap J A)) f
                       (fcong B (cong OMap (HomAdj.Rlaw V)))))))
                 (sym (HomAdj.rightlaw V)))))}
+-- -}

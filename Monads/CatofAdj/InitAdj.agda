@@ -143,16 +143,17 @@ Llaw' A = FunctorEq
   _ 
   _ 
   refl
-  (iext λ _ → iext λ _ → ext $ lemLlaw (L (adj A)) 
-           (R (adj A)) 
-           (TFun M) 
-           (sym (law A)) 
-           η
-           (right (adj A)) 
-           (left (adj A)) 
-           (lawa (adj A)) 
-           (ηlaw A)
-           (natright (adj A)))
+  (iext λ _ → iext λ _ → ext $ lemLlaw
+    (L (adj A))
+    (R (adj A)) 
+    (TFun M) 
+    (sym (law A)) 
+    η
+    (right (adj A)) 
+    (left (adj A)) 
+    (lawa (adj A)) 
+    (ηlaw A)
+    (natright (adj A)))
 
 Rlaw' : (A : Obj CatofAdj) → R (adj KlObj) ≅ R (adj A) ○ K' A
 Rlaw' A = FunctorEq 

@@ -208,7 +208,7 @@ assHomAdj : ∀{c d}{W X Y Z : ObjAdj {c}{d}}
 assHomAdj {W = W}{X = X}{Y = Y}{Z = Z}{f = f}{g = g}{h = h} = 
   HomAdjEq _ _ (FunctorEq _ _ refl refl)
 
-CatofAdj : ∀{c d} → Cat {a ⊔ b ⊔ lsuc c ⊔ lsuc d}{a ⊔ b ⊔ c ⊔ d}
+CatofAdj : ∀{c d} → Cat
 CatofAdj {c}{d} = record {
          Obj  = ObjAdj {c}{d};
   Hom  = HomAdj;
