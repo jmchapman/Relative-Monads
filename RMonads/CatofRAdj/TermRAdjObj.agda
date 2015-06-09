@@ -20,7 +20,7 @@ open NatT
 open RAdj
 
 lemX : R REMAdj ○ L REMAdj ≅ TFun M
-lemX = FunctorEq _ _ refl (λ f → refl) 
+lemX = FunctorEq _ _ refl refl
 
 EMObj : Obj CatofAdj
 EMObj  = record { 

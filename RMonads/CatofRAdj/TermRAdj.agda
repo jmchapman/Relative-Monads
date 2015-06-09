@@ -23,7 +23,7 @@ omaplem : {X : Obj CatofAdj} {f : Hom CatofAdj X EMObj} →
           OMap (HomAdj.K (EMHom {X})) ≅ OMap (HomAdj.K f)
 omaplem {A}{f} = ext (λ X → AlgEq
   (fcong X (cong OMap (HomAdj.Rlaw f))) 
-  (λ Y →
+  (iext λ Y →
        dext
        (λ {g} {g'} p →
           trans
@@ -98,7 +98,7 @@ uniq : {X : Obj CatofAdj} {f : Hom CatofAdj X EMObj} →
        EMHom {X} ≅ f
 uniq {X} {f} = HomAdjEq _ _ (FunctorEq _ _ 
   (omaplem {X} {f}) 
-  (hmaplem {X} {f}))
+  (iext λ _ → iext λ _ → ext (hmaplem {X}{f})))
 
 EMIsTerm : Term CatofAdj
 EMIsTerm = record { 

@@ -56,9 +56,9 @@ open import RMonads.Restriction
 open import RMonads.SpecialCase
 open import RMonads.CatofRAdj
 open import RMonads.CatofRAdj.InitRAdj
---open import RMonads.CatofRAdj.TermRAdjObj
---open import RMonads.CatofRAdj.TermRAdjHom
---open import RMonads.CatofRAdj.TermRAdj
+open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.CatofRAdj.TermRAdjHom
+open import RMonads.CatofRAdj.TermRAdj
  
 -- rmonad examples
 open import WellScopedTerms
