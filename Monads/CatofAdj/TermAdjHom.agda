@@ -70,7 +70,7 @@ Llaw' = FunctorEq
   _
   (ext (λ X → AlgEq 
     (fcong X (cong OMap (law A)))
-    ((λ Z → dext (λ {f} {f'} p → Llawlem 
+    ((ext λ Z → dext (λ {f} {f'} p → Llawlem 
       (TFun M) 
       (L (adj A)) 
       (R (adj A)) 
@@ -82,7 +82,7 @@ Llaw' = FunctorEq
   (iext λ X → iext λ Y → ext λ f → AlgMorphEq' 
     (AlgEq 
       (fcong X (cong OMap (law A)))
-      ((λ Z → dext (λ {f₁} {f'} p → Llawlem 
+      ((ext λ Z → dext (λ {f₁} {f'} p → Llawlem 
         (TFun M) 
         (L (adj A))
         (R (adj A)) 
@@ -93,7 +93,7 @@ Llaw' = FunctorEq
         p))))
     (AlgEq 
       (fcong Y (cong OMap (law A)))
-      ((λ Z → dext (λ {f₁} {f'} p → Llawlem 
+      ((ext λ Z → dext (λ {f₁} {f'} p → Llawlem 
         (TFun M) 
         (L (adj A)) 
         (R (adj A)) 
@@ -132,7 +132,7 @@ rightlaw' : {X : Obj C} {Y : Obj (D A)} {f : Hom C X (OMap (R (adj A)) Y)} →
                   (subst (Hom C X) (fcong Y (cong OMap Rlaw')) f)
 rightlaw' {X = X}{Y = Y}{f = f} = AlgMorphEq'
   (AlgEq (fcong X (cong OMap (law A)))
-         (λ Z → dext (λ p → Llawlem (TFun M) 
+         (ext λ Z → dext (λ p → Llawlem (TFun M) 
            (L (adj A)) 
            (R (adj A)) 
            (law A) 

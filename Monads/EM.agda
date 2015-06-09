@@ -18,12 +18,11 @@ record Alg : Set (a ⊔ b) where
                 astr Z (comp (astr W f) k) ≅ comp (astr W f) (bind k)
 open Alg
 
-AlgEq : {X Y : Alg} → acar X ≅ acar Y → (∀ Z → astr X Z ≅ astr Y Z) → X ≅ Y
-AlgEq {alg acar astr alaw1 alaw2}{alg .acar astr' alaw1' alaw2'} refl q =
-  cong₃ (alg acar)
-        (ext q)
-        (iext (λ _ → iext (λ _ → fixtypes refl)))
-        (iext (λ Z → iext (λ Z' → iext (λ k → iext (λ l → fixtypes' (cong (λ f → comp f (bind k)) (cong (λ f → f l) (q Z') )))))))
+AlgEq : {X Y : Alg} → acar X ≅ acar Y → (astr X ≅ astr Y) → X ≅ Y
+AlgEq {alg acar astr alaw1 alaw2} {alg ._ ._ alaw1' alaw2'} refl refl =
+  cong₂ (alg acar astr)
+        (iext λ _ → iext λ _ → proof-irr _ _)
+        (iext λ _ → iext λ _ → iext λ _ → iext λ _ → proof-irr _ _)
 
 record AlgMorph (A B : Alg) : Set (a ⊔ b) where
   constructor algmorph
@@ -32,15 +31,14 @@ record AlgMorph (A B : Alg) : Set (a ⊔ b) where
                comp amor (astr A Z f) ≅ astr B Z (comp amor f)
 open AlgMorph
 
-AlgMorphEq : {X Y : Alg}{f g : AlgMorph X Y} → 
-             amor f ≅ amor g → f ≅ g
-AlgMorphEq {X}{Y}{algmorph amor ahom}{algmorph .amor ahom'} refl =
+AlgMorphEq : {X Y : Alg}{f g : AlgMorph X Y} → amor f ≅ amor g → f ≅ g
+AlgMorphEq {f = algmorph amor ahom}{algmorph .amor ahom'} refl =
   cong (algmorph amor)
-       (iext λ Z → iext λ h → proof-irr _ _)
+       (iext λ _ → iext λ _ → proof-irr _ _)
 
 AlgMorphEq' : {X X' Y Y' : Alg}
-       {f : AlgMorph X Y}{g : AlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 
-             amor f ≅ amor g → f ≅ g
+  {f : AlgMorph X Y}{g : AlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 
+  amor f ≅ amor g → f ≅ g
 AlgMorphEq' refl refl = AlgMorphEq
 
 IdMorph : {A : Alg} → AlgMorph A A
@@ -91,3 +89,4 @@ EM  = record{
   idl  = idlMorph;
   idr  = idrMorph;
   ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → assMorph {W}{X}{Y}{Z}{f}{g}{h}}
+-- -}

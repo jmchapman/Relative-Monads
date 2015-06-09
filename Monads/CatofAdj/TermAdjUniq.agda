@@ -28,7 +28,7 @@ open Cat
 omaplem : OMap (HomAdj.K EMHom ) ≅ OMap (HomAdj.K V)
 omaplem = ext
   λ X → AlgEq (fcong X (cong OMap (HomAdj.Rlaw V)))
-    ((λ Y →
+    ((ext λ Y →
         dext
         (λ {f} {f'} p →
            trans

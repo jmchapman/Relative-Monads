@@ -52,11 +52,11 @@ rightMM MM = record {
 
 isoMM : ∀{a b}{C : Cat {a}{b}}{M M' : Monad C} → 
         Iso (RMonadMorph (leftM M) (leftM M')) (MonadMorph M M')
-isoMM = record { 
- fun  = rightMM; 
+isoMM {M = monad _ _ _ _ _ _}{M' = monad _ _ _ _ _ _} = record { 
+ fun  = rightMM;
  inv  = leftMM; 
- law1 = λ _ → refl; 
- law2 = λ _ → refl }
+ law1 = λ {(monadmorph _ _ _) → refl};
+ law2 = λ {(rmonadmorph _ _ _) → refl}}
 
 open import Adjunctions
 open import RAdjunctions
