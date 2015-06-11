@@ -4,7 +4,6 @@ module Everything where
 open import Library
 open import Isomorphism
 
-
 -- basic category theory
 open import Categories
 open import Categories.Sets

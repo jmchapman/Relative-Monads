@@ -16,7 +16,7 @@ KlL = record{
   OMap  = id;
   HMap  = comp η;
   fid   = idr;
-  fcomp = λ{X}{Y}{Z}{f}{g} → 
+  fcomp = λ{_}{_}{_}{f}{g} → 
     proof
     comp η (comp f g) 
     ≅⟨ sym ass ⟩

@@ -45,9 +45,9 @@ open HomAdj
 HomAdjEq : ∀{c d}{A B : ObjAdj {c}{d}}(f g : HomAdj A B) → K f ≅ K g → f ≅ g
 HomAdjEq {A = A}{B = B} (homadj K Llaw Rlaw rightlaw) (homadj .K Llaw' Rlaw' rightlaw') refl =
   cong₃ (homadj K)
-        (proof-irr _ _)
-        (proof-irr _ _)
-        (iext λ _ → iext λ _ → iext λ _ → fixtypes refl)
+        (ir _ _)
+        (ir _ _)
+        (iext λ _ → iext λ _ → iext λ _ → hir refl)
 
 rightlawlem : ∀{c d}{D : Cat {c}{d}}(R : Fun D C)(L : Fun C D)
   (p : OMap R ≅ OMap (R ○ (IdF D))) → 

@@ -10,7 +10,7 @@ open Cat
 open Fun
 
 Adj2Mon : ∀{a b}{C D : Cat {a}{b}} → Adj C D → Monad C
-Adj2Mon {C = C}{D = D} A = record{
+Adj2Mon {C = C}{D} A = record{
   T    = OMap R ∘ OMap L;
   η    = left (iden D);
   bind = HMap R ∘ right;
@@ -21,7 +21,7 @@ Adj2Mon {C = C}{D = D} A = record{
     HMap R (iden D)
     ≅⟨ fid R ⟩
     iden C ∎; 
-  law2 = λ{X}{Y}{f} → 
+  law2 = λ{_}{_}{f} → 
     proof
     comp C (HMap R (right f)) (left (iden D)) 
     ≅⟨ cong (comp C (HMap R (right f))) (sym (idr C)) ⟩
@@ -36,7 +36,7 @@ Adj2Mon {C = C}{D = D} A = record{
     left (right f)
     ≅⟨ lawb f ⟩
     f ∎; 
-  law3 = λ{X}{Y}{Z}{f}{g} → 
+  law3 = λ{_}{_}{_}{f}{g} → 
     proof
     HMap R (right (comp C (HMap R (right g)) f))
     ≅⟨ cong (HMap R ∘ right ∘ comp C (HMap R (right g))) 

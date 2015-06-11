@@ -43,7 +43,7 @@ infix 10 _○_
 FunctorEq : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(F G : Fun C D) → 
             OMap F ≅ OMap G →
             (λ {X Y} → HMap F {X}{Y}) ≅ (λ {X}{Y} → HMap G {X}{Y}) → F ≅ G
-FunctorEq (functor fo fh fp fp') (functor .fo .fh gp gp') refl refl =
+FunctorEq (functor fo fh _ _) (functor .fo .fh _ _) refl refl =
   cong₂ (functor fo fh)
-        (iext λ _ → proof-irr _ _)
-        (iext λ _ → iext λ _ → iext λ _ → iext λ _ → iext λ _ → proof-irr _ _)
+        (iext λ _ → ir _ _)
+        (iext λ _ → iext λ _ → iext λ _ → iext λ _ → iext λ _ → ir _ _)

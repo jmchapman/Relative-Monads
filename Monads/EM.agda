@@ -19,10 +19,10 @@ record Alg : Set (a ⊔ b) where
 open Alg
 
 AlgEq : {X Y : Alg} → acar X ≅ acar Y → (astr X ≅ astr Y) → X ≅ Y
-AlgEq {alg acar astr alaw1 alaw2} {alg ._ ._ alaw1' alaw2'} refl refl =
+AlgEq {alg acar astr _ _} {alg ._ ._ _ _} refl refl =
   cong₂ (alg acar astr)
-        (iext λ _ → iext λ _ → proof-irr _ _)
-        (iext λ _ → iext λ _ → iext λ _ → iext λ _ → proof-irr _ _)
+        (iext λ _ → iext λ _ → ir _ _)
+        (iext λ _ → iext λ _ → iext λ _ → iext λ _ → ir _ _)
 
 record AlgMorph (A B : Alg) : Set (a ⊔ b) where
   constructor algmorph
@@ -32,9 +32,9 @@ record AlgMorph (A B : Alg) : Set (a ⊔ b) where
 open AlgMorph
 
 AlgMorphEq : {X Y : Alg}{f g : AlgMorph X Y} → amor f ≅ amor g → f ≅ g
-AlgMorphEq {f = algmorph amor ahom}{algmorph .amor ahom'} refl =
+AlgMorphEq {f = algmorph amor _}{algmorph .amor _} refl =
   cong (algmorph amor)
-       (iext λ _ → iext λ _ → proof-irr _ _)
+       (iext λ _ → iext λ _ → ir _ _)
 
 AlgMorphEq' : {X X' Y Y' : Alg}
   {f : AlgMorph X Y}{g : AlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 

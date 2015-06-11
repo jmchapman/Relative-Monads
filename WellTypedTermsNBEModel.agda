@@ -107,18 +107,7 @@ eval γ (app t u) = eval γ t id (eval γ u)
 lem : ∀{B Γ Δ σ}(ρ : Ren Γ B)(γ : Env Δ Γ)(t : Tm Δ σ) → 
       renV ρ (eval γ t) ≅ eval (renV ρ ∘ γ) t
 lem = {!!}
-{-
-  lem ρ γ (var x)   = refl
-  lem ρ γ (app t u) = trans (snd (eval γ t) id ρ (eval γ u)) 
-                            (resp2 (λ f x → f x)
-                                   (fresp (λ {_} → id) 
-                                          (ifresp _ 
-                                                  (resp fst (lem ρ γ t)))) 
-                                   (lem ρ γ u))
-  lem ρ γ (lam t)   = 
-    funeq (λ {B} → ext (λ (ρ' : Ren _ _) → ext (λ v → resp (λ (β : Env _ _) → eval (β << v) t) 
-                                               (iext (λ σ → ext (λ a → renVcomp ρ ρ' σ (γ a)))))))
--}
+
 
 renVid : ∀{Γ} σ (v : Val Γ σ) → renV id v ≅ v
 renVid ι       v = renNeid ι v

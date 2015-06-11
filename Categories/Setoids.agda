@@ -20,13 +20,13 @@ record SetoidFun (S S' : Setoid) : Set where
               eq S s s' → eq S' (fun s) (fun s')
 open SetoidFun
 
-SetoidFunEq : {S S' : Setoid}{f g : set S → set S'} → f ≅ g →
-              {feq : {s s' : set S} → eq S s s' → eq S' (f s) (f s')} →
-              {geq : {s s' : set S} → eq S s s' → eq S' (g s) (g s')} →
-              (∀{s s'}(p : eq S s s') → feq p ≅ geq p) → 
-              _≅_ {A = SetoidFun S S'} (setoidfun f feq)
-                  {SetoidFun S S'} (setoidfun g geq)
-SetoidFunEq {f = f} refl p = cong (setoidfun f) (iext (λ s → iext (λ s' → ext p))) 
+SetoidFunEq : {S S' : Setoid}{f g : SetoidFun S S'} →
+              fun f ≅ fun g →
+              (λ{s}{s'}(p : eq S s s') → feq f p)
+              ≅
+              (λ{s}{s'}(p : eq S s s') → feq g p) →
+              f ≅ g
+SetoidFunEq {f = setoidfun fun feq} {setoidfun .fun .feq} refl refl = refl
 
 idFun : {S : Setoid} → SetoidFun S S
 idFun = record {fun = id; feq = id}
@@ -50,3 +50,4 @@ Setoids = record{
   idl  = idl;
   idr  = idr;
   ass  = refl}
+-- -}

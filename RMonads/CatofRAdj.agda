@@ -48,11 +48,11 @@ open HomAdj
 
 HomAdjEq : ∀{a b}{A B : ObjAdj {a}{b}}
            (f g : HomAdj A B) → K f ≅ K g → f ≅ g
-HomAdjEq {A = A}{B = B} (homadj K Llaw Rlaw rightlaw) (homadj .K Llaw' Rlaw' rightlaw') refl =
+HomAdjEq {A = A}{B} (homadj K _ _ _) (homadj .K _ _ _) refl =
   cong₃ (homadj K)
-        (proof-irr _ _)
-        (proof-irr _ _)
-        (iext λ _ → iext λ _ → iext λ _ → fixtypes refl)
+        (ir _ _)
+        (ir _ _)
+        (iext λ _ → iext λ _ → iext λ _ → hir refl)
 
 rightlawlem : ∀{e f}{E : Cat {e}{f}}(R : Fun E D)(L : Fun C E) → 
   (p : OMap R ≅ OMap (R ○ (IdF E))) → 

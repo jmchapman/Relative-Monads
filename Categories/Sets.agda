@@ -1,8 +1,7 @@
 module Categories.Sets where
 
-open import Relation.Binary.HeterogeneousEquality
+open import Library
 open import Categories
-open import Function
 
 Sets : Cat
 Sets = record{

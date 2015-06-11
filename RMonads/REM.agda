@@ -24,8 +24,8 @@ AlgEq : {X Y : RAlg} → RAlg.acar X ≅ RAlg.acar Y →
         X ≅ Y
 AlgEq {ralg acar astr alaw1 alaw2}{ralg .acar .astr alaw1' alaw2'} refl refl = let open Cat in
   cong₂ (ralg acar astr)
-        (iext (λ a₁ → iext (λ a₂ → proof-irr _ _)))
-        (iext (λ a₁ → iext (λ a₂ → iext (λ a₃ → iext (λ a₄ → proof-irr _ _)))))
+        (iext (λ a₁ → iext (λ a₂ → ir _ _)))
+        (iext (λ a₁ → iext (λ a₂ → iext (λ a₃ → iext (λ a₄ → ir _ _)))))
 
 astrnat : ∀(alg : RAlg){X Y}
           (f : Cat.Hom C X Y) → 
@@ -62,7 +62,7 @@ open RAlgMorph
 
 RAlgMorphEq : ∀{X Y : RAlg}{f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
 RAlgMorphEq {X}{Y}{ralgmorph amor ahom}{ralgmorph .amor ahom'} refl = let open Cat D in
-  cong (ralgmorph amor) (iext λ _ → iext λ _ → proof-irr _ _)
+  cong (ralgmorph amor) (iext λ _ → iext λ _ → ir _ _)
 
 lemZ : ∀{X X' Y Y' : RAlg}
        {f : RAlgMorph X Y}{g : RAlgMorph X' Y'} → X ≅ X' → Y ≅ Y' → 

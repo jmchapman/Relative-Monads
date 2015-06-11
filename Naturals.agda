@@ -21,11 +21,11 @@ NatTEq : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
          {α β : NatT F G} → 
          (λ {X : Cat.Obj C} → cmp α {X}) ≅ (λ {X : Cat.Obj C} → cmp β {X}) → 
          α ≅ β
-NatTEq {α = natural cmp nat} {natural .cmp nat'} refl =
-  cong (natural cmp) (iext (λ _ → iext (λ _ → iext (λ _ → proof-irr _ _))))
+NatTEq {α = natural cmp _} {natural .cmp _} refl =
+  cong (natural cmp) (iext λ _ → iext λ _ → iext λ _ → ir _ _)
 
 idNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F : Fun C D} → NatT F F
-idNat {C = C}{D = D}{F = F} = let open Cat D in record {
+idNat {D = D}{F} = let open Cat D in record {
   cmp = iden;
   nat = λ{X}{Y}{f} → 
     proof
@@ -37,7 +37,7 @@ idNat {C = C}{D = D}{F = F} = let open Cat D in record {
 
 compNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G H : Fun C D} → 
           NatT G H → NatT F G → NatT F H
-compNat {C = C}{D = D}{F = F}{G = G}{H = H} α β = let open Cat D in record {
+compNat {D = D}{F}{G}{H} α β = let open Cat D in record {
   cmp = comp (cmp α) (cmp β);
   nat = λ{X}{Y}{f} → 
     proof
@@ -56,13 +56,13 @@ compNat {C = C}{D = D}{F = F}{G = G}{H = H} α β = let open Cat D in record {
 
 idlNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
          {α : NatT F G} → compNat idNat α ≅ α
-idlNat {C = C}{D = D} = NatTEq (iext λ _ → Cat.idl D)
+idlNat {D = D} = NatTEq (iext λ _ → Cat.idl D)
 
 idrNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
          {α : NatT F G} → compNat α idNat ≅ α
-idrNat {C = C}{D = D} = NatTEq (iext λ _ → Cat.idr D)
+idrNat {D = D} = NatTEq (iext λ _ → Cat.idr D)
  
 assNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{E F G H : Fun C D}
          {α : NatT G H}{β : NatT F G}{η : NatT E F} → 
          compNat (compNat α β) η ≅ compNat α (compNat β η)
-assNat {C = C}{D = D} = NatTEq (iext λ _ → Cat.ass D)
+assNat {D = D} = NatTEq (iext λ _ → Cat.ass D)

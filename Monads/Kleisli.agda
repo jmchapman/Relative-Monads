@@ -22,7 +22,7 @@ Kl = record{
     f 
     ∎;
   idr  = law2;
-  ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → 
+  ass  = λ{_}{_}{_}{_}{f}{g}{h} → 
     proof
     comp (bind (comp (bind f) g)) h 
     ≅⟨ cong (λ f → comp f h) law3 ⟩
