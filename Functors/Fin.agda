@@ -41,8 +41,7 @@ FinFoid = record {
     trn  = trans};
   HMap  = λ f → record {
     fun = f; feq = cong f};
-  fid   = SetoidFunEq refl
-                      (iext λ _ → iext λ _ → ext congid);
+  fid   = SetoidFunEq refl (iext λ _ → iext λ _ → ext congid);
   fcomp = λ{_ _ _ f g} → 
     SetoidFunEq refl (iext λ _ → iext λ _ → ext (congcomp f g))}
 

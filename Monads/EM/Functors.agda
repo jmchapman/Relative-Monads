@@ -35,7 +35,7 @@ EML = record {
     bind η 
     ≅⟨ law1 ⟩ 
     iden ∎);
-  fcomp = λ {X}{Y}{Z}{f}{g} → 
+  fcomp = λ {_}{_}{_}{f}{g} → 
     AlgMorphEq (
       proof 
       bind (comp η (comp f g)) 

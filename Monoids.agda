@@ -12,20 +12,12 @@ record Monoid {a} : Set (lsuc a) where
 
   infix 10 _•_
 
-rid+ : ∀{n} → n + zero ≅ n
-rid+ {zero}  = refl
-rid+ {suc n} = cong suc (rid+ {n})
-
-ass+ : ∀{m n o} → (m + n) + o ≅ m + (n + o)
-ass+ {zero}  = refl
-ass+ {suc m} = cong ℕ.suc (ass+ {m})
-
 Nat+Mon : Monoid 
 Nat+Mon = record { 
   S   = ℕ; 
   ε   = zero; 
   _•_ = _+_;
   lid = refl; 
-  rid = rid+; 
-  ass = λ{m} → ass+ {m}}
+  rid = ≡-to-≅ $ +-right-identity _; 
+  ass = λ{m} → ≡-to-≅ $ +-assoc m _ _}
 

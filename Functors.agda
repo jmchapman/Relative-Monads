@@ -19,9 +19,9 @@ IdF C = record{OMap = id;HMap = id;fid = refl;fcomp = refl}
 
 _○_ : ∀{a b c d e f}{C : Cat {a}{b}}{D : Cat {c}{d}}{E : Cat {e}{f}} → 
       Fun D E → Fun C D → Fun C E
-_○_ {C = C}{D = D}{E = E} F G = record{
-  OMap  = λ X → OMap F (OMap G X);
-  HMap   = λ f → HMap F (HMap G f);
+_○_ {C = C}{D}{E} F G = record{
+  OMap  = OMap F ∘ OMap G;
+  HMap   = HMap F ∘ HMap G;
   fid    = 
     proof
     HMap F (HMap G (iden C)) 
@@ -30,7 +30,7 @@ _○_ {C = C}{D = D}{E = E} F G = record{
     ≅⟨ fid F ⟩ 
     iden E 
     ∎;
-  fcomp  = λ {X}{Y}{Z}{f}{g} → 
+  fcomp  = λ {_}{_}{_}{f}{g} → 
     proof
     HMap F (HMap G (comp C f g)) 
     ≅⟨ cong (HMap F) (fcomp G)  ⟩ 

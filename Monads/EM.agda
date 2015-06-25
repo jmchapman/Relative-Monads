@@ -88,5 +88,5 @@ EM  = record{
   comp = CompMorph;
   idl  = idlMorph;
   idr  = idrMorph;
-  ass  = λ{W}{X}{Y}{Z}{f}{g}{h} → assMorph {W}{X}{Y}{Z}{f}{g}{h}}
+  ass  = λ{_}{_}{_}{_}{f}{g}{h} → assMorph {f = f}{g}{h}}
 -- -}
