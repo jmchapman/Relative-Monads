@@ -22,10 +22,10 @@ record RAlg : Set (a ⊔ c ⊔ d) where
 AlgEq : {X Y : RAlg} → RAlg.acar X ≅ RAlg.acar Y → 
   ((λ {Z} → RAlg.astr X {Z}) ≅ (λ {Z} → RAlg.astr Y {Z})) → 
         X ≅ Y
-AlgEq {ralg acar astr alaw1 alaw2}{ralg .acar .astr alaw1' alaw2'} refl refl = let open Cat in
+AlgEq {ralg acar astr _ _}{ralg .acar .astr _ _} refl refl = let open Cat in
   cong₂ (ralg acar astr)
-        (iext (λ a₁ → iext (λ a₂ → ir _ _)))
-        (iext (λ a₁ → iext (λ a₂ → iext (λ a₃ → iext (λ a₄ → ir _ _)))))
+        (iext λ _ → iext λ _ → ir _ _)
+        (iext λ _ → iext λ _ → iext λ _ → iext λ _ → ir _ _)
 
 astrnat : ∀(alg : RAlg){X Y}
           (f : Cat.Hom C X Y) → 
@@ -61,7 +61,7 @@ record RAlgMorph (A B : RAlg) : Set (a ⊔ c ⊔ d)
 open RAlgMorph
 
 RAlgMorphEq : ∀{X Y : RAlg}{f g : RAlgMorph X Y} → amor f ≅ amor g → f ≅ g
-RAlgMorphEq {X}{Y}{ralgmorph amor ahom}{ralgmorph .amor ahom'} refl = let open Cat D in
+RAlgMorphEq {X}{Y}{ralgmorph amor _}{ralgmorph .amor _} refl =
   cong (ralgmorph amor) (iext λ _ → iext λ _ → ir _ _)
 
 lemZ : ∀{X X' Y Y' : RAlg}
@@ -72,7 +72,7 @@ lemZ refl refl = RAlgMorphEq
 IdMorph : ∀{A : RAlg} → RAlgMorph A A
 IdMorph {A} = let open Cat D; open RAlg A in record {
   amor = iden;
-  ahom = λ {Z} {f} → 
+  ahom = λ {_ f} → 
     proof 
     comp iden (astr f)
     ≅⟨ idl ⟩ 
@@ -85,7 +85,7 @@ CompMorph : ∀{X Y Z : RAlg} →
             RAlgMorph Y Z → RAlgMorph X Y → RAlgMorph X Z
 CompMorph {X}{Y}{Z} f g = let open Cat D; open RAlg in record {
   amor = comp (amor f) (amor g);
-  ahom = λ {Z₁} {f'} → 
+  ahom = λ {_ f'} → 
     proof
     comp (comp (amor f) (amor g)) (astr X f') 
     ≅⟨ ass ⟩
@@ -119,5 +119,5 @@ EM = record{
   comp = CompMorph;
   idl  = idlMorph;
   idr  = idrMorph;
-  ass  = λ{_}{_}{_}{_}{f}{g}{h} → assMorph {_}{_}{_}{_}{f}{g}{h}}
+  ass  = λ{_ _ _ _ f g h} → assMorph {f = f}{g}{h}}
 

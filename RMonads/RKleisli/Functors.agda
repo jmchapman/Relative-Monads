@@ -24,7 +24,7 @@ RKlL = record{
     comp D η (iden D) 
     ≅⟨ idr D ⟩
     η ∎;
-  fcomp = λ{X}{Y}{Z}{f}{g} → 
+  fcomp = λ{_ _ _ f g} → 
     proof
     comp D η (HMap J (comp C f g)) 
     ≅⟨ cong (comp D η) (fcomp J) ⟩

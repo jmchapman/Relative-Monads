@@ -33,7 +33,7 @@ REML = record {
     bind η
     ≅⟨ law1 ⟩ 
     iden D ∎);
-  fcomp = λ{X}{Y}{Z}{f}{g} → RAlgMorphEq (
+  fcomp = λ{_ _ _ f g} → RAlgMorphEq (
     proof
     bind (comp D η (HMap J (comp C f g))) 
     ≅⟨ cong (bind ∘ comp D η) (fcomp J) ⟩

@@ -13,7 +13,7 @@ open RAdj
 
 Adj2Mon : ∀{a b c d e f}{C : Cat {a}{b}}{D : Cat {c}{d}}{E : Cat {e}{f}}
           {J : Fun C D} → RAdj J E → RMonad J
-Adj2Mon {C = C}{D = D}{E = E}{J = J} A = record{
+Adj2Mon {C = C}{D}{E}{J} A = record{
   T    = OMap (R A) ∘ OMap (L A);
   η    = left A (iden E);
   bind = HMap (R A) ∘ right A;

@@ -29,10 +29,10 @@ Kl = record{
     f 
     ∎; 
   idr  = law2;
-  ass  =  λ{W}{X}{Y}{Z}{f}{g}{h} → 
+  ass  =  λ{_ _ _ _ f g h} → 
     proof
     comp D (bind (comp D (bind f) g)) h 
-    ≅⟨ cong (λ f₁ → comp D f₁ h) law3 ⟩
+    ≅⟨ cong (λ f → comp D f h) law3 ⟩
     comp D (comp D (bind f) (bind g)) h
     ≅⟨ ass D ⟩
     comp D (bind f) (comp D (bind g) h) 

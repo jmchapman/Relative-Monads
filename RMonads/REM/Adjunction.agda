@@ -22,10 +22,10 @@ REMAdj = record {
   L = REML;
   R = REMR;
   left   = λ f → comp (amor f) η;
-  right  = λ{X}{B} f → record{
+  right  = λ{_ B} f → record{
     amor = astr B f;
     ahom = sym (alaw2 B)};
-  lawa    = λ {X}{Y} f → 
+  lawa    = λ {_ Y} f → 
     RAlgMorphEq (
       proof 
       astr Y (comp (amor f) η) 
@@ -35,7 +35,7 @@ REMAdj = record {
       comp (amor f) iden
       ≅⟨ idr ⟩ 
       amor f ∎);
-  lawb    = λ {X}{B} f → sym (alaw1 B);
+  lawb    = λ {_ B} f → sym (alaw1 B);
   natleft = λ f g h → 
     proof
     comp (amor g) (comp (comp (amor h) η) (HMap J f))

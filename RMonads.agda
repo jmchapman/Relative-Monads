@@ -23,7 +23,7 @@ open import Functors
 
 TFun : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D} → 
        RMonad J → Fun C D
-TFun {C = C}{D = D}{J = J} M = let open RMonad M; open Cat in record { 
+TFun {C = C}{D}{J} M = let open RMonad M; open Cat in record { 
   OMap  = T; 
   HMap  = bind ∘ comp D η ∘ HMap J; 
   fid   = 
@@ -36,7 +36,7 @@ TFun {C = C}{D = D}{J = J} M = let open RMonad M; open Cat in record {
     ≅⟨ law1 ⟩ 
     iden D 
     ∎;
-  fcomp = λ{X}{Y}{Z}{f}{g} → 
+  fcomp = λ{_ _ _ f g} → 
     proof
     bind (comp D η (HMap J (comp C f g))) 
     ≅⟨ cong (bind ∘ comp D η) (fcomp J) ⟩
