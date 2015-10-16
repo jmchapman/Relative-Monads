@@ -1,5 +1,3 @@
-{-# OPTIONS --copatterns #-}
-
 module WellScopedTermsModel where
 
 open import Library
@@ -123,57 +121,76 @@ module Model (l : LambdaModel) where
     alaw2 =  ext λ t → subeval t _ _}       
   
 
--- some experiments
-open import Delay
-open import Size
+module VEnv where
+  open import Delay
+  open import Size
+  
+  mutual
+    Env : ℕ → Set
+    Env n = Fin n → Val
+  
+    data Val : Set where
+      clo : ∀{n} → Env n → Tm (suc n) → Val
+  
+  
+  -- the RAlg is expecting a env containing 'values' here the values
+  -- evaluator takes an env of undelayed values and makes a delayed
+  -- values.
+  mutual
+    ev : ∀{i n} → Env n → Tm n → Delay Val i
+    ev γ (var x) = now (γ x)
+    ev γ (lam t) = now (clo γ t)
+    ev γ (app t u) = ev γ t >>= λ f → ev γ u >>= λ v → f $$ v
+  
+    _∞$$_ : ∀{i} → Val → Val → ∞Delay Val i
+    force (clo γ t ∞$$ v) = ev (γ << v) t 
+  
+    _$$_ : ∀{i} → Val → Val → Delay Val i
+    f $$ v = later (f ∞$$ v)
 
-mutual
-  Env : ℕ → Set
-  Env n = Fin n → Val
+module FusedVals where
+  open import Size
+  mutual
+    data Env (i : Size) : (n : ℕ) → Set where
+      ε   : Env i zero
+      _,_ : ∀ {n} (ρ : Env i n) (v : Val i) → Env i (suc n)
 
-  data Val : Set where
-    clo : ∀{n} → Env n → Tm (suc n) → Val
+    data Val (i : Size) : Set where
+      lam   : forall {n} (t : Tm (suc n)) (ρ : Env i n)  → Val i 
+      later : (v∞ : ∞Val i)                   → Val i
+  
+    record ∞Val (i : Size) : Set where
+      coinductive
+      constructor ∞val
+      field
+        vforce : {j : Size< i} → Val j
 
-{-
-mutual
-  _$$_ : Val → Val → Val
-  clo γ t $$ v = ev (γ << v) t
+  open ∞Val
 
-  ev : ∀{n} → Env n → Tm n → Val
-  ev γ (var x) = γ x
-  ev γ (lam t) = clo γ t
-  ev γ (app t u) = ev γ t $$ ev γ u
--}
+  lookup : ∀{i n} -> Env i n -> Fin n -> Val i
+  lookup (ρ , v) zero    = v
+  lookup (ρ , v) (suc i) = lookup ρ i
 
--- the RAlg is expecting a env containing 'values' here the values
--- evaluator takes an env of undelayed values and makes a delayed
--- values.
-mutual
-  ev : ∀{i n} → Env n → Tm n → Delay Val i
-  ev γ (var x) = now (γ x)
-  ev γ (lam t) = now (clo γ t)
-  ev γ (app t u) = ev γ t >>= λ f → ev γ u >>= λ v → f $$ v
+  tabulate : ∀{i n} -> (Fin n -> Val i) -> Env i n
+  tabulate {n = zero}  f = ε
+  tabulate {n = suc n} f = (tabulate {n = n} (f ∘ suc)) , f zero
 
-  _∞$$_ : ∀{i} → Val → Val → ∞Delay Val i
-  force (clo γ t ∞$$ v) = ev (γ << v) t 
-
-  _$$_ : ∀{i} → Val → Val → Delay Val i
-  f $$ v = later (f ∞$$ v)
-
-{-
-mutual
-  Env' : ∀ i → ℕ → Set
-  Env' i n = Fin n → Delay (Val' i) i
-
-  data Val' (i : Size) :  Set where
-    clo : ∀{n} → Env' i n → Tm (suc n) → Val' i
-
-mutual
-  ev' : ∀{i n} → Env' i n → Tm n → Delay (Val' i) i
-  ev' γ (var x)   = γ x
-  ev' γ (lam t)   = now (clo γ t)
-  ev' γ (app t u) = {!!}
-
-  _∞$$'_ : ∀{i} → Val' i → Delay (Val' i) i → ∞Delay (Val' i) i
-  force (clo γ t ∞$$' v) = ev' (γ << v) t 
--}
+  mutual
+    ev : ∀{i n} -> Env i n -> Tm n -> Val i
+    ev ρ (var x)   = lookup ρ x
+    ev ρ (lam t)   = lam t ρ
+    ev ρ (app t u) = ev ρ t $$ ev ρ u
+  
+    _$$_ : ∀{i} → Val i → Val i → Val i
+    f $$ v = later (f ∞$$ v)
+  
+    _∞$$_ : ∀{i} → Val i → Val i → ∞Val i
+    vforce (lam t ρ ∞$$ v) = ev (ρ , v) t 
+    vforce (later p ∞$$ v) = later (vforce p ∞$$ v) 
+  
+    FRAlg : ∀ {i} -> RAlg TmRMonad
+    FRAlg {i} = ralg
+      (Val i)
+      (ev ∘ tabulate)
+      {!!}
+      {!!}
