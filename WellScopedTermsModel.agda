@@ -187,10 +187,11 @@ module FusedVals where
     _∞$$_ : ∀{i} → Val i → Val i → ∞Val i
     vforce (lam t ρ ∞$$ v) = ev (ρ , v) t 
     vforce (later p ∞$$ v) = later (vforce p ∞$$ v) 
-  
+{-  
     FRAlg : ∀ {i} -> RAlg TmRMonad
     FRAlg {i} = ralg
       (Val i)
       (ev ∘ tabulate)
       {!!}
       {!!}
+-}

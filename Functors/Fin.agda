@@ -51,3 +51,12 @@ FinFF X Y = record {
   inv  = id;
   law1 = λ _ → refl;
   law2 = λ _ → refl}
+
+open import Data.Bool
+
+feq : forall {n} -> Fin n -> Fin n -> Bool
+feq zero    zero    = true
+feq zero    (suc j) = false
+feq (suc i) zero    = false
+feq (suc i) (suc j) = true
+
