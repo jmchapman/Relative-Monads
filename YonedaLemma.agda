@@ -31,3 +31,13 @@ y C = functor
   (NatTEq (iext \ _ -> ext \ _ -> ass))
   where open Cat C
 
+yleminv : ∀{l m}(C : Cat {l}{m})(F : Fun (C Op) (Sets {m}))(X : Cat.Obj C) ->
+       NatT (Fun.OMap (y C) X) F -> Fun.OMap F X
+yleminv C F X α = NatT.cmp α {X} (Cat.iden C)
+
+ylem : ∀{l m}(C : Cat {l}{m})(F : Fun (C Op) (Sets {m}))(X : Cat.Obj C) ->
+          Fun.OMap F X -> NatT (Fun.OMap (y C) X) F
+ylem C F X FX = natural
+  (\ {X'} f -> HMap f FX)
+  (\{X'}{Y}{f} -> ext \ g -> sym (fcong FX (fcomp {f = f}{g = g})) ) 
+  where open Cat C; open Fun F
