@@ -59,3 +59,60 @@ record Monoidal {l}{m} : Set (lsuc (l ⊔ m)) where
           ≅
           comp (cmp α {A , B , OMap ⊗ (C , D)})
                (cmp α {OMap ⊗ (A , B) , C , D}) 
+
+record MonoidalFun {a b c d}(M : Monoidal {a}{b})(M' : Monoidal {c}{d})
+  : Set (a ⊔ b ⊔ c ⊔ d) where
+  open Monoidal
+  open Cat
+
+  field F : Fun (C M) (C M')
+
+  open Fun
+
+  field e : Hom (C M') (I M') (OMap F (I M))
+
+  F-⊗'F- : Fun (C M × C M) (C M')
+  F-⊗'F- = functor
+    (\ {(A , B) -> OMap (⊗ M') (OMap F A , OMap F B)})
+    (\ {(f , g) -> HMap (⊗ M') (HMap F f , HMap F g)})
+    (trans (cong₂ (\f g -> HMap (⊗ M') (f , g)) (fid F) (fid F)) (fid (⊗ M')))
+    (trans (cong₂ (\f g -> HMap (⊗ M') (f , g))
+           (fcomp F) (fcomp F)) (fcomp (⊗ M')))
+
+  F[-⊗-] : Fun (C M × C M) (C M')
+  F[-⊗-] = functor
+    (λ { (A , B) → OMap F (OMap (⊗ M) (A , B)) })
+    ((λ { (f , g) → HMap F (HMap (⊗ M) (f , g)) }))
+    (trans (cong (HMap F) (fid (⊗ M))) (fid F))
+    (trans (cong (HMap F) (fcomp (⊗ M))) (fcomp F))
+
+
+  field m : NatT F-⊗'F- F[-⊗-]
+  
+  field square1 : ∀{A} ->
+          NatI.cmp (ρ M') {OMap F A}
+          ≅
+          comp (C M') (HMap F (NatI.cmp (ρ M) {A}))
+                      (comp (C M') (NatT.cmp m {A , I M})
+                                   (HMap (⊗ M') (iden (C M') {OMap F A} , e)))
+
+        square2 : ∀{B} ->
+          NatI.cmp (λ' M') {OMap F B}
+          ≅
+          comp (C M') (HMap F (NatI.cmp (λ' M) {B}))
+                      (comp (C M') (NatT.cmp m {I M , B})
+                                   (HMap (⊗ M') (e , iden (C M') {OMap F B})))
+
+
+        hexagon : ∀{A B B'} ->
+           comp (C M') (HMap F (NatI.cmp (α M) {A , B , B'}))
+                       (comp (C M') (NatT.cmp m {OMap (⊗ M) (A , B) , B'})
+                                    (HMap (⊗ M') (NatT.cmp m {A , B} ,
+                                                  iden (C M') {OMap F B'})))
+           ≅
+           comp (C M') (NatT.cmp m {A , OMap (⊗ M) (B , B')})
+                       (comp (C M') (HMap (⊗ M') (iden (C M') {OMap F A} ,
+                                                  NatT.cmp m {B , B'}))
+                                    (NatI.cmp (α M') {OMap F A ,
+                                                      OMap F B ,
+                                                      OMap F B'}))
