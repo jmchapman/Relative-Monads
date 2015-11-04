@@ -7,12 +7,12 @@ open import Functors
 open import Naturals
 
 record Monoidal {l}{m} : Set (lsuc (l ⊔ m)) where
-  field C   : Cat {l}{m}
+  field C : Cat {l}{m}
   open Cat C
   open Fun
-  open NatT
+  open NatI
   field ⊗ : Fun (C × C) C
-        I   : Obj
+        I : Obj
         
   I⊗- : Fun C C
   I⊗- = functor
@@ -21,7 +21,7 @@ record Monoidal {l}{m} : Set (lsuc (l ⊔ m)) where
     (fid ⊗)
     (trans (cong (\f -> HMap ⊗ (f , _)) (sym idl)) (fcomp ⊗))
 
-  field λ'  : NatT I⊗- (IdF C)
+  field λ'  : NatI I⊗- (IdF C)
 
   -⊗I : Fun C C
   -⊗I = functor
@@ -30,7 +30,7 @@ record Monoidal {l}{m} : Set (lsuc (l ⊔ m)) where
     (fid ⊗)
     (trans (cong (\f -> HMap ⊗ (_ , f)) (sym idl)) (fcomp ⊗))
 
-  field ρ  : NatT -⊗I (IdF C)
+  field ρ  : NatI -⊗I (IdF C)
 
   [-⊗-]⊗- : Fun (C × C × C) C
   [-⊗-]⊗- = functor
@@ -46,7 +46,7 @@ record Monoidal {l}{m} : Set (lsuc (l ⊔ m)) where
     (trans (cong (\f -> HMap ⊗ (_ , f)) (fid ⊗) ) (fid ⊗))
     (trans (cong (\f -> HMap ⊗ (_ , f)) (fcomp ⊗)) (fcomp ⊗))
 
-  field α : NatT [-⊗-]⊗- -⊗[-⊗-]
+  field α : NatI [-⊗-]⊗- -⊗[-⊗-]
 
         triangle : ∀{A B} ->
           comp (HMap ⊗ (iden {A} , (cmp λ' {B}))) (cmp α {A , I , B})

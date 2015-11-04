@@ -15,11 +15,9 @@ record NatT {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(F G : Fun C D) :
         nat : ∀{X Y}{f : Hom C X Y} → 
               comp D (HMap G f) cmp ≅ comp D cmp (HMap F f)
 
-open NatT
-
 NatTEq : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G : Fun C D}
          {α β : NatT F G} → 
-         (λ {X : Cat.Obj C} → cmp α {X}) ≅ (λ {X : Cat.Obj C} → cmp β {X}) → 
+         (λ {X} → NatT.cmp α {X}) ≅ (λ {X} → NatT.cmp β {X}) → 
          α ≅ β
 NatTEq {α = natural cmp _} {natural .cmp _} refl =
   cong (natural cmp) (iext λ _ → iext λ _ → iext λ _ → ir _ _)
@@ -37,7 +35,7 @@ idNat {D = D}{F} = let open Cat D in record {
 
 compNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{F G H : Fun C D} → 
           NatT G H → NatT F G → NatT F H
-compNat {D = D}{F}{G}{H} α β = let open Cat D in record {
+compNat {D = D}{F}{G}{H} α β = let open Cat D; open NatT in record {
   cmp = comp (cmp α) (cmp β);
   nat = λ{X}{Y}{f} → 
     proof
@@ -66,3 +64,23 @@ assNat : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{E F G H : Fun C D}
          {α : NatT G H}{β : NatT F G}{η : NatT E F} → 
          compNat (compNat α β) η ≅ compNat α (compNat β η)
 assNat {D = D} = NatTEq (iext λ _ → Cat.ass D)
+
+-- Natural isomorphism
+
+record Iso {l m}(C : Cat {l}{m}){A B}(f : Cat.Hom C A B) : Set (l ⊔ m)
+  where
+  constructor iso
+  open Cat C
+  field inv  : Hom B A
+        rinv : comp f inv ≅ iden {B}
+        linv : comp inv f ≅ iden {A}
+
+
+record NatI {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(F G : Fun C D) : 
+  Set (a ⊔ b ⊔ c ⊔ d) where
+  constructor natural
+  open Cat
+  field cmp : ∀ {X} → Hom D (OMap F X) (OMap G X)
+        cmpI : ∀{X} -> Iso D (cmp {X})
+        nat : ∀{X Y}{f : Hom C X Y} → 
+              comp D (HMap G f) cmp ≅ comp D cmp (HMap F f)
