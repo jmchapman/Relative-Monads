@@ -37,7 +37,7 @@ module Arrow2RMonad {l m}(C : Cat {l}{m})(A : Arrow C) where
   η = natural pure (ext λ _ -> sym (alaw1 _ _))
 
   bind : {X Y : Obj} ->
-              NatT HomF[-, X ] (T Y) -> NatT (T X) (T Y)
+         NatT HomF[-, X ] (T Y) -> NatT (T X) (T Y)
   bind α = natural (λ s -> cmp iden <<< s) (ext λ _ -> sym (alaw4 _ _ _))
     where open NatT α
   -- cmp iden is one direction of the yoneda lemma
@@ -46,15 +46,15 @@ module Arrow2RMonad {l m}(C : Cat {l}{m})(A : Arrow C) where
   law1 = NatTEq (iext (\ _ -> ext alaw3))
 
   law2 : {X Y : Obj}{f : NatT HomF[-, X ] (T Y)} → 
-              compNat (bind f) η ≅ f
+         compNat (bind f) η ≅ f
   law2 {f = f} = NatTEq
     (iext \ _ -> ext \ s -> trans (fcong iden (nat {f = s})) (cong cmp idl))
     where open NatT f
 
   law3 : {X Y Z : Obj}
-              {f : NatT HomF[-, X ] (T Y)} → 
-              {g : NatT HomF[-, Y ] (T Z)} →
-              bind (compNat (bind g) f) ≅ compNat (bind g) (bind f)
+         {f : NatT HomF[-, X ] (T Y)} → 
+         {g : NatT HomF[-, Y ] (T Z)} →
+         bind (compNat (bind g) f) ≅ compNat (bind g) (bind f)
   law3 = NatTEq (iext \ W -> ext (\ s -> sym (alaw4 _ _ s)))
 
   ArrowRMonad : RMonad (y C)
