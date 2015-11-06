@@ -7,7 +7,7 @@ open import MonoidalCat
 open import WeakArrows
 
 record SArrow {l m}(J : Monoidal {l}{m}) : Set (lsuc (l ⊔ m)) where
-  constructor arrow
+  constructor sarrow
   open Monoidal J
   open Cat C
   open Fun
