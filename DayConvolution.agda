@@ -22,9 +22,9 @@ HDay M F G f (y , z , fy , gz , g) = y , z , fy , gz , comp g f
   where open Monoidal M; open Cat C
 
 
-DayF : ∀{l m}{M : Monoidal {l}{m}}
+DayF : ∀{l m}(M : Monoidal {l}{m})
        (F G : Fun (Monoidal.C M) (Sets {l})) -> Fun ((Monoidal.C M) Op) Sets
-DayF {M = M} F G = functor
+DayF M F G = functor
   (ODay M F G)
   (HDay M F G)
   (\ {X} -> ext (\{ (y , z , fy , gz , g) ->

@@ -3,7 +3,7 @@ module Functors.FullyFaithful where
 open import Library
 open import Categories
 open import Functors
-open import Naturals
+open import Naturals hiding (Iso)
 open import Isomorphism
 
 open Cat

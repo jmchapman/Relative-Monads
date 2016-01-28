@@ -19,3 +19,31 @@ record RMonadMorph {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}
                   ≅ 
                   comp (bind M' (comp (morph {Y}) k)) (morph {X})
 
+
+IdRMonadMorph : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}
+  (M  : RMonad J) → RMonadMorph M M
+IdRMonadMorph {D = D} M = rmonadmorph
+  iden
+  idl
+  (trans idl (trans (cong (bind M) (sym idl)) (sym idr)))
+  where open Cat D
+
+CompRMonadMorph : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}
+  {M  M' M'' : RMonad J} →
+  RMonadMorph M' M'' → RMonadMorph M M' → RMonadMorph M M''
+CompRMonadMorph {D = D}{M'' = M''}
+  (rmonadmorph f lawηf lawbindf)
+  (rmonadmorph g lawηg lawbindg) =
+  rmonadmorph
+    (comp f g)
+    (trans ass (trans (cong (comp f) lawηg) lawηf))
+    \ {_ _ k} -> trans
+      ass
+      (trans (cong (comp f) lawbindg)
+             (trans (trans (sym ass)
+                           (cong (λ f → comp f g)
+                                 (trans (lawbindf {k = comp g k})
+                                        (cong (λ g → comp (bind M'' g) f)
+                                              (sym ass)))))
+                     ass))
+  where open Cat D
