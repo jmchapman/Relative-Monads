@@ -26,9 +26,8 @@ Nats = record{
 
 -- initial object
 
-init : Init Nats
-init = record {
-  I   = zero ;
+initN : Init Nats zero
+initN = record {
   i   = λ ();
   law = ext λ ()}
 
@@ -48,20 +47,20 @@ case zero    f g i       = g i
 case (suc m) f g zero    = f zero
 case (suc m) f g (suc i) = case m (f ∘ suc) g i
 
-lem1 : ∀ A {B C}(f : Fin A → Fin C) (g : Fin B → Fin C)(i : Fin A) →
+lem1 : ∀ A {B C}(f : Fin A → C) (g : Fin B → C)(i : Fin A) →
   case A f g (extend i) ≅ f i
 lem1 zero f g ()
 lem1 (suc A) f g zero    = refl
 lem1 (suc A) f g (suc i) = lem1 A (f ∘ suc) g i
 
-lem2 : ∀ A {B C} (f : Fin A → Fin C) (g : Fin B → Fin C)(i : Fin B) → 
+lem2 : ∀ A {B C} (f : Fin A → C) (g : Fin B → C)(i : Fin B) → 
   case A f g (lift A i) ≅ g i
 lem2 zero f g zero    = refl
 lem2 zero f g (suc i) = refl
 lem2 (suc A) f g i    = lem2 A (f ∘ suc) g i
 
-lem3 : ∀ A → {B C : ℕ} (f : Fin A → Fin C) (g : Fin B → Fin C)
-  (h : Fin (A + B) → Fin C) →
+lem3 : ∀ A {B C}(f : Fin A → C) (g : Fin B → C)
+  (h : Fin (A + B) → C) →
   (λ x → h (extend {A} x)) ≅ f →
   (λ x → h (lift A x)) ≅ g → ∀ i → h i ≅ case A f g i
 lem3 zero    f g h p q i       = fcong i q

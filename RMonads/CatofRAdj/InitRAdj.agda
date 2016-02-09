@@ -198,9 +198,8 @@ KlHom {A = A} = record {
   Rlaw     = Rlaw' A;
   rightlaw = rightlaw' A}
 
-KlIsInit : Init CatofAdj
+KlIsInit : Init CatofAdj KlObj
 KlIsInit = record { 
-  I   = KlObj;
   i   = KlHom;
   law = λ {X} {V} → HomAdjEq 
     _ 

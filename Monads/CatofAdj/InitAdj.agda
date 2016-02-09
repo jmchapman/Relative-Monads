@@ -203,9 +203,8 @@ uniq {X}{V} = HomAdjEq
                          (sym (HomAdj.rightlaw V))))
 
 
-KlIsInit : Init CatofAdj
+KlIsInit : Init CatofAdj KlObj
 KlIsInit = record { 
-  I   = KlObj;
   i   = KlHom;
   law = uniq}
 -- -}
