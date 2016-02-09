@@ -16,4 +16,4 @@ record CoProd {l m}(C : Cat {l}{m}) : Set (m ⊔ l) where
                 comp [ f , g ] inr ≅ g
         law3  : ∀{A B C}(f : Hom A C)(g : Hom B C)
                 (h : Hom (A + B) C) →
-                comp h inr ≅ f → comp h inr ≅ g → h ≅ [ f , g ]
+                comp h inl ≅ f → comp h inr ≅ g → h ≅ [ f , g ]
