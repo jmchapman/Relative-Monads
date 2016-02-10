@@ -5,7 +5,7 @@ module Monads.CatofAdj.InitAdj {a b}{C : Cat {a}{b} }(M : Monad C) where
 
 open import Library
 open import Functors
-open import Naturals
+open import Naturals hiding (Iso)
 open import Adjunctions
 open import Monads.CatofAdj M
 open import Categories.Initial

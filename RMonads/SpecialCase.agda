@@ -2,7 +2,7 @@ module RMonads.SpecialCase where
 
 open import Categories
 open import Functors
-open import Naturals
+open import Naturals hiding (Iso)
 open import Monads
 open import RMonads
 

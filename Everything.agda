@@ -10,6 +10,8 @@ open import Categories.Sets
 open import Categories.Families
 open import Categories.Initial
 open import Categories.Terminal
+open import Categories.CoProducts
+open import Categories.PushOuts
 open import Categories.Setoids -- should be replaced by standard libary def
 
 open import Functors
@@ -64,3 +66,5 @@ open import WellScopedTerms
 open import WellScopedTermsModel
 open import WellTypedTerms
 open import WellTypedTermsModel
+
+open import Lawvere
