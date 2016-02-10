@@ -92,4 +92,7 @@ model T = record {
   X = term (λ{alg} → ralgmorph (RAlg.astr alg {0} (λ ()))
                                (λ {n}{f} →
                                  sym $ RAlg.alaw2 alg {n}{zero}{f}{λ ()} ))
-           {!!}}
+           (λ{alg}{f} → RAlgMorphEq T (ext (λ t → trans
+             (trans (cong (λ f₁ → RAlg.astr alg f₁ t) (ext (λ ())))
+                    (sym (fcong t (RAlgMorph.ahom f {0}{RMonad.η T}))))
+             (cong (RAlgMorph.amor f) (fcong t (RMonad.law1 T))))))}
