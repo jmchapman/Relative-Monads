@@ -34,3 +34,36 @@ LSet = lawvere
                                       (SqMap.sqMor u')
                                       (SqMap.leftTr u')
                                       (SqMap.rightTr u') ))
+
+open import RMonads
+open import RMonads.RKleisli
+open import RMonads.RKleisli.Functors
+
+lem : RMonad FinF → Lawvere {lzero}{lzero}
+lem T = lawvere
+  (Kl T)
+  (RKlL T)
+  (init (λ ()) (ext λ ()))
+  λ m n → pushout
+    (square (m + n)
+            (RMonad.η T ∘ extend)
+            (RMonad.η T ∘ lift m)
+            (ext λ ()))
+    λ sq' →
+      sqmap
+        (case m (Square.h sq') (Square.k sq'))
+        (ext λ i → trans (fcong (extend i) (RMonad.law2 T))
+                         (lem1 m (Square.h sq') (Square.k sq') i) )
+        (ext λ i → trans (fcong (lift m i) (RMonad.law2 T))
+                         (lem2 m (Square.h sq') (Square.k sq') i))
+      ,
+      λ u' → ext λ i → sym $ lem3
+        m
+        (Square.h sq')
+        (Square.k sq')
+        (SqMap.sqMor u')
+        (trans (ext λ i → fcong (extend i) (sym $ RMonad.law2 T))
+               (SqMap.leftTr u'))
+        (trans (ext λ i → fcong (lift m i) (sym $ RMonad.law2 T))
+               (SqMap.rightTr u'))
+        i
