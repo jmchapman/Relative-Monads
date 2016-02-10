@@ -1,10 +1,12 @@
 module Lawvere where
 
 open import Library
+open import Data.Sum
 open import Categories
 open import Categories.Sets
 open import Categories.Initial
 open import Categories.PushOuts
+open import Categories.Products hiding (_×_)
 open import Categories.CoProducts
 open import Categories.Terminal
 
@@ -16,11 +18,11 @@ record Lawvere {a}{b} : Set (lsuc (a ⊔ b)) where
   field T  : Cat {a}{b}
         L  : Fun (Nats Op) T
         L0 : Term T (Fun.OMap L zero)
---        LP : ∀ m n →
---          PullBack {C = T}{Fun.OMap L m}{Fun.OMap L n}{Fun.OMap L zero}
---                  (Fun.HMap L (λ ())) (Fun.HMap L (λ ()))
+        LP : ∀ m n → Prod T (Fun.OMap L m) (Fun.OMap L n)
 
-FunOp : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}} → Fun C D → Fun (C Op) (D Op)
+-- it's not the identity, it switches some implicit in fid and fcomp I think
+FunOp : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}} →
+        Fun C D → Fun (C Op) (D Op)
 FunOp (functor OMap HMap fid fcomp) = functor OMap HMap fid fcomp
 
 LSet : Lawvere
@@ -28,54 +30,44 @@ LSet = lawvere
   (Sets Op)
   (FunOp FinF)
   (term (λ ()) (ext λ ()))
---  λ m n → pushout
---    (square (Fin (m + n)) extend  (lift m) (ext λ ()))
---    (λ sq' → (sqmap (case m (Square.h sq') (Square.k sq'))
---                    (ext (lem1 m (Square.h sq') (Square.k sq')))
---                    (ext (lem2 m (Square.h sq') (Square.k sq'))))
---             , λ u' → ext (sym ∘ lem3 m
---                                      (Square.h sq')
---                                      (Square.k sq')
---                                     (SqMap.sqMor u')
---                                      (SqMap.leftTr u')
---                                      (SqMap.rightTr u') ))
+  λ m n → prod
+    (Fin m ⊎ Fin n)
+    inj₁
+    inj₂
+    [_,_]′
+    refl
+    refl
+    λ p q → ext (λ{ (inj₁ a) -> fcong a p; (inj₂ b) -> fcong b q})
 
 open import RMonads
 open import RMonads.RKleisli
 open import RMonads.RKleisli.Functors
 
 lem : RMonad FinF → Lawvere {lzero}{lzero}
-lem T = lawvere
-  (Kl T Op)
-  (FunOp (RKlL T) )
+lem M = lawvere
+  (Kl M Op)
+  (FunOp (RKlL M) )
   (term (λ ()) (ext λ ()))
-{-  λ m n → pushout
-    (square (m + n)
-            (RMonad.η T ∘ extend)
-            (RMonad.η T ∘ lift m)
-            (ext λ ()))
-    λ sq' →
-      sqmap
-        (case m (Square.h sq') (Square.k sq'))
-        (ext λ i → trans (fcong (extend i) (RMonad.law2 T))
-                         (lem1 m (Square.h sq') (Square.k sq') i) )
-        (ext λ i → trans (fcong (lift m i) (RMonad.law2 T))
-                         (lem2 m (Square.h sq') (Square.k sq') i))
-      ,
-      λ u' → ext λ i → sym $ lem3
-        m
-        (Square.h sq')
-        (Square.k sq')
-        (SqMap.sqMor u')
-        (trans (ext λ i → fcong (extend i) (sym $ RMonad.law2 T))
-               (SqMap.leftTr u'))
-        (trans (ext λ i → fcong (lift m i) (sym $ RMonad.law2 T))
-               (SqMap.rightTr u'))
-        i
--}
+  λ m n → prod
+    (m + n)
+    (η ∘ extend)
+    (η ∘ lift m)
+    (case m)
+    (ext λ i → trans (fcong (extend i) law2) (lem1 m _ _ i))
+    (ext λ i → trans (fcong (lift m i) law2) (lem2 m _ _ i))
+    λ {o} {f} {g} {h} p q → ext (lem3
+      m
+      f
+      g
+      h
+      (trans (ext λ i → sym (fcong (extend i) law2)) p)
+      (trans (ext λ i → sym (fcong (lift m i) law2)) q))
+    where open RMonad M
+
 open import Categories.Products
 
-record Model {a}{b}{c}{d} (Law : Lawvere {a}{b}) : Set (lsuc (a ⊔ b ⊔ c ⊔ d)) where
+record Model {a}{b}{c}{d} (Law : Lawvere {a}{b}) : Set (lsuc (a ⊔ b ⊔ c ⊔ d))
+  where
   open Lawvere Law
   field C : Cat {c}{d}
         F : Fun T C
