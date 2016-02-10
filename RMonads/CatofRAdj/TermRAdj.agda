@@ -100,8 +100,7 @@ uniq {X} {f} = HomAdjEq _ _ (FunctorEq _ _
   (omaplem {X} {f}) 
   (iext λ _ → iext λ _ → ext (hmaplem {X}{f})))
 
-EMIsTerm : Term CatofAdj
+EMIsTerm : Term CatofAdj EMObj
 EMIsTerm = record { 
-  T   = EMObj; 
   t   = EMHom; 
   law = uniq}

@@ -11,9 +11,8 @@ open import Monads.CatofAdj.TermAdjObj M
 open import Monads.CatofAdj.TermAdjHom M
 open import Monads.CatofAdj.TermAdjUniq M
 
-EMIsTerm : Term CatofAdj
+EMIsTerm : Term CatofAdj EMObj
 EMIsTerm = record { 
-  T   = EMObj;
   t   = λ {A} → EMHom A;
   law = λ {A} {V} →
     HomAdjEq _ _  (FunctorEq _ _ (omaplem A V)
