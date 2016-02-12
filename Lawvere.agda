@@ -71,20 +71,62 @@ record Model {a}{b}{c}{d} (Law : Lawvere {a}{b}) : Set (lsuc (a ⊔ b ⊔ c ⊔ 
   open Lawvere Law
   field C : Cat {c}{d}
         F : Fun T C
-        X : Term C (Fun.OMap F (Fun.OMap L zero))
-
+        F0 : Term C (Fun.OMap F (Fun.OMap L zero))
+        FP : ∀ m n → Prod C (Fun.OMap F (Fun.OMap L m))
+                            (Fun.OMap F (Fun.OMap L n))
 open import RMonads.REM
 open import RMonads.CatofRAdj.InitRAdj
 open import RMonads.CatofRAdj.TermRAdjObj
+open import RMonads.REM.Functors
 
 model : (T : RMonad FinF) → Model (lem T)
 model T = record {
-  C = EM T Op ;
-  F = FunOp (K' T (EMObj T));
-  X = term (λ{alg} → ralgmorph (RAlg.astr alg {0} (λ ()))
+  C  = EM T Op ;
+  F  = FunOp (K' T (EMObj T));
+  F0 = term (λ{alg} → ralgmorph (RAlg.astr alg {0} (λ ()))
                                (λ {n}{f} →
                                  sym $ RAlg.alaw2 alg {n}{zero}{f}{λ ()} ))
            (λ{alg}{f} → RAlgMorphEq T (ext (λ t → trans
              (trans (cong (λ f₁ → RAlg.astr alg f₁ t) (ext (λ ())))
                     (sym (fcong t (RAlgMorph.ahom f {0}{RMonad.η T}))))
-             (cong (RAlgMorph.amor f) (fcong t (RMonad.law1 T))))))}
+             (cong (RAlgMorph.amor f) (fcong t (RMonad.law1 T))))));
+  FP = λ m n → prod
+    (Fun.OMap (REML FinF T) (m + n) )
+    (Fun.HMap (REML FinF T) extend)
+    (Fun.HMap (REML FinF T) (lift m))
+    (λ{alg} f g → ralgmorph
+      (RAlg.astr alg
+                 (case m (RAlgMorph.amor f ∘ RMonad.η T)
+                         (RAlgMorph.amor g ∘ RMonad.η T)))
+      (sym (RAlg.alaw2 alg)))
+    (λ {alg}{f}{g} → RAlgMorphEq T (trans
+      (sym (RAlg.alaw2 alg))
+      (trans (cong (RAlg.astr alg)
+                   (ext λ i → trans (fcong (extend i) (sym (RAlg.alaw1 alg)))
+                                    (lem1 m _ _ i)))
+             (trans (sym (RAlgMorph.ahom f))
+                    (ext λ i → cong (RAlgMorph.amor f)
+                                    (fcong i (RMonad.law1 T)))))))
+    (λ {alg}{f}{g} → RAlgMorphEq T (trans
+      (sym (RAlg.alaw2 alg))
+      (trans (cong (RAlg.astr alg)
+                   (ext λ i → trans (fcong (lift m i) (sym (RAlg.alaw1 alg)))
+                                    (lem2 m _ _ i)))
+             (trans (sym (RAlgMorph.ahom g))
+                    (ext λ i → cong (RAlgMorph.amor g)
+                                    (fcong i (RMonad.law1 T)))))))
+    λ{alg}{f}{g}{h} p q → RAlgMorphEq T (trans
+      (trans (ext λ i → cong (RAlgMorph.amor h)
+                             (sym (fcong i (RMonad.law1 T))))
+             (RAlgMorph.ahom h))
+      (cong (RAlg.astr alg) (ext (lem3
+        m
+        (RAlgMorph.amor f ∘ RMonad.η T)
+        (RAlgMorph.amor g ∘ RMonad.η T)
+        (RAlgMorph.amor h ∘ RMonad.η T)
+        (ext λ i → trans
+          (cong (RAlgMorph.amor h) (sym (fcong i (RMonad.law2 T))))
+          (fcong (RMonad.η T i) (cong RAlgMorph.amor p)))
+        (ext λ i → trans
+          (cong (RAlgMorph.amor h) (sym (fcong i (RMonad.law2 T))))
+          (fcong (RMonad.η T i) (cong RAlgMorph.amor q)))))))}
