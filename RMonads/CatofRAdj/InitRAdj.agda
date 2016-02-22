@@ -6,7 +6,7 @@ module RMonads.CatofRAdj.InitRAdj {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}
                                   {J : Fun C D}(M : RMonad J) where
 
 open import Library
-open import Naturals hiding (Iso)
+open import Naturals hiding (Iso; module Iso)
 open import RAdjunctions
 open import RMonads.CatofRAdj M
 open import Categories.Initial
