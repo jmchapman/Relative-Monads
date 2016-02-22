@@ -230,3 +230,25 @@ TmRMonad = record {
   law1 = ext subid; 
   law2 = refl;
   law3 = ext (subcomp _ _)}
+
+-- module
+
+open import RMonads.Modules
+
+-- TM is module for Fin Monad
+
+FinMonad : RMonad FinF
+FinMonad = rmonad 
+  Fin 
+  id
+  id
+  refl
+  refl
+  refl
+
+TmModFin : Mod FinMonad
+TmModFin = mod 
+  Tm
+  ren
+  (ext renid)
+  (ext (rencomp _ _))

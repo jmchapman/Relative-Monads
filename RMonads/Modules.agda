@@ -9,6 +9,7 @@ open import RMonads
 
 record Mod {a}{b}{c}{d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D}
            (RM : RMonad J) : Set (a ⊔ c ⊔ d) where
+  constructor mod
   open Cat
   open Fun
   open RMonad RM
