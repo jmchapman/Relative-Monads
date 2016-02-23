@@ -4,12 +4,12 @@ open import Library
 open import Categories
 open import Functors
 
-open Fun
 
 record RMonad {a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) : 
   Set (a ⊔ b ⊔ c ⊔ d) where
   constructor rmonad
   open Cat
+  open Fun
   field T    : Obj C → Obj D
         η    : ∀{X} → Hom D (OMap J  X) (T X)
         bind : ∀{X Y} → Hom D (OMap J X) (T Y) → Hom D (T X) (T Y)
@@ -23,7 +23,7 @@ open import Functors
 
 TFun : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}{J : Fun C D} → 
        RMonad J → Fun C D
-TFun {C = C}{D}{J} M = let open RMonad M; open Cat in record { 
+TFun {C = C}{D}{J} M = let open RMonad M; open Cat; open Fun in record { 
   OMap  = T; 
   HMap  = bind ∘ comp D η ∘ HMap J; 
   fid   = 
@@ -50,3 +50,8 @@ TFun {C = C}{D}{J} M = let open RMonad M; open Cat in record {
     ≅⟨ law3 ⟩
     comp D (bind (comp D η (HMap J f))) (bind (comp D η (HMap J g)))
     ∎}
+
+-- any functor is a relative monad over itself
+trivRM : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) → RMonad J
+trivRM {D = D} J = rmonad OMap (iden D) id refl (idr D) refl 
+  where open Fun J; open Cat
