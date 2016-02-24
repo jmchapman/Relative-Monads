@@ -33,6 +33,25 @@ ModJ {D = D}{J = J} RM =
              law3)
   where open Fun J; open RMonad RM; open Cat D
 
+
+open import Functors.FullyFaithful
+open import Isomorphism
+-- if J is fully faithful then any suitably typed functor is a module for trivial rel monad given by J
+ModF : forall {a}{b}{c}{d}{C : Cat {a}{b}}{D : Cat {c}{d}}
+       {J : Fun C D} → Full J → Faithful J → (F : Fun C D) -> Mod (trivRM J)
+ModF {C = C}{D = D}{J = J} P Q F = mod 
+  (OMap F) 
+  (λ f → HMap F (fst (P f)))
+  (trans (cong (HMap F) (Q (trans (snd (P (Cat.iden D))) (sym $ fid J)))) (fid F))
+  (trans (cong (HMap F) 
+               (Q (trans (snd (P _)) 
+                         (trans (cong₂ (Cat.comp D) 
+                                       (sym $ snd (P _)) 
+                                       (sym $ snd (P _))) 
+                                (sym $ fcomp J))))) 
+         (fcomp F)) where open Fun
+
+
 -- any rel. monad is trivially a module over itself, 'tautalogical module'
 ModRM : forall {a}{b}{c}{d}{C : Cat {a}{b}}{D : Cat {c}{d}}
        {J : Fun C D} (RM : RMonad J) -> Mod RM

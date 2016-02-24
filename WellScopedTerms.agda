@@ -240,6 +240,9 @@ FinMonad : RMonad FinF
 FinMonad = trivRM FinF
 
 -- TM is module for Fin Monad This is not exactly the same as the
--- 'tautalogical module' as that would go via substitution
 TmModFin : Mod FinMonad
-TmModFin = mod Tm ren (ext renid) (ext (rencomp _ _))
+TmModFin = mod Tm ren (ext renid) (ext (rencomp _ _)) 
+
+-- in fact, any suitable functor is a module over FinMonad
+FModFin' : (F : Fun Nats Sets) →  Mod FinMonad
+FModFin' F = ModF (\ h → h , refl) id F

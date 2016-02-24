@@ -51,7 +51,7 @@ TFun {C = C}{D}{J} M = let open RMonad M; open Cat; open Fun in record {
     comp D (bind (comp D η (HMap J f))) (bind (comp D η (HMap J g)))
     ∎}
 
--- any functor is a relative monad over itself
+-- any functor is a rel monad over itself
 trivRM : ∀{a b c d}{C : Cat {a}{b}}{D : Cat {c}{d}}(J : Fun C D) → RMonad J
 trivRM {D = D} J = rmonad OMap (iden D) id refl (idr D) refl 
   where open Fun J; open Cat
