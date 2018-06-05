@@ -64,6 +64,16 @@ lem M = lawvere
       (trans (ext λ i → sym (fcong (lift m i) law2)) q))
     where open RMonad M
 
+lem-1 : Lawvere {lzero}{lzero} → RMonad FinF
+lem-1 LT = rmonad
+  (λ n → Cat.Hom (Lawvere.T LT) (Fun.OMap (Lawvere.L LT) 1) (Fun.OMap (Lawvere.L LT) n))
+  {!!}
+  {!!}
+  {!!}
+  {!!}
+  {!!}
+
+
 open import Categories.Products
 
 record Model {a}{b}{c}{d} (Law : Lawvere {a}{b}) : Set (lsuc (a ⊔ b ⊔ c ⊔ d))
